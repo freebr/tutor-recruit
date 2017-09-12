@@ -1,0 +1,108 @@
+﻿body {
+	font-size:9pt;
+	margin-left:0px;
+	margin-top:0px;
+	background-color:ghostwhite;
+}
+table {
+	font-size:9pt;
+	color:#000034;
+	word-break:break-all;
+}
+form {
+	font-size:9pt;
+}
+input {
+	font-size:9pt;
+}
+input.date {
+	width:150px;
+	text-align:center;
+}
+div.menu_up {
+	background-color:gainsboro;
+	height:20px;
+	cursor:pointer;
+	text-align:left;
+	color:#000034;
+	border-top:1px solid gainsboro;
+	border-left:1px solid gainsboro;
+	border-right:1px solid dimgray;
+	border-bottom:1px solid dimgray;
+	line-height:0;
+}
+div.menu_down {
+	background-color:gainsboro;
+	height:20;
+	cursor:pointer;
+	text-align:center;
+	color:darkmagenta;
+	border-right:1px solid gainsboro;
+	border-bottom:1px solid gainsboro;
+	border-left:1px solid dimgray;
+	border-top:1px solid dimgray;
+}
+.TextShow {border-right: #c0c0c0 1px solid; border-top: #c0c0c0 1px solid; font-size: 12px; border-left: #c0c0c0 1px solid; border-bottom: #c0c0c0 1px solid;}span.required { color: #ff0000 }
+span.draft { color: #9900CC }
+span.auditing { color: #003399 }
+span.auditok { color: #009900 }
+span.auditfailed { color: #990000 }
+span.hidden { color: #333333 }
+span.tip { background:url(../images/bulb_yellow.png) left center no-repeat #ffface;padding-left:20px;padding-right:5px;
+						 border:1px solid #cccccc;color:#00aa00;font-size:10pt }
+a:visited {
+	color:black;
+	text-decoration:none;
+}
+a:link {
+	color:black;
+	text-decoration:none;
+}
+a:hover {
+	color:red;
+	text-decoration:underline;
+}
+
+tr.choiceaccepted {
+	background-color: #95FF71;
+}
+tr.choicewithdrawn {
+	background-color: #FFFF4D;
+}
+tr.choicenew {
+	height: 40px;
+	padding: 10px 0;
+}
+tr.hidden {
+	display: none;
+}
+tr.choicenew p { margin: 0; }
+div.choicecontrol {
+	position:relative;
+	margin: 10px 0;
+}
+div.choicecontrol span {
+	display:inline-block;
+	width:20px;
+}
+span.moveup { background:url(../images/arrow_up.png) no-repeat center; }
+span.movedown { background:url(../images/arrow_down.png) no-repeat center; }
+span.delete { background:url(../images/delete.png) no-repeat center; }
+
+p.accepted {color:#090}
+p.unaccepted {color:#aaa}
+p.withdrawn {color:#c00}
+
+ul.recruitprogress {
+	list-style: none;
+}
+ul.recruitprogress li {
+	display: inline;
+}
+ul.recruitprogress li span {
+	display: inline-block;
+	background: no-repeat center;
+	width: 200px;
+	height: 60px;
+}
+ul.recruitprogress li span#step1 { width: 130px; }
