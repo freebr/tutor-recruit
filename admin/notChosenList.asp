@@ -49,7 +49,7 @@ If matches.Count>0 Then
 		finalFilter=Replace(finalFilter,matches(0),"1=0")
 	End Select
 End If
-If Len(finalFilter) Then finalFilter=" AND "&finalFilter
+If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 '----------------------PAGE-------------------------
 PageNo=""
 PageSize=""

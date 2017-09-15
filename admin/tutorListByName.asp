@@ -7,7 +7,7 @@ sem_info=getCurrentSemester()
 teachtype_id=Request.Form("In_TEACHTYPE_ID")
 period_id=Request.Form("In_PERIOD_ID")
 finalFilter=Request.Form("finalFilter")
-If Len(finalFilter) Then finalFilter=" AND "&finalFilter
+If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 If Len(teachtype_id) And teachtype_id<>"0" Then
 	teachtype_id=Int(teachtype_id)
 Else

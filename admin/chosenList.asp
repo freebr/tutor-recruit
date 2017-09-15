@@ -42,8 +42,9 @@ If period_id="" or object="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.end
 End If
-If Len(finalFilter) Then finalFilter=" AND "&finalFilter
+If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 PubTerm="AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&object&finalFilter
+
 If Len(query_apply_status)=0 Then query_apply_status="-1"
 If query_apply_status<>"-1" Then
 	PubTerm=PubTerm&" AND APPLY_STATUS="&toSqlString(query_apply_status)
