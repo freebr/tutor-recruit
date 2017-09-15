@@ -50,7 +50,7 @@ Else
 End If
 CloseRs rs
 
-If Len(finalFilter) Then finalFilter=" AND "&finalFilter
+If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 PubTerm="AND RECRUIT_ID="&recruitID&" AND TEACHTYPE_ID="&object&finalFilter
 sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE (APPLY_STATUS=2 AND TURN_NUM<="&nTurn&" OR APPLY_STATUS IN (3,4)) AND VALID=1 "&PubTerm&" ORDER BY TURN_NUM DESC,APPLY_STATUS DESC,APPLY_TIME DESC,CLASS_NAME,STU_NAME"
 GetRecordSetNoLock conn,rs,sql,result
