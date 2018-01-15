@@ -32,6 +32,7 @@ Connect conn
 Dim arrSelStu:arrSelStu=Split(Request.Form("sel"),",")
 Dim arrSelTurn:arrSelTurn=Split(Request.Form("sel_turn"),",")
 Dim dictStu:Set dictStu=Server.CreateObject("Scripting.Dictionary")
+Dim bSendEmail:bSendEmail=False
 Select Case stat
 Case 3	' 确认填报记录
 	sql="DECLARE @tutor_id int,@rec_id int;"
@@ -117,31 +118,33 @@ For i=0 To UBound(arrSelTurn)
 Next
 
 Dim arrStatText:arrStatText=Array("未填报状态","未确认填报状态","导师未确认状态","导师已确认状态","导师已退回状态")
-For Each item In dictStu.Items
-	stu_id=item
-	sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL FROM VIEW_STUDENT_INFO_NEW A,TEACHER_INFO B"&_
-	 	  " WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
-	Set rs=conn.Execute(sql)
-	If Not rs.EOF Then
-		stu_name=rs(0)
-		class_name=rs(1)
-		spec_name=rs(2)
-		stu_email=rs(3)
-		tutor_name=rs(4)
-		tutor_email=rs(5)
-		stat_text=arrStatText(stat)
-		fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
-		bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
-		logtxt="行政人员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]，通知邮件发至["&stu_name&":"&stu_email&"]"
-		If bSuccess Then
-			logtxt=logtxt&"成功。"
-		Else
-			logtxt=logtxt&"失败。"
+If bSendEmail Then
+	For Each item In dictStu.Items
+		stu_id=item
+		sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL FROM VIEW_STUDENT_INFO_NEW A,TEACHER_INFO B"&_
+		 	  " WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
+		Set rs=conn.Execute(sql)
+		If Not rs.EOF Then
+			stu_name=rs(0)
+			class_name=rs(1)
+			spec_name=rs(2)
+			stu_email=rs(3)
+			tutor_name=rs(4)
+			tutor_email=rs(5)
+			stat_text=arrStatText(stat)
+			fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
+			bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
+			logtxt="行政人员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]，通知邮件发至["&stu_name&":"&stu_email&"]"
+			If bSuccess Then
+				logtxt=logtxt&"成功。"
+			Else
+				logtxt=logtxt&"失败。"
+			End If
+			WriteLogForTutorSystem logtxt
 		End If
-		WriteLogForTutorSystem logtxt
-	End If
-	CloseRs rs
-Next
+		CloseRs rs
+	Next
+End If
 Set dictStu=Nothing
 CloseConn conn
 %>
