@@ -63,7 +63,11 @@ function cancelConfirm(lid,id) {
 	return;
 }
 function showStudentInfo(id) {
-	location.href="showStudentInfo.asp?id="+id;
+	tabmgr.goTo("showStudentInfo.asp?id="+id,"查看学生信息",true);
+	return false;
+}
+function showTeacherResume(id) {
+	window.open("/teacher_resume.asp?id="+id);
 	return false;
 }
 function setPermission(type) {

@@ -101,7 +101,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 <input type="button" value="删除招生信息" onclick="batchRemoveRecruitInfo(countClk())" />&emsp;
 <input type="button" value="删除无指导名额的招生信息" onclick="removeZeroQuotaRecruitInfo()" /></td></tr></table></form>
 <form id="query" id="query" method="post">
-<table width="800" cellpadding="0" cellspacing="1" bgcolor="dimgray">
+<table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
   <td width="13%" align=center>教师姓名</td>
   <td width="20%" align=center>专业</td>
@@ -109,6 +109,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
   <td width="10%" align=center>报名学员数</td>
   <td width="10%" align=center>确认学员数</td>
   <td width="10%" align=center>总名额数</td>
+  <td width="10%" align=center>操作</td>
 </tr>
 <%
 		i=0:k=0:l=1
@@ -135,7 +136,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 					tdbgcolor="#ffffff"
 				End If
 				If j=0 Then
-%><td valign="middle" align=center rowspan="<%=countRecruitInfo%>"><a href="/index/teacher_resume.asp?id=<%=rs("TEACHER_ID")%>" target="_blank"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
+%><td valign="middle" align=center rowspan="<%=countRecruitInfo%>"><a href="#" onclick="return showTeacherResume(<%=rs("TEACHER_ID")%>);"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
 				End If
 %><td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rs2("SPECIALITY_NAME"))%></td>
 <td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rs2("RESEARCH_WAYNAME"))%></td>
@@ -146,7 +147,11 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 				l=l+1
 				j=j+1
 				k=k+1
-%></tr><%
+%><td bgcolor="<%=tdbgcolor%>" align=center><%
+				If Len(confirmedNum) Then
+%><a href="#" onclick="tabmgr.goTo('applyList.asp?recruit_id=<%=rs2("RECRUIT_ID")%>','查看填报学员名单',true);return false;">查看确认名单</a><%
+				End If
+%></td></tr><%
 				rs2.MoveNext()
 			Loop
 			Set rs2=Nothing

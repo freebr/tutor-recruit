@@ -98,7 +98,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 <input type="button" value="删除招生信息" onclick="batchRemoveRecruitInfo(countClk())" />&emsp;
 <input type="button" value="删除无指导名额的招生信息" onclick="removeZeroQuotaRecruitInfo()" /></td></tr></table></form>
 <form id="query" id="query" method="post">
-<table width="800" cellpadding="0" cellspacing="1" bgcolor="dimgray">
+<table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
   <td width="17%" align=center>专业名称</td>
   <td width="13%" align=center>教师姓名</td>
@@ -106,24 +106,25 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
   <td width="10%" align=center>报名学员数</td>
   <td width="10%" align=center>确认学员数</td>
   <td width="10%" align=center>总名额数</td>
+  <td width="10%" align=center>操作</td>
 </tr>
   <%
   	k=0:l=1
   	For i=1 to rs.PageSize
 			If rs.EOF Then Exit For
 			strSub="SELECT * FROM VIEW_TUTOR_RECRUIT_INFO WHERE SPECIALITY_NAME="&toSqlString(rs("SPECIALITY_NAME"))&PubTerm	'&" AND Valid=1"
-			GetRecordSetNoLock conn,rsSub,strSub,result
+			GetRecordSetNoLock conn,rs2,strSub,result
 			j=0
-			Do While Not rsSub.EOF
-				listID=rsSub("LIST_ID")
-				recruitID=rsSub("RECRUIT_ID")
+			Do While Not rs2.EOF
+				listID=rs2("LIST_ID")
+				recruitID=rs2("RECRUIT_ID")
 				strSub2="SELECT RECRUIT_ID,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM VIEW_TUTOR_RECRUIT_INFO WHERE RECRUIT_ID="&recruitID
-				'Set rsSub2=conn.Execute(strSub2)
-				GetRecordSetNoLock conn,rsSub2,strSub2,result2
-				If Not rsSub2.EOF Then
-					recruitQuota=rsSub2(1)
-					appliedNum=rsSub2(2)
-					confirmedNum=rsSub2(3)
+				'Set rs22=conn.Execute(strSub2)
+				GetRecordSetNoLock conn,rs22,strSub2,result2
+				If Not rs22.EOF Then
+					recruitQuota=rs22(1)
+					appliedNum=rs22(2)
+					confirmedNum=rs22(3)
 					If appliedNum=0 Then appliedNum=""
 					If confirmedNum=0 Then confirmedNum=""
 %><tr bgcolor="gainsboro" height="25"><%
@@ -135,8 +136,8 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 					If j=0 Then
 %><td valign="middle" align=center rowspan="<%=result%>"><%=HtmlEncode(rs("Speciality_Name"))%></td><%
 					End If
-	%><td bgcolor="<%=tdbgcolor%>" align=center><a href="/index/teacher_resume.asp?id=<%=rsSub("TEACHER_ID")%>" target="_blank"><%=HtmlEncode(rsSub("Teacher_Name"))%></a></td>
-  <td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rsSub("Research_WayName"))%></td>
+	%><td bgcolor="<%=tdbgcolor%>" align=center><a href="/index/teacher_resume.asp?id=<%=rs2("TEACHER_ID")%>" target="_blank"><%=HtmlEncode(rs2("Teacher_Name"))%></a></td>
+  <td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rs2("Research_WayName"))%></td>
 	<td bgcolor="<%=tdbgcolor%>" align=center><%=appliedNum%></td>
 	<td bgcolor="<%=tdbgcolor%>" align=center><%=confirmedNum%></td>
 	<td bgcolor="<%=tdbgcolor%>" align=center><input type="checkbox" name="sel" value="<%=recruitID%>,<%=l%>" />&nbsp;
@@ -144,12 +145,16 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 					l=l+1
 					j=j+1
 					k=k+1
-%></tr><%
+%><td bgcolor="<%=tdbgcolor%>" align=center><%
+				If Len(confirmedNum) Then
+%><a href="#" onclick="tabmgr.goTo('applyList.asp?recruit_id=<%=rs2("RECRUIT_ID")%>','查看填报学员名单',true);return false;">查看确认名单</a><%
 				End If
-				CloseRs rsSub2
-				rsSub.MoveNext()
+%></td></tr><%
+				End If
+				CloseRs rs22
+				rs2.MoveNext()
 			Loop
-			Set rsSub=Nothing
+			Set rs2=Nothing
   		rs.MoveNext()
    	Next
   %>

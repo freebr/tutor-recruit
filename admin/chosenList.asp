@@ -9,77 +9,68 @@ Response.Expires=-1%>
 <link href="../css/global.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="../scripts/utils.js"></script>
 <script type="text/javascript" src="../scripts/query.js"></script>
+<script type="text/javascript" src="../scripts/admin.js"></script>
 <style type="text/css">
 	span.accepted {color:#090}
 	span.unaccepted {color:#00f}
 	span.withdrawn {color:#c00}
 	span.hidden {color:#666}
 </style>
-<script type="text/javascript">
-	function showStudentInfo(id) {
-		location.href="showStudentInfo.asp?id="+id;
-		return false;
-	}
-	function showTeacherResume(id) {
-		window.open("/teacher_resume.asp?id="+id);
-		return false;
-	}
-</script>
 </head>
 <body bgcolor="ghostwhite" onload="On_Load();">
 <center>
 <%
-Dim object,PubTerm,PageNo,PageSize
+	Dim object,PubTerm,PageNo,PageSize
 
-object=Request.Form("In_TEACHTYPE_ID")
-period_id=Request.Form("In_PERIOD_ID")
-query_apply_status=Request.Form("In_APPLY_STATUS")
-finalFilter=Request.Form("finalFilter")
-FormGetToSafeRequest(object)
-FormGetToSafeRequest(period_id)
+	object=Request.Form("In_TEACHTYPE_ID")
+	period_id=Request.Form("In_PERIOD_ID")
+	query_apply_status=Request.Form("In_APPLY_STATUS")
+	finalFilter=Request.Form("finalFilter")
+	FormGetToSafeRequest(object)
+	FormGetToSafeRequest(period_id)
 
-If period_id="" or object="" Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
-End If
-If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
-PubTerm="AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&object&finalFilter
-
-If Len(query_apply_status)=0 Then query_apply_status="-1"
-If query_apply_status<>"-1" Then
-	PubTerm=PubTerm&" AND APPLY_STATUS="&toSqlString(query_apply_status)
-End If
-'----------------------PAGE-------------------------
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("pageSize")
-Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_pageSize")
-End If
-
-'------------------------------------------------------
-Connect conn
-sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
-GetRecordSetNoLock conn,rs,sql,result
-If PageSize<>"" Then
-	rs.PageSize=CInt(PageSize)
-Else
-	rs.PageSize=120
-	PageSize=120
-End If
-If PageNo<>"" Then
-	If CInt(PageNo)<=rs.PageCount Then
-	  rs.AbsolutePage=CInt(PageNo)
-	Else
-	  If rs.PageCount<>0 Then rs.AbsolutePage=1
+	If period_id="" or object="" Then
+	%><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
+		Response.end
 	End If
-Else
-	If rs.PageCount<>0 Then rs.AbsolutePage=1
-	PageNo=1
-End If
+	If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
+	PubTerm="AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&object&finalFilter
+
+	If Len(query_apply_status)=0 Then query_apply_status="-1"
+	If query_apply_status<>"-1" Then
+		PubTerm=PubTerm&" AND APPLY_STATUS="&toSqlString(query_apply_status)
+	End If
+	'----------------------PAGE-------------------------
+	PageNo=""
+	PageSize=""
+	If Request.Form("In_PageNo").Count=0 Then
+		PageNo=Request.Form("PageNo")
+		PageSize=Request.Form("pageSize")
+	Else
+		PageNo=Request.Form("In_PageNo")
+		PageSize=Request.Form("In_pageSize")
+	End If
+
+	'------------------------------------------------------
+	Connect conn
+	sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
+	GetRecordSetNoLock conn,rs,sql,result
+	If PageSize<>"" Then
+		rs.PageSize=CInt(PageSize)
+	Else
+		rs.PageSize=120
+		PageSize=120
+	End If
+	If PageNo<>"" Then
+		If CInt(PageNo)<=rs.PageCount Then
+		  rs.AbsolutePage=CInt(PageNo)
+		Else
+		  If rs.PageCount<>0 Then rs.AbsolutePage=1
+		End If
+	Else
+		If rs.PageCount<>0 Then rs.AbsolutePage=1
+		PageNo=1
+	End If
 %><font size=4><b>已选导师学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
@@ -116,11 +107,11 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 条&nbsp;转到
 <select name="pageNo" id="pageNo" onchange="this.form.submit()">
 <%
-For i=1 to rs.PageCount
-    Response.write "<option value="&i
-    If rs.AbsolutePage=i Then Response.write " selected"
-    Response.write ">"&i&"</option>"
-Next
+	For i=1 to rs.PageCount
+	    Response.write "<option value="&i
+	    If rs.AbsolutePage=i Then Response.write " selected"
+	    Response.write ">"&i&"</option>"
+	Next
 %></select>
 页&nbsp;共<%=rs.recordCount%>条
 </td></tr></form></table>
@@ -147,27 +138,27 @@ Next
 </td></tr>
 <tr bgcolor="ghostwhite"><td colspan="2"><table width="400" cellpadding="2" cellspacing="1">
 <%
-Dim ArrayList(1,5),k
-Table="VIEW_TUTOR_RECRUIT_INFO"
-WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
-k=0
-
-ArrayList(k,0)="导师"
-ArrayList(k,1)=Table
-ArrayList(k,2)="TEACHER_ID"
-ArrayList(k,3)="TEACHER_NAME"
-ArrayList(k,4)=""
-ArrayList(k,5)=WhereStr
-
-k=1
-ArrayList(k,0)="专业"
-ArrayList(k,1)=Table
-ArrayList(k,2)="SPECIALITY_NAME"
-ArrayList(k,3)="SPECIALITY_NAME"
-ArrayList(k,4)=""
-ArrayList(k,5)=WhereStr
-FormName="fmView"
-Get_ListJavaMenu ArrayList,k,FormName,""
+	Dim ArrayList(1,5),k
+	Table="VIEW_TUTOR_RECRUIT_INFO"
+	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
+	k=0
+	
+	ArrayList(k,0)="导师"
+	ArrayList(k,1)=Table
+	ArrayList(k,2)="TEACHER_ID"
+	ArrayList(k,3)="TEACHER_NAME"
+	ArrayList(k,4)=""
+	ArrayList(k,5)=WhereStr
+	
+	k=1
+	ArrayList(k,0)="专业"
+	ArrayList(k,1)=Table
+	ArrayList(k,2)="SPECIALITY_NAME"
+	ArrayList(k,3)="SPECIALITY_NAME"
+	ArrayList(k,4)=""
+	ArrayList(k,5)=WhereStr
+	FormName="fmView"
+	Get_ListJavaMenu ArrayList,k,FormName,""
 %><td><input type="button" value="修改填报信息" onclick="if(Chk_Select())if(confirm('是否修改所选的填报信息？')){this.form.action='updateChoice.asp';this.form.submit();}"></td>
 </tr></table></td></tr></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
@@ -236,6 +227,6 @@ Get_ListJavaMenu ArrayList,k,FormName,""
 </body>
 </html>
 <%
-  CloseConn conn
   CloseRs rs
+  CloseConn conn
 %>
