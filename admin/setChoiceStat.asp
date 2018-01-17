@@ -33,43 +33,45 @@ Dim arrSelStu:arrSelStu=Split(Request.Form("sel"),",")
 Dim arrSelTurn:arrSelTurn=Split(Request.Form("sel_turn"),",")
 Dim dictStu:Set dictStu=Server.CreateObject("Scripting.Dictionary")
 Dim bSendEmail:bSendEmail=False
+
 Select Case stat
-Case 3	' 确认填报记录
-	sql="DECLARE @tutor_id int,@rec_id int;"
-	For i=0 To UBound(arrSelTurn)
-		arr=Split(arrSelTurn(i),"|")
-		stu_id=arr(0)
-		turn_num=arr(1)
-		' 获取填报信息
-		sql=sql&"SELECT @tutor_id=TUTOR_ID"&turn_num&",@rec_id=RECRUIT_ID"&turn_num&" FROM VIEW_TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
-		' 更新填报信息
-		sql=sql&"UPDATE TUTOR_STUDENT_APPLY_INFO SET APPLY_STATUS=3,VALID=1,TUTOR_REPLY_TIME="&toSqlString(Now)&" WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"&_
-						"UPDATE TUTOR_STUDENT_APPLY_INFO SET VALID=0,APPLY_STATUS=CASE WHEN APPLY_STATUS=3 THEN 2 ELSE APPLY_STATUS END,TUTOR_REPLY_TIME=CASE WHEN APPLY_STATUS=3 THEN NULL ELSE TUTOR_REPLY_TIME END WHERE STU_ID="&stu_id&" AND TURN_NUM<>"&turn_num&";"
-		' 更新学生表信息
-		sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=@tutor_id,TUTOR_RECRUIT_ID=@rec_id,TUTOR_RECRUIT_STATUS=3,WRITEPRIVILEGETAGSTRING=dbo.addPrivilege(WRITEPRIVILEGETAGSTRING,'SA8',''),READPRIVILEGETAGSTRING=dbo.addPrivilege(READPRIVILEGETAGSTRING,'SA8','')"&_
-						" WHERE STU_ID="&stu_id&";"
-	Next
-	If Len(sql) Then conn.Execute sql
-Case 0	' 删除记录
-	For i=0 To UBound(arrSelStu)
-		stu_id=arrSelStu(i)
-		' 更新填报信息
-		sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
-		' 更新学生表信息
-		sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS=0,WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
-						" WHERE STU_ID="&stu_id&";"
-	Next
-	For i=0 To UBound(arrSelTurn)
-		arr=Split(arrSelTurn(i),"|")
-		stu_id=arr(0)
-		turn_num=arr(1)
-		' 更新填报信息
-		sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"
-		' 更新学生表信息
-		sql=sql&"IF NOT EXISTS(SELECT STU_ID FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&" AND APPLY_STATUS=3) UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS=0,WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
-						" WHERE STU_ID="&stu_id&";"
-	Next
-	If Len(sql) Then conn.Execute sql
+Case Empty
+	Dim oper:oper=Request.QueryString()
+	If Len(oper) Then
+		Dim valid
+		Select Case oper
+		Case "show":valid="1"
+		Case "hide":valid="0"
+		End Select
+		For i=0 To UBound(arrSelTurn)
+			arr=Split(arrSelTurn(i),"|")
+			stu_id=arr(0)
+			turn_num=arr(1)
+			' 更新填报信息
+			sql=sql&"UPDATE TUTOR_STUDENT_APPLY_INFO SET VALID="&valid&" WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"
+		Next
+		If Len(sql) Then conn.Execute sql
+	Else	' 删除记录
+		For i=0 To UBound(arrSelStu)
+			stu_id=arrSelStu(i)
+			' 更新填报信息
+			'sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
+			' 更新学生表信息
+			sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS=0,WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
+							" WHERE STU_ID="&stu_id&";"
+		Next
+		For i=0 To UBound(arrSelTurn)
+			arr=Split(arrSelTurn(i),"|")
+			stu_id=arr(0)
+			turn_num=arr(1)
+			' 更新填报信息
+			sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"
+			' 更新学生表信息
+			sql=sql&"IF NOT EXISTS(SELECT STU_ID FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&" AND APPLY_STATUS=3) UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS=0,WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
+							" WHERE STU_ID="&stu_id&";"
+		Next
+		If Len(sql) Then conn.Execute sql
+	End If
 Case 1,2	' 未提交/未确认
 	For i=0 To UBound(arrSelStu)
 		stu_id=arrSelStu(i)
@@ -87,6 +89,22 @@ Case 1,2	' 未提交/未确认
 		sql=sql&"UPDATE TUTOR_STUDENT_APPLY_INFO SET APPLY_STATUS="&stat&",VALID=1,TUTOR_REPLY_TIME=NULL WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"
 		' 更新学生表信息
 		sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS="&stat&",WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
+						" WHERE STU_ID="&stu_id&";"
+	Next
+	If Len(sql) Then conn.Execute sql
+Case 3	' 确认填报记录
+	sql="DECLARE @tutor_id int,@rec_id int;"
+	For i=0 To UBound(arrSelTurn)
+		arr=Split(arrSelTurn(i),"|")
+		stu_id=arr(0)
+		turn_num=arr(1)
+		' 获取填报信息
+		sql=sql&"SELECT @tutor_id=TUTOR_ID"&turn_num&",@rec_id=RECRUIT_ID"&turn_num&" FROM VIEW_TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
+		' 更新填报信息
+		sql=sql&"UPDATE TUTOR_STUDENT_APPLY_INFO SET APPLY_STATUS=3,VALID=1,TUTOR_REPLY_TIME="&toSqlString(Now)&" WHERE STU_ID="&stu_id&" AND TURN_NUM="&turn_num&";"&_
+						"UPDATE TUTOR_STUDENT_APPLY_INFO SET VALID=0,APPLY_STATUS=CASE WHEN APPLY_STATUS=3 THEN 2 ELSE APPLY_STATUS END,TUTOR_REPLY_TIME=CASE WHEN APPLY_STATUS=3 THEN NULL ELSE TUTOR_REPLY_TIME END WHERE STU_ID="&stu_id&" AND TURN_NUM<>"&turn_num&";"
+		' 更新学生表信息
+		sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=@tutor_id,TUTOR_RECRUIT_ID=@rec_id,TUTOR_RECRUIT_STATUS=3,WRITEPRIVILEGETAGSTRING=dbo.addPrivilege(WRITEPRIVILEGETAGSTRING,'SA8',''),READPRIVILEGETAGSTRING=dbo.addPrivilege(READPRIVILEGETAGSTRING,'SA8','')"&_
 						" WHERE STU_ID="&stu_id&";"
 	Next
 	If Len(sql) Then conn.Execute sql
@@ -117,33 +135,35 @@ For i=0 To UBound(arrSelTurn)
 	End If
 Next
 
-Dim arrStatText:arrStatText=Array("未填报状态","未确认填报状态","导师未确认状态","导师已确认状态","导师已退回状态")
-If bSendEmail Then
-	For Each item In dictStu.Items
-		stu_id=item
-		sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL FROM VIEW_STUDENT_INFO_NEW A,TEACHER_INFO B"&_
-		 	  " WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
-		Set rs=conn.Execute(sql)
-		If Not rs.EOF Then
-			stu_name=rs(0)
-			class_name=rs(1)
-			spec_name=rs(2)
-			stu_email=rs(3)
-			tutor_name=rs(4)
-			tutor_email=rs(5)
-			stat_text=arrStatText(stat)
-			fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
-			bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
-			logtxt="行政人员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]，通知邮件发至["&stu_name&":"&stu_email&"]"
-			If bSuccess Then
-				logtxt=logtxt&"成功。"
-			Else
-				logtxt=logtxt&"失败。"
+If Len(stat) Then
+	If bSendEmail Then
+		Dim arrStatText:arrStatText=Array("未填报状态","未确认填报状态","导师未确认状态","导师已确认状态","导师已退回状态")
+		For Each item In dictStu.Items
+			stu_id=item
+			sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL FROM VIEW_STUDENT_INFO_NEW A,TEACHER_INFO B"&_
+			 	  " WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
+			Set rs=conn.Execute(sql)
+			If Not rs.EOF Then
+				stu_name=rs(0)
+				class_name=rs(1)
+				spec_name=rs(2)
+				stu_email=rs(3)
+				tutor_name=rs(4)
+				tutor_email=rs(5)
+				stat_text=arrStatText(stat)
+				fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
+				bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
+				logtxt="行政人员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]，通知邮件发至["&stu_name&":"&stu_email&"]"
+				If bSuccess Then
+					logtxt=logtxt&"成功。"
+				Else
+					logtxt=logtxt&"失败。"
+				End If
+				WriteLogForTutorSystem logtxt
 			End If
-			WriteLogForTutorSystem logtxt
-		End If
-		CloseRs rs
-	Next
+			CloseRs rs
+		Next
+	End If
 End If
 Set dictStu=Nothing
 CloseConn conn

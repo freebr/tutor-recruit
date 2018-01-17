@@ -165,7 +165,7 @@ If curstep="1" Then
 学生端：&nbsp;<%=last_stu_startdate%>&nbsp;至&nbsp;<%=last_stu_enddate%><br/>教师端：&nbsp;<%=last_tut_startdate%>&nbsp;至&nbsp;<%=last_tut_enddate%></span><%
 End If %></p></td></tr>
 <tr bgcolor="ghostwhite"><td align="left"><font style="font-weight:bold">通知邮件内容设置</font></td></tr>
-<tr bgcolor="ghostwhite"><td align="left"><input name="ifsendmail" id="chkIfSendMail" type="checkbox" /><label for="chkIfSendMail">导师确认时向学生发送通知邮件</label></td></tr>
+<tr bgcolor="ghostwhite"><td align="left"><input name="ifsendmail" id="chkIfSendMail" type="checkbox" /><label for="chkIfSendMail">导师确认/退回填报时向学生发送通知邮件</label></td></tr>
 <tr bgcolor="ghostwhite"><td align="left"><%
 	For i=1 To 4
 %><input name="mail" id="mail<%=i%>" type="radio" onclick="switchMailContent(<%=i%>)" /><label for="mail<%=i%>"><%=arrMailSubject(i)%></label><%

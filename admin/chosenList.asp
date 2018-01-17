@@ -141,6 +141,8 @@ Next
 <input type="button" value="设为导师未确认状态" onclick="if(confirm('是否将所选填报记录设为导师未确认状态？')){this.form.action='setChoiceStat.asp?stat=2';this.form.submit();}" />
 <input type="button" value="设为导师已确认状态" onclick="if(confirm('是否将所选填报记录设为导师已确认状态？')){this.form.action='setChoiceStat.asp?stat=3';this.form.submit();}" />
 <input type="button" value="设为导师已退回状态" onclick="if(confirm('是否将所选填报记录设为导师已退回状态？')){this.form.action='setChoiceStat.asp?stat=4';this.form.submit();}" />
+<input type="button" value="显示" onclick="if(confirm('是否将所选填报记录设为对导师可见？')){this.form.action='setChoiceStat.asp?show';this.form.submit();}" />
+<input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setChoiceStat.asp?hide';this.form.submit();}" />
 <input type="button" value="删除填报记录" onclick="if(confirm('是否删除所选填报记录？这将恢复到未填报状态！'))this.form.submit();" />
 </td></tr>
 <tr bgcolor="ghostwhite"><td colspan="2"><table width="400" cellpadding="2" cellspacing="1">
