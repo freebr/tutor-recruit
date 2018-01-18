@@ -55,7 +55,7 @@ Case Empty
 		For i=0 To UBound(arrSelStu)
 			stu_id=arrSelStu(i)
 			' 更新填报信息
-			'sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
+			sql=sql&"DELETE FROM TUTOR_STUDENT_APPLY_INFO WHERE STU_ID="&stu_id&";"
 			' 更新学生表信息
 			sql=sql&"UPDATE STUDENT_INFO SET TUTOR_ID=0,TUTOR_RECRUIT_ID=0,TUTOR_RECRUIT_STATUS=0,WRITEPRIVILEGETAGSTRING=dbo.removePrivilege(WRITEPRIVILEGETAGSTRING,'SA8'),READPRIVILEGETAGSTRING=dbo.removePrivilege(READPRIVILEGETAGSTRING,'SA8')"&_
 							" WHERE STU_ID="&stu_id&";"

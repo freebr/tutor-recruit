@@ -37,8 +37,8 @@ Response.Expires=-1%>
 	If PageSize<>"" Then
 		rs.PageSize=CInt(PageSize)
 	Else
-		rs.PageSize=30
-		PageSize=30
+		rs.PageSize=10
+		PageSize=10
 	End If
 	If PageNo<>"" Then
 		If CInt(PageNo)<=rs.PageCount Then
@@ -65,9 +65,9 @@ Response.Expires=-1%>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>每页
 <select name="pageSize" id="pageSize" onchange="this.form.submit()">
-<option value="30" <%If rs.PageSize=30 Then%>selected<%End If%>>30</option>
-<option value="60" <%If rs.PageSize=60 Then%>selected<%End If%>>60</option>
-<option value="90" <%If rs.PageSize=90 Then%>selected<%End If%>>90</option>
+<option value="5" <%If rs.PageSize=5 Then%>selected<%End If%>>5</option>
+<option value="10" <%If rs.PageSize=10 Then%>selected<%End If%>>10</option>
+<option value="15" <%If rs.PageSize=15 Then%>selected<%End If%>>15</option>
 </select>
 条&nbsp;转到
 <select name="pageNo" id="pageNo" onchange="this.form.submit()">
@@ -82,6 +82,7 @@ Response.Expires=-1%>
 </td></tr></form></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <tr bgcolor="gainsboro" align="center" height=25>
+    <td width="50" align=center>序号</td>
     <td width="100" align=center>学号</td>
     <td width="60" align=center>学生姓名</td>
     <td width="120" align=center>班级</td>
@@ -91,8 +92,10 @@ Response.Expires=-1%>
   </tr>
   <%
   Dim arrTurnName:arrTurnName=Array("","第一志愿","第二志愿","第三志愿")
+  Dim id:id=(rs.AbsolutePage-1)*rs.PageSize
   For i=1 to rs.PageSize
     If rs.EOF Then Exit For
+    id=id+1
   	If IsNull(rs("TUTOR_REPLY_TIME")) Then
   		tutor_reply_time=""
   	Else
@@ -100,11 +103,13 @@ Response.Expires=-1%>
 		End If
   %>
   <tr bgcolor="ghostwhite">
+    <td align=center><%=id%></td>
     <td align=center><%=HtmlEncode(rs("STU_NO"))%></td>
     <td align=center><a href="#" onclick="return showStudentInfo('<%=rs("STU_ID")%>')"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
     <td align=center><%=HtmlEncode(rs("CLASS_NAME"))%></td>
     <td align=center><%=arrTurnName(rs("TURN_NUM"))%></td>
-		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td>
+		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td>
+
 		<td align=center><%=tutor_reply_time%></td>
   </tr><%
   	rs.MoveNext()
