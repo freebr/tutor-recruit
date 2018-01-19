@@ -10,6 +10,9 @@ Response.Expires=-1%>
 <script type="text/javascript" src="../scripts/utils.js"></script>
 <script type="text/javascript" src="../scripts/query.js"></script>
 <script type="text/javascript" src="../scripts/admin.js"></script>
+<script type="text/javascript">
+	window.tabmgr=parent.tabmgr;
+</script>
 <style type="text/css">
 	span.accepted {color:#090}
 	span.unaccepted {color:#00f}
@@ -186,7 +189,7 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
   %>
   <tr bgcolor="ghostwhite">
     <td align=center><%=HtmlEncode(rs("STU_NO"))%></td>
-    <td align=center><a href="#" onclick="return showStudentInfo('<%=rs("STU_ID")%>')"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
+    <td align=center><a href="#" onclick="return showStudentInfo(<%=rs("STU_ID")%>);"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
     <td align=center><%=HtmlEncode(rs("CLASS_NAME"))%></td>
 		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td><%
 		For j=1 To 3
@@ -212,7 +215,7 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 		Next %>
     <td align=center><%
    	If rs("TUTOR_ID")<>0 Then
-%><a href="#" onclick="return showTeacherResume('<%=rs("TUTOR_ID")%>')"><p><%=HtmlEncode(rs("TUTOR_NAME"))%></p></a><%
+%><a href="#" onclick="return showTeacherResume(<%=rs("TUTOR_ID")%>);"><p><%=HtmlEncode(rs("TUTOR_NAME"))%></p></a><%
 		End If
 %></td>
 		<td align=center><%=rs("APPLY_STATUS_NAME")%><%=tutor_reply_time%></td>
