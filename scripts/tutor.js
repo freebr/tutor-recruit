@@ -17,14 +17,12 @@
 	}
 	return;
 }
-
 function switchReason(v) {
 	document.all.reasontext.style.display=(v=='')?"inline":"none";
 	document.all.reasontext.value=(v=='')?"<请输入原因>":v;
 	return;
 }
-
 function showStudentInfo(id) {
-	location.href="showStudentInfo.asp?id="+id;
+	window.tabmgr.goTo("showStudentInfo.asp?id="+id,"查看学生信息",true);
 	return false;
 }

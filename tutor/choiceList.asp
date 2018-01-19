@@ -80,6 +80,9 @@ End If
 <script type="text/javascript" src="../scripts/utils.js"></script>
 <script type="text/javascript" src="../scripts/query.js"></script>
 <script type="text/javascript" src="../scripts/tutor.js"></script>
+<script type="text/javascript">
+	window.tabmgr=parent.tabmgr;
+</script>
 <style type="text/css">
 	p.accepted {color:#090}
 	p.unaccepted {color:#00f;font-weight:bold}

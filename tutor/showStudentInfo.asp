@@ -73,8 +73,8 @@
 	<!--<td><%=rs("Sort_No")%></td>-->
 	<td>班级名称</td>
 	<td><%=rs("CLASS_NAME")%></td>
-	<td>所选导师</td>
-	<td><%=Session("Tname")%></td>
+	<td>确认导师</td>
+	<td><%=rs("TeacherName")%></td>
 	<td>专业</td>
 	<td><%=rs("SPECIALITY_NAME")%></td>
 	</tr>
@@ -142,7 +142,7 @@
   <tr bgcolor="white">
 	<td valign="top">未来职业规划</td><td colspan="5" height="50"><%=occu_plan%></td>
   </tr></table>
-<br><input type="button" name="return" value="返回" onclick="history.go(-1)"></center>
+<br><input type="button" id="btnclose" value="关 闭" onclick="tabmgr.close(window);"></center>
 </body></html>
 <%
   CloseConn conn
