@@ -32,7 +32,7 @@ Response.Expires=-1%>
 	tutorName=rs(1).Value
 	CloseRs rs
 	
-	sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE RECRUIT_ID="&recruitID&" AND APPLY_STATUS=3 ORDER BY APPLY_TIME DESC"
+	sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE RECRUIT_ID="&recruitID&" AND APPLY_STATUS=3 ORDER BY TUTOR_REPLY_TIME DESC"
 	GetRecordSetNoLock conn,rs,sql,result
 	If PageSize<>"" Then
 		rs.PageSize=CInt(PageSize)
