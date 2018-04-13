@@ -20,7 +20,7 @@ ArrayList(k,1)="CODE_TEACHTYPE"
 ArrayList(k,2)="TEACHTYPE_ID"
 ArrayList(k,3)="TEACHTYPE_NAME"
 ArrayList(k,4)=""
-ArrayList(k,5)="AND TEACHTYPE_ID IN (5,6,9)"
+ArrayList(k,5)="AND TEACHTYPE_ID IN (5,6,7,9)"
 
 k=1
 ArrayList(k,0)="学期"
