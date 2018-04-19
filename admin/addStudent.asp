@@ -18,7 +18,7 @@ PageSize=Request.Form("In_PageSize2")
 
 If period_id="" or object="" or tutor_id="" or spec_name="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整，请确认是否已选择导师和专业！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
+	Response.End()
 End If
 
 Connect conn
@@ -28,7 +28,7 @@ sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM VIEW_TUTOR_RECRUIT_INFO 
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
+	Response.End()
 End If
 recruit_id=rs(0)
 recruitQuota=rs(1)

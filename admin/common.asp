@@ -120,4 +120,5 @@ End Function
 arrTurnName=Array("","第一志愿","第二志愿","第三志愿")
 arrStuTypeId=Array("",5,6,7,9)
 arrStuType=Array("","ME","MBA","EMBA","MPAcc")
+arrApplyStatus=Array(Array(1,"学生未提交"),Array(2,"导师未确认"),Array(3,"导师已确认"),Array(4,"导师已退回"))
 %>

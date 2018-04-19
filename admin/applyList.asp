@@ -86,6 +86,7 @@ Response.Expires=-1%>
     <td width="100" align=center>学号</td>
     <td width="60" align=center>学生姓名</td>
     <td width="120" align=center>班级</td>
+    <td width="80" align=center>学期</td>
 		<td width="120" align=center>志愿次序</td>
     <td width="80" align=center>学生提交时间</td>
 		<td width="120" align=center>导师确认时间</td>
@@ -107,6 +108,7 @@ Response.Expires=-1%>
     <td align=center><%=HtmlEncode(rs("STU_NO"))%></td>
     <td align=center><a href="#" onclick="return showStudentInfo('<%=rs("STU_ID")%>')"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
     <td align=center><%=HtmlEncode(rs("CLASS_NAME"))%></td>
+    <td align=center><%=rs("PERIOD_ID")%></td>
     <td align=center><%=arrTurnName(rs("TURN_NUM"))%></td>
 		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td>
 

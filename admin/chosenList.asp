@@ -118,29 +118,28 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 %></select>
 页&nbsp;共<%=rs.recordCount%>条
 </td></tr></form></table>
-<form id="fmView" method="post" action="setChoiceStat.asp">
+<form id="fmView" method="post" action="setApplyStatus.asp">
 <input type="hidden" name="In_TEACHTYPE_ID" value="<%=object%>">
 <input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 <input type="hidden" name="In_APPLY_STATUS" value="<%=query_apply_status%>">
 <input type="hidden" name="In_PageNo" value=<%=PageNo%>>
 <input type="hidden" name="In_PageSize" value=<%=PageSize%>>
 <input type="hidden" name="finalFilter2" value="<%=Request.Form("finalFilter")%>">
-<table width="900" cellpadding="2" cellspacing="1" bgcolor="dimgray">
+<table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="ghostwhite">
 <td width="110"><input type="button" value="导出到Excel文件" onclick="this.form.action='exportChoiceList.asp';this.form.submit();" /></td>
 <td align="right">
 全选<input type="checkbox" onclick="checkAll()" id="chk">&nbsp;
 <input type="button" value="导出学生个人信息" onclick="this.form.action='batchExportProfile.asp';this.form.submit();" />
-<input type="button" value="设为学生未提交状态" onclick="if(confirm('是否将所选填报记录设为学生未提交状态？')){this.form.action='setChoiceStat.asp?stat=1';this.form.submit();}" />
-<input type="button" value="设为导师未确认状态" onclick="if(confirm('是否将所选填报记录设为导师未确认状态？')){this.form.action='setChoiceStat.asp?stat=2';this.form.submit();}" />
-<input type="button" value="设为导师已确认状态" onclick="if(confirm('是否将所选填报记录设为导师已确认状态？')){this.form.action='setChoiceStat.asp?stat=3';this.form.submit();}" />
-<input type="button" value="设为导师已退回状态" onclick="if(confirm('是否将所选填报记录设为导师已退回状态？')){this.form.action='setChoiceStat.asp?stat=4';this.form.submit();}" />
-<input type="button" value="显示" onclick="if(confirm('是否将所选填报记录设为对导师可见？')){this.form.action='setChoiceStat.asp?show';this.form.submit();}" />
-<input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setChoiceStat.asp?hide';this.form.submit();}" />
+<input type="button" value="设为学生未提交状态" onclick="if(confirm('是否将所选填报记录设为学生未提交状态？')){this.form.action='setApplyStatus.asp?stat=1';this.form.submit();}" />
+<input type="button" value="设为导师未确认状态" onclick="if(confirm('是否将所选填报记录设为导师未确认状态？')){this.form.action='setApplyStatus.asp?stat=2';this.form.submit();}" />
+<input type="button" value="设为导师已确认状态" onclick="if(confirm('是否将所选填报记录设为导师已确认状态？')){this.form.action='setApplyStatus.asp?stat=3';this.form.submit();}" />
+<input type="button" value="设为导师已退回状态" onclick="if(confirm('是否将所选填报记录设为导师已退回状态？')){this.form.action='setApplyStatus.asp?stat=4';this.form.submit();}" />
+<input type="button" value="显示" onclick="if(confirm('是否将所选填报记录设为对导师可见？')){this.form.action='setApplyStatus.asp?show';this.form.submit();}" />
+<input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setApplyStatus.asp?hide';this.form.submit();}" />
 <input type="button" value="删除填报记录" onclick="if(confirm('是否删除所选填报记录？这将恢复到未填报状态！'))this.form.submit();" />
 </td></tr>
-<tr bgcolor="ghostwhite"><td colspan="2"><table width="400" cellpadding="2" cellspacing="1">
-<%
+<tr bgcolor="ghostwhite"><td colspan="2"><table width=600" cellpadding="2" cellspacing="1"><%
 	Dim ArrayList(1,5),k
 	Table="VIEW_TUTOR_RECRUIT_INFO"
 	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
@@ -162,7 +161,12 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 	ArrayList(k,5)=WhereStr
 	FormName="fmView"
 	Get_ListJavaMenu ArrayList,k,FormName,""
-%><td><input type="button" value="修改填报信息" onclick="if(Chk_Select())if(confirm('是否修改所选的填报信息？')){this.form.action='updateChoice.asp';this.form.submit();}"></td>
+%><td>填报状态：<select name="apply_status"><%
+	For i=0 To UBound(arrApplyStatus)
+%><option value="<%=arrApplyStatus(i)(0)%>"><%=arrApplyStatus(i)(1)%></option><%
+	Next
+%></select></td>
+<td><input type="button" value="修改填报信息" onclick="if(Chk_Select())if(confirm('是否修改所选的填报信息？')){this.form.action='updateApply.asp';this.form.submit();}"></td>
 </tr></table></td></tr></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <tr bgcolor="gainsboro" align="center" height=25>
@@ -194,9 +198,9 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td><%
 		For j=1 To 3
 			stat=rs("APPLY_STATUS"&j) %>
-    <td align=center><%
+    <td align=center>
+    <input type="checkbox" name="sel_turn" value="<%=rs("STU_ID")%>|<%=j%>"><%
     	If Not IsNull(rs("RECRUIT_ID"&j)) Then %>
-    <input type="checkbox" name="sel_turn" value="<%=rs("STU_ID")%>|<%=j%>">
    	<a href="#" onclick="return showTeacherResume('<%=rs("TUTOR_ID"&j)%>')"><%=HtmlEncode(rs("TUTOR_NAME"&j))%></a><br/><%=HtmlEncode(rs("SPECIALITY_NAME"&j))%><br/><%
 				stat_text=rs("APPLY_STATUS_NAME"&j)
 				If stat=4 Then

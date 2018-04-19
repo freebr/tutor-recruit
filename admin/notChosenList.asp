@@ -152,7 +152,7 @@ Get_ListJavaMenu ArrayList,k,FormName,""
 <td align="right">全选<input type="checkbox" onclick="checkAll()" id="chk" name="chk">&nbsp;<input type="button" value="开放系统权限" onclick="setPermission(0)">&nbsp;<input type="button" value="关闭系统权限" onclick="setPermission(1)">
 &nbsp;<input type="button" value="删除权限记录" onclick="setPermission(2)">
 </td></tr></table>
-<table width="900" cellpadding="2" cellspacing="1" bgcolor="dimgray">
+<table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <!--报名学生信息-->
   <tr bgcolor="gainsboro" align="center" height="25">
     <td align=center width="100">学号</td>
