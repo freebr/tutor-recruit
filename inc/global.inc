@@ -1,4 +1,8 @@
 ﻿<%
+'=========================================
+' 硕士选导师系统全局成员定义文件
+' 2018-04-20
+'=========================================
 
 ' 选导师系统客户端开放信息访问器类
 Class ClientInfo
@@ -114,4 +118,7 @@ Const SYS_STUTYPE_MPACC = 9
 Const SYS_STATUS_CLOSED = 0
 Const SYS_STATUS_OPEN = 1
 Const SYS_STATUS_DEBUG = 2
+
+' 禁止缓存，仅在需要客户端重新请求 JS/CSS/HTML 等静态文件时使用
+Response.CacheControl="no-cache"
 %>

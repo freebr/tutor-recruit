@@ -103,7 +103,7 @@ function swapCells(cell1,cell2) {
 }
 function selectTutor(link) {
 	var turn_num=$(link).parents('tr').index()+1;
-	this.tabmgr.goTo('/TutorRecruit/student/recruitList.asp?turn='+turn_num,'选择导师',true,window);
+	window.tabmgr.goTo('/TutorRecruit/student/recruitList.asp?turn='+turn_num,'选择导师',true,window);
 	return false;
 }
 function clearSelection(link) {
