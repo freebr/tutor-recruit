@@ -121,4 +121,5 @@ Const SYS_STATUS_DEBUG = 2
 
 ' 禁止缓存，仅在需要客户端重新请求 JS/CSS/HTML 等静态文件时使用
 Response.CacheControl="no-cache"
+Response.Charset="utf-8"
 %>

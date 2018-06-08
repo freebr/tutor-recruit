@@ -1,5 +1,5 @@
 ﻿<!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("Tuser")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
 	stu_id=Request.QueryString("id")
 	If Len(stu_id)=0 Then
 		Response.Write "<center><font color=red>参数错误！</font></center>"
@@ -7,7 +7,7 @@
 	End If
 	stu_id=toSqlString(stu_id)
 	Connect conn
-  sql="SELECT *,dbo.getTeachTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM VIEW_STUDENT_INFO_NEW WHERE STU_ID="&stu_id
+  sql="SELECT *,dbo.getTeachTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM ViewStudentInfo WHERE STU_ID="&stu_id
   GetRecordSetNoLock conn,rs,sql,result
   If result=0 Then
     Response.Write "<center><font color=red>该学生资料不存在！</font></center>"

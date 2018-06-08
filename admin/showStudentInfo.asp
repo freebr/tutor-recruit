@@ -1,20 +1,20 @@
 ﻿<!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 	stu_id=Request.QueryString("id")
 	If Len(stu_id)=0 Then
 		Response.Write "<center><font color=red>参数错误！</font></center>"
-		Response.End
+		Response.End()
 	End If
 	stu_id=toSqlString(stu_id)
 	Connect conn
-  sql="SELECT *,dbo.getTeachTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM VIEW_STUDENT_INFO_NEW WHERE STU_ID="&stu_id
+  sql="SELECT * FROM ViewStudentInfo WHERE STU_ID="&stu_id
   GetRecordSetNoLock conn,rs,sql,result
   If result=0 Then
     Response.Write "<center><font color=red>该学生资料不存在！</font></center>"
-    Response.End
+    Response.End()
   End If
   
-  Stu_Type=rs("STU_TYPE")
+  Stu_Type=rs("TEACHTYPE_ID")
   If Not IsNull(rs("TUTOR_OUTSIDE")) Then
   	Tutor_Outside=Split(rs("TUTOR_OUTSIDE"),",")
   Else
@@ -22,13 +22,13 @@
   End If
 	'第一次进入程序给默认显示的变量赋值
 	If Request.Form("Teachtype_Id").Count=0 Then
-		Servb_Teachtype_Str=Rs("Teachtype_Id")
-		Servb_Dept_Str=Rs("Dept_Id")
-		Servb_Class_Str=Rs("Class_Id")
-		Servb_Tutor_Str=Rs("Tutor_Id")
+		Servb_Teachtype_Str=rs("Teachtype_Id")
+		Servb_Dept_Str=rs("Dept_Id")
+		Servb_Class_Str=rs("Class_Id")
+		Servb_Tutor_Str=rs("Tutor_Id")
 		Servb_Dept_Term=" And Teachtype_Id="&Servb_Teachtype_Str&" And Dept_Id="&Servb_Dept_Str
-		Showstudent_Stu_No_Term=Rs("Stu_No")
-		Showstudent_Stu_Name_Term=Rs("Stu_Name")
+		Showstudent_Stu_No_Term=rs("Stu_No")
+		Showstudent_Stu_Name_Term=rs("Stu_Name")
 	End If
 	thesis_topic=toPlainString(rs("THESIS_TOPIC"))
 	personal_resume=toPlainString(rs("PERSONAL_RESUME"))
@@ -38,6 +38,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="../css/global.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../scripts/admin.js"></script>
 <script type="text/javascript" src="../scripts/utils.js"></script>
 <script type="text/javascript" src="../scripts/query.js"></script>
 </head>
@@ -63,7 +64,7 @@
   </tr>
   <tr bgcolor="white">
 	<td>政治面貌</td>
-  <td><%=Rs("Polity_VisageName")%></td>
+  <td><%=rs("Polity_VisageName")%></td>
 	<td>身份证号</td>
 	<td><%=rs("Idcard")%></td>
 	<td>留学生</td>
@@ -142,7 +143,7 @@
   <tr bgcolor="white">
 	<td valign="top">未来职业规划</td><td colspan="5" height="50"><%=occu_plan%></td>
   </tr></table>
-<br><input type="button" id="btnclose" value="关 闭" onclick="tabmgr.close(window);"></center>
+<br><input type="button" id="btnclose" value="关 闭" onclick="closeWindow()"></center>
 </body></html>
 <%
   CloseConn conn

@@ -1,7 +1,7 @@
 ﻿<%Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
 Dim sem_info,stuTypeUpdateQuota
 Dim bError,errMsg

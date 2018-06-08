@@ -1,6 +1,6 @@
 ﻿<%Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")%>
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -48,7 +48,7 @@ Else
 End If
 '------------------------------------------------------
 Connect conn
-sql="SELECT STU_ID,STU_NO,STU_NAME,SEX,CLASS_NAME,dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA6') AS ISPERMITTED FROM VIEW_STUDENT_INFO_NEW WHERE Valid=0 "&finalFilter&_
+sql="SELECT STU_ID,STU_NO,STU_NAME,SEX,CLASS_NAME,dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA6') AS ISPERMITTED FROM ViewStudentInfo WHERE Valid=0 "&finalFilter&_
 		" AND (dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA6')=1 OR dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA7')=1 "&_
 		"OR dbo.hasPrivilege(READPRIVILEGETAGSTRING,'SA6')=1 OR dbo.hasPrivilege(READPRIVILEGETAGSTRING,'SA7')=1) ORDER BY ENTER_YEAR DESC,ISPERMITTED,CLASS_NAME,STU_NAME"
 GetRecordSetNoLock conn,rs,sql,result

@@ -82,14 +82,13 @@ Case 2	' 数据读取，导入到数据库
 			Else
 				' 增加学生权限
 				If numNewRec>0 Then sql=sql&","
-				sql=sql&"'"&stuno&"'"
+				sql=sql&stuno
 				numNewRec=numNewRec+1
 			End If
 			rs.MoveNext()
 		Loop
 		If numNewRec>0 Then
-			sql="UPDATE STUDENT_INFO SET WRITEPRIVILEGETAGSTRING=dbo.addPrivilege(WRITEPRIVILEGETAGSTRING,'SA6','SA7'),"&_
-					"READPRIVILEGETAGSTRING=dbo.addPrivilege(READPRIVILEGETAGSTRING,'SA6','SA7') WHERE STU_NO IN ("&sql&");"
+			sql="EXEC spSwitchStudentPrivilegeByStuNo "&toSqlString(sql)&",1,0;"
 			conn.Execute sql
 		End If
 		CloseConn conn

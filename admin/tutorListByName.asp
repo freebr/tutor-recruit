@@ -1,11 +1,10 @@
-﻿<%Response.Expires=-1%>
-<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
 sem_info=getCurrentSemester()
 teachtype_id=Request.Form("In_TEACHTYPE_ID")
-period_id=Request.Form("In_PERIOD_ID")
+cur_period_id=Request.Form("In_PERIOD_ID")
 finalFilter=Request.Form("finalFilter")
 If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 If Len(teachtype_id) And teachtype_id<>"0" Then
@@ -14,16 +13,16 @@ Else
 	teachtype_id=5
 End If
 PubTerm=PubTerm&" AND TEACHTYPE_ID="&toSqlString(teachtype_id)
-If Len(period_id) And period_id<>"0" Then
-	period_id=Int(period_id)
+If Len(cur_period_id) And cur_period_id<>"0" Then
+	cur_period_id=Int(cur_period_id)
 Else
-	period_id=sem_info(3)
+	cur_period_id=sem_info(3)
 End If
-PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
+PubTerm=PubTerm&" AND cur_period_id="&toSqlString(cur_period_id)
 
 Connect conn
-sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM VIEW_TUTOR_RECRUIT_INFO WHERE 1=1"&finalFilter&_
-		" GROUP BY TEACHER_ID,TEACHER_NAME,PERIOD_ID,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
+sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM ViewRecruitInfo WHERE 1=1"&finalFilter&_
+		" GROUP BY TEACHER_ID,TEACHER_NAME,cur_period_id,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then
   rs.PageSize=CInt(Request.Form("pageSize"))
@@ -58,9 +57,9 @@ End If
 <table cellspacing="1" cellpadding="1">
 <tr><td><table width="400" cellspacing="1" cellpadding="1">
 <tr><td>学生类型&nbsp;<select name="In_TEACHTYPE_ID"><%
-GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id,"AND TEACHTYPE_ID IN (5,6,7,9)"
-%></select></td><td>学期&nbsp;<%=semesterList("In_PERIOD_ID",Int(period_id))%></td></tr></table></td></tr>
-<tr align=center><td>
+GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id,"AND TEACHTYPE_ID IN (5,6,7,9)"
+%></select></td><td>学期&nbsp;<%=semesterList("In_PERIOD_ID",Int(cur_period_id))%></td></tr></table></td></tr>
+<tr align="center"><td>
 	<!--查找-->
 	<select name="field" onchange="ReloadOperator()">
 		<option value="s_TEACHER_NAME">教师姓名</option>
@@ -103,13 +102,13 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 <form id="query" id="query" method="post">
 <table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
-  <td width="13%" align=center>教师姓名</td>
-  <td width="20%" align=center>专业</td>
-  <td width="25%" align=center>工程领域名称</td>
-  <td width="10%" align=center>报名学员数</td>
-  <td width="10%" align=center>确认学员数</td>
-  <td width="10%" align=center>总名额数</td>
-  <td width="10%" align=center>操作</td>
+  <td width="13%" align="center">教师姓名</td>
+  <td width="20%" align="center">专业</td>
+  <td width="25%" align="center">工程领域名称</td>
+  <td width="10%" align="center">报名学员数</td>
+  <td width="10%" align="center">确认学员数</td>
+  <td width="10%" align="center">总名额数</td>
+  <td width="10%" align="center">操作</td>
 </tr>
 <%
 		i=0:k=0:l=1
@@ -117,8 +116,8 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 			If rs.EOF Then Exit For
 			countRecruitInfo=rs("Count")
 			tid=rs("Teacher_Id")
-			sql="SELECT RECRUIT_ID,LIST_ID,SPECIALITY_NAME,RESEARCH_WAYNAME,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM VIEW_TUTOR_RECRUIT_INFO WHERE TEACHER_ID="&_
-					tid&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
+			sql="SELECT RECRUIT_ID,LIST_ID,SPECIALITY_NAME,RESEARCH_WAYNAME,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM ViewRecruitInfo WHERE TEACHER_ID="&_
+					tid&" AND cur_period_id="&cur_period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
 			GetRecordSetNoLock conn,rs2,sql,result
 			j=0
 			Do While Not rs2.EOF
@@ -129,27 +128,27 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 				confirmedNum=rs2(6)
 				If appliedNum=0 Then appliedNum=""
 				If confirmedNum=0 Then confirmedNum=""
-%><tr bgcolor="gainsboro" height="25"><%
+%><tr bgcolor="gainsboro" align="center" height="25"><%
 				If k Mod 2=0 Then
 					tdbgcolor="#eeeeee"
 				Else
 					tdbgcolor="#ffffff"
 				End If
 				If j=0 Then
-%><td valign="middle" align=center rowspan="<%=countRecruitInfo%>"><a href="#" onclick="return showTeacherResume(<%=rs("TEACHER_ID")%>);"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
+%><td valign="middle" rowspan="<%=countRecruitInfo%>"><a href="#" onclick="return showTeacherResume(<%=rs("TEACHER_ID")%>);"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
 				End If
-%><td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rs2("SPECIALITY_NAME"))%></td>
-<td bgcolor="<%=tdbgcolor%>" align=center><%=HtmlEncode(rs2("RESEARCH_WAYNAME"))%></td>
-<td bgcolor="<%=tdbgcolor%>" align=center><%=appliedNum%></td>
-<td bgcolor="<%=tdbgcolor%>" align=center><%=confirmedNum%></td>
-<td bgcolor="<%=tdbgcolor%>" align=center><input type="checkbox" name="sel" value="<%=recruitID%>,<%=l%>" />&nbsp;
+%><td bgcolor="<%=tdbgcolor%>"><%=HtmlEncode(rs2("SPECIALITY_NAME"))%></td>
+<td bgcolor="<%=tdbgcolor%>"><%=HtmlEncode(rs2("RESEARCH_WAYNAME"))%></td>
+<td bgcolor="<%=tdbgcolor%>"><%=appliedNum%></td>
+<td bgcolor="<%=tdbgcolor%>"><%=confirmedNum%></td>
+<td bgcolor="<%=tdbgcolor%>"><input type="checkbox" name="sel" value="<%=recruitID%>,<%=l%>" />&nbsp;
 <input type="text" name="recruitQuota" size="5" value="<%=recruitQuota%>" style="text-align:center" /></td><%
 				l=l+1
 				j=j+1
 				k=k+1
-%><td bgcolor="<%=tdbgcolor%>" align=center><%
+%><td bgcolor="<%=tdbgcolor%>"><%
 				If Len(confirmedNum) Then
-%><a href="#" onclick="tabmgr.goTo('applyList.asp?recruit_id=<%=rs2("RECRUIT_ID")%>','查看填报学员名单',true);return false;">查看确认名单</a><%
+%><a href="#" onclick="return showApplyList(<%=rs2("RECRUIT_ID")%>)">查看确认名单</a><%
 				End If
 %></td></tr><%
 				rs2.MoveNext()
@@ -160,7 +159,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
   %>
 </table>
 <input type="hidden" name="In_TEACHTYPE_ID2" value="<%=teachtype_id%>" />
-<input type="hidden" name="In_PERIOD_ID2" value="<%=period_id%>" />
+<input type="hidden" name="In_PERIOD_ID2" value="<%=cur_period_id%>" />
 <input type="hidden" name="finalFilter2" value="<%=Request.Form("finalFilter")%>">
 <input type="hidden" name="pageNo" value="<%=Request.Form("pageNo")%>" />
 <input type="hidden" name="pageSize" value="<%=Request.Form("pageSize")%>" />

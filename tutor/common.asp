@@ -1,13 +1,9 @@
 ﻿<!--#include file="../inc/global.inc"-->
 <%
-arr=getCurrentSemester()
-curyear=arr(0)
-cur_semester=arr(1)
-
 Function checkIfSystemOpen()
 	Dim conn,rs,sql,result,bOpen
 	Connect conn
-	sql="SELECT TUT_STARTDATE,TUT_ENDDATE FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&curyear&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
+	sql="SELECT TUT_STARTDATE,TUT_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	bOpen=True
 	If rs.EOF Then
@@ -26,12 +22,8 @@ End Function
 
 Function getClientInfo(cli)
 	Dim conn,rs,sql,result,i
-	Dim sem_info,curyear,cur_semester
-	sem_info=getCurrentSemester()
-	curyear=sem_info(0)
-	cur_semester=sem_info(1)
 	Connect conn
-	sql="SELECT TUT_CLIENT_STATUS,TUT_STARTDATE,TUT_ENDDATE,IF_SEND_MAIL FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&curyear&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
+	sql="SELECT TUT_CLIENT_STATUS,TUT_STARTDATE,TUT_ENDDATE,IF_SEND_MAIL FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	If rs.EOF Then
 		tutclient.SystemStatus=SYS_STATUS_CLOSED
@@ -50,15 +42,35 @@ Function getClientInfo(cli)
 	getClientInfo=1
 End Function
 
+Function semesterList(ctlname,sel)	' 显示学期选择框
+	Dim conn,sql,rs,result
+	Connect conn
+	sql="SELECT * FROM ViewAvailableSemesterInfo"
+	GetRecordSet conn,rs,sql,result
+	%><select id="<%=ctlname%>" name="<%=ctlname%>"><option value="0">请选择</option><%
+	Do While Not rs.EOF %>
+	<option value="<%=rs("cur_period_id")%>"<% If sel=rs("cur_period_id") Then %> selected<% End If %>><%=rs("PERIOD_NAME")%></option><%
+		rs.MoveNext()
+	Loop
+	CloseRs rs
+	CloseConn conn
+	%></select><%
+End Function
+
+Dim sem_info:sem_info=getCurrentSemester()
+Dim cur_year:cur_year=sem_info(0)
+Dim cur_semester:cur_semester=sem_info(1)
+Dim cur_semester_name:cur_semester_name=sem_info(2)
+Dim cur_period_id:cur_period_id=sem_info(3)
+
 Dim tutclient:Set tutclient=New ClientInfo
 tutclient.setOprTypeCount(SYS_TUT_OPRTYPE_COUNT)
 getClientInfo(tutclient)
 If tutclient.SystemStatus=SYS_STATUS_CLOSED And Session("Debug")=False Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">选导师系统未启用！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End
+	Response.End()
 End If
 
-Dim startdate,enddate
-startdate=tutclient.getOpentime(SYS_OPR_CONFIRM,SYS_OPENTIME_START)
-enddate=tutclient.getOpentime(SYS_OPR_CONFIRM,SYS_OPENTIME_END)
+Dim startdate:startdate=tutclient.getOpentime(SYS_OPR_CONFIRM,SYS_OPENTIME_START)
+Dim enddate:enddate=tutclient.getOpentime(SYS_OPR_CONFIRM,SYS_OPENTIME_END)
 %>

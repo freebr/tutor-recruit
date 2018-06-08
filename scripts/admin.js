@@ -63,7 +63,8 @@ function cancelConfirm(lid,id) {
 	return;
 }
 function showStudentInfo(id) {
-	top.mainF.tabmgr.goTo("showStudentInfo.asp?id="+id,"查看学生信息",true);
+	var tabmgr=window.tabmgr||parent.tabmgr;
+	tabmgr.goTo("/TutorRecruit/admin/showStudentInfo.asp?id="+id,"查看学生信息",true);
 	return false;
 }
 function showTeacherResume(id) {

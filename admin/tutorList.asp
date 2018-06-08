@@ -1,10 +1,10 @@
 ﻿<!--#include file="../inc/db.asp"-->
 <%Response.Expires=-1
-If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Connect conn
 finalFilter=Request.Form("finalFilter")
 If Len(Request.Form("finalFilter")) Then finalFilter="AND "&finalFilter
-sql="SELECT * FROM VIEW_TUTOR_LIST WHERE 1=1 "&finalFilter&" ORDER BY TEACHER_NAME"
+sql="SELECT * FROM ViewTutorInfo WHERE 1=1 "&finalFilter&" ORDER BY TEACHER_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 pageSize=Request.Form("pageSize")
 If IsEmpty(pageSize) Or Not IsNumeric(pageSize) Then
@@ -49,7 +49,7 @@ If rs.RecordCount>0 Then rs.AbsolutePage=pageNo
 <tr><td>
 <!--查找-->
 <select name="field" onchange="ReloadOperator()">
-<option value="s_RECRUIT_TYPE">专业学位类型</option>
+<option value="s_RECRUIT_TYPE_NAME">专业学位类型</option>
 <option value="s_TEACHER_NAME">姓名</option>
 <option value="n_DEFAULT_QUOTA">指导名额</option>
 </select>

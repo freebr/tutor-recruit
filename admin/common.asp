@@ -11,7 +11,7 @@ Function getTeacherIdByName(name)
 	name=Replace(name,"'","''")
 	name=Replace(name,"""","""""")
 	Connect conn
-	sql="SELECT TEACHERID,TEACHERNAME FROM TEACHER_INFO WHERE TEACHERNAME='"&name&"' AND VALID=0"
+	sql="SELECT TEACHERID,TEACHERNAME FROM ViewTeacherInfo WHERE TEACHERNAME='"&name&"' AND VALID=0"
 	GetRecordSetNoLock conn,rsTeacher,sql,num
 	If rsTeacher.EOF Then
 		getTeacherIdByName=-1
@@ -30,7 +30,7 @@ Function isStudentExists(stuno)
 	Dim conn,rs,sql,num
 	stuno=Trim(stuno)
 	Connect conn
-	sql="SELECT STU_NO FROM STUDENT_INFO WHERE STU_NO='"&stuno&"'"
+	sql="SELECT STU_NO FROM ViewStudentInfo WHERE STU_NO="&toSqlString(stuno)
 	GetRecordSetNoLock conn,rs,sql,num
 	isStudentExists=Not rs.EOF
 	CloseRs rs
@@ -96,29 +96,28 @@ Function getDataArray(data)
 End Function
 
 Function semesterList(ctlname,sel)	' 显示学期选择框
-	Dim conn,comm,pmSem,rs
+	Dim conn,sql,rs,result
 	Connect conn
-	Set comm=Server.CreateObject("ADODB.Command")
-	comm.ActiveConnection=conn
-	comm.CommandText="getSemesterList"
-	comm.CommandType=adCmdStoredProc
-	Set pmSem=comm.CreateParameter("semester",adInteger,adParamInput,5,0)
-	comm.Parameters.Append pmSem
-	Set rs=comm.Execute()
+	sql="SELECT * FROM ViewAvailableSemesterInfo"
+	GetRecordSet conn,rs,sql,result
 	%><select id="<%=ctlname%>" name="<%=ctlname%>"><option value="0">请选择</option><%
 	Do While Not rs.EOF %>
-	<option value="<%=rs("PERIOD_ID")%>"<% If sel=rs("PERIOD_ID") Then %> selected<% End If %>><%=rs("PERIOD_NAME")%></option><%
+	<option value="<%=rs("cur_period_id")%>"<% If sel=rs("cur_period_id") Then %> selected<% End If %>><%=rs("PERIOD_NAME")%></option><%
 		rs.MoveNext()
 	Loop
-	Set pmSem=Nothing
-	Set comm=Nothing
 	CloseRs rs
 	CloseConn conn
 	%></select><%
 End Function
 
-arrTurnName=Array("","第一志愿","第二志愿","第三志愿")
-arrStuTypeId=Array("",5,6,7,9)
-arrStuType=Array("","ME","MBA","EMBA","MPAcc")
-arrApplyStatus=Array(Array(1,"学生未提交"),Array(2,"导师未确认"),Array(3,"导师已确认"),Array(4,"导师已退回"))
+Dim sem_info:sem_info=getCurrentSemester()
+Dim cur_year:cur_year=sem_info(0)
+Dim cur_semester:cur_semester=sem_info(1)
+Dim cur_semester_name:cur_semester_name=sem_info(2)
+Dim cur_period_id:cur_period_id=sem_info(3)
+
+Dim arrTurnName:arrTurnName=Array("","第一志愿","第二志愿","第三志愿")
+Dim arrStuTypeId:arrStuTypeId=Array("",5,6,7,9)
+Dim arrStuType:arrStuType=Array("","ME","MBA","EMBA","MPAcc")
+Dim arrApplyStatus:arrApplyStatus=Array(Array(1,"学生未提交"),Array(2,"导师未确认"),Array(3,"导师已确认"),Array(4,"导师已退回"))
 %>

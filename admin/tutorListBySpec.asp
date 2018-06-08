@@ -112,14 +112,13 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
   	k=0:l=1
   	For i=1 to rs.PageSize
 			If rs.EOF Then Exit For
-			strSub="SELECT * FROM VIEW_TUTOR_RECRUIT_INFO WHERE SPECIALITY_NAME="&toSqlString(rs("SPECIALITY_NAME"))&PubTerm	'&" AND Valid=1"
+			strSub="SELECT * FROM VIEW_TUTOR_RECRUIT_INFO WHERE SPECIALITY_NAME="&toSqlString(rs("SPECIALITY_NAME"))&PubTerm
 			GetRecordSetNoLock conn,rs2,strSub,result
 			j=0
 			Do While Not rs2.EOF
 				listID=rs2("LIST_ID")
 				recruitID=rs2("RECRUIT_ID")
 				strSub2="SELECT RECRUIT_ID,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM VIEW_TUTOR_RECRUIT_INFO WHERE RECRUIT_ID="&recruitID
-				'Set rs22=conn.Execute(strSub2)
 				GetRecordSetNoLock conn,rs22,strSub2,result2
 				If Not rs22.EOF Then
 					recruitQuota=rs22(1)

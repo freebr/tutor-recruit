@@ -22,7 +22,7 @@ Case vbNullString	' 选择页面
 <p>您选择了&nbsp;<%=numRecord%>&nbsp;个学生</p>
 <p>打包压缩文件名：<input type="text" name="rarfilename" size="40" value="学生个人信息(共<%=numRecord%>份)"/>.rar&nbsp;</p>
 <input type="hidden" name="sel" value="<%=ids%>" />
-<input type="submit" name="btnsubmit" value="导出" />&nbsp;
+<input type="submit" name="btnsubmit" value="导 出" />&nbsp;
 <input type="button" name="btnret" value="返 回" onclick="history.go(-1)" /></p></form>
 <p align="left"><span id="output" style="color:#000099;font-size:9pt"></span></p></center></body>
 <script type="text/javascript">

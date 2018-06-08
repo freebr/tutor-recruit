@@ -8,81 +8,107 @@ Class ProfileGen
 
 	Dim m_err_desc
 	Public Property Let StuNo(val)
+		If IsNull(val) Then val=""
 		m_stuno=val
 	End Property
 	Public Property Let StuName(val)
+		If IsNull(val) Then val=""
 		m_stuname=val
 	End Property
 	Public Property Let Gender(val)
+		If IsNull(val) Then val=""
 		m_gender=val
 	End Property
 	Public Property Let Birthday(val)
+		If IsNull(val) Then val=""
 		m_birthday=val
 	End Property
 	Public Property Let Nation(val)
+		If IsNull(val) Then val=""
 		m_nation=val
 	End Property
 	Public Property Let PoliticalVisage(val)
+		If IsNull(val) Then val=""
 		m_pvisage=val
 	End Property
 	Public Property Let CardID(val)
+		If IsNull(val) Then val=""
 		m_cardid=val
 	End Property
 	Public Property Let ClassName(val)
+		If IsNull(val) Then val=""
 		m_classname=val
 	End Property
 	Public Property Let Tutor(val)
+		If IsNull(val) Then val=""
 		m_tutor=val
 	End Property
 	Public Property Let Speciality(val)
+		If IsNull(val) Then val=""
 		m_speciality=val
 	End Property
 	Public Property Let Address(val)
+		If IsNull(val) Then val=""
 		m_address=val
 	End Property
 	Public Property Let NativePlace(val)
+		If IsNull(val) Then val=""
 		m_nativeplace=val
 	End Property
 	Public Property Let Mobile(val)
+		If IsNull(val) Then val=""
 		m_mobile=val
 	End Property
 	Public Property Let Email(val)
+		If IsNull(val) Then val=""
 		m_email=val
 	End Property
 	Public Property Let TelHome(val)
+		If IsNull(val) Then val=""
 		m_telhome=val
 	End Property
 	Public Property Let CompanyName(val)
+		If IsNull(val) Then val=""
 		m_companyname=val
 	End Property
 	Public Property Let Job(val)
+		If IsNull(val) Then val=""
 		m_job=val
 	End Property
 	Public Property Let DutyName(val)
+		If IsNull(val) Then val=""
 		m_dutyname=val
 	End Property
 	Public Property Let LastDegree(val)
+		If IsNull(val) Then val=""
 		m_lastdegree=val
 	End Property
 	Public Property Let ShowTutorOutside(val)
+		If IsNull(val) Then val=""
 		m_showtutoroutside=val
 	End Property
 	Public Property Let TutorOutside(index,val)
+		If IsNull(val) Then val=""
 		m_tutoroutside(index)=val
 	End Property
 	Public Property Let LastDiploma(val)
+		If IsNull(val) Then val=""
 		m_lastdiploma=val
 	End Property
 	Public Property Let DissertationTopic(val)
+		If IsNull(val) Then val=""
 		m_dissertationtopic=val
 	End Property
 	Public Property Let PersonalResume(val)
+		If IsNull(val) Then val=""
 		m_personalresume=val
 	End Property
 	Public Property Let Experiences(val)
+		If IsNull(val) Then val=""
 		m_experiences=val
 	End Property
 	Public Property Let OccuPlan(val)
+		If IsNull(val) Then val=""
 		m_occuplan=val
 	End Property
 	Public Property Get ErrorDesc()

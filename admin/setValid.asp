@@ -1,5 +1,5 @@
 ﻿<!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 valid=Request.QueryString("valid")
 If IsEmpty(valid) Or Not IsNumeric(valid) Then
 	valid=0
@@ -9,7 +9,7 @@ Else
 End If
 Connect conn
 For i=1 To Request.Form("sel").Count
-	sql=sql&"UPDATE TUTOR_LIST SET VALID="&valid&" WHERE ID="&Request.Form("sel")(i)&";"
+	sql=sql&"UPDATE TutorInfo SET VALID="&valid&" WHERE ID="&Request.Form("sel")(i)&";"
 Next
 If Len(sql) Then conn.Execute sql
 CloseConn conn

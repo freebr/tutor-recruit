@@ -10,7 +10,7 @@
 <body bgcolor="ghostwhite" onload="return On_Load()">
 <center>
 <table cellspacing="1" cellpadding="2" bgcolor="#999999">
-<form id="top1Form" method="post" target="detail1Frame">
+<form id="topForm" method="post" target="detailFrame">
 <%
 Dim ArrayList(1,5),k,objectTerm
 
@@ -30,13 +30,13 @@ ArrayList(k,3)="PERIOD_NAME"
 ArrayList(k,4)=""
 ArrayList(k,5)=""
 
-FormName="top1Form"
+FormName="topForm"
 Get_ListJavaMenu ArrayList,k,FormName,""
 %>
 </tr>
 <tr><td bgcolor="ghostwhite" colspan=6 align="center">
-	<input type="button" value="查看未选择导师的学生" onclick="if(Chk_Select()){document.all.top1Form.action='notChosenList.asp';this.form.submit();}">
-	<input type="button" value="查看已选择导师的学生" onclick="if(Chk_Select()){document.all.top1Form.action='chosenList.asp';this.form.submit();}">
+	<input type="button" value="查看未选择导师的学生" onclick="if(Chk_Select()){document.all.topForm.action='notChosenList.asp';this.form.submit();}">
+	<input type="button" value="查看已选择导师的学生" onclick="if(Chk_Select()){document.all.topForm.action='chosenList.asp';this.form.submit();}">
 </td></tr>
 </form>
 </table>

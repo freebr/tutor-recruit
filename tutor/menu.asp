@@ -10,7 +10,7 @@
 <body bgcolor="ghostwhite" onload="return On_Load()">
 <center>
 <table cellspacing="1" cellpadding="2" bgcolor="#999999">
-<form id="top1Form" method="post" target="detail1Frame">
+<form id="topForm" method="post" target="detailFrame">
 <%
 dim ArrayList(2,5),k,objectTerm
 
@@ -38,12 +38,12 @@ ArrayList(k,3)="SPECIALITY_NAME"
 ArrayList(k,4)=""
 ArrayList(k,5)="AND TEACHER_ID="&Session("tid")
 
-FormName="top1Form"
+FormName="topForm"
 Get_ListJavaMenu ArrayList,k,FormName,""
 %>
 </tr>
 <tr><td bgcolor="ghostwhite" colspan=8 align="center">
-	<input type="button" value="查   询" onclick="if(Chk_Select()){document.all.top1Form.action='choiceList.asp';this.form.submit();}">
+	<input type="button" value="查   询" onclick="if(Chk_Select()){document.all.topForm.action='choiceList.asp';this.form.submit();}">
 </td></tr>
 </form>
 </table>

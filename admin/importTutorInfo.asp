@@ -97,7 +97,7 @@ Case 2	' 数据读取，导入到数据库
 		' 添加数据
 		Dim fieldValue(7)
 		Dim arrSpec,specId,specName
-		Dim sql,sql2,sql3,sql4,conn,rsDb
+		Dim sql,sql2,sql3,conn,rsDb
 		Dim numNewRec,numNewTeacher,numUpdTeacher
 		Dim bIsUpdated
 		Dim arrRet(1)
@@ -152,7 +152,7 @@ Case 2	' 数据读取，导入到数据库
 						specName="NULL"
 					End If
 					
-					sql3="SELECT ID FROM VIEW_TUTOR_LIST WHERE "
+					sql3="SELECT ID FROM ViewTutorInfo WHERE "
 					If Len(arrSpec(i))=0 Then
 						sql3=sql3&"SPECIALITY_NAME IS NULL"
 					Else
@@ -166,7 +166,7 @@ Case 2	' 数据读取，导入到数据库
 										fieldValue(5)&","&specId&",0,"&specName&","&fieldValue(3)&","&fieldValue(7)&","&updateTime&",1"
 						numNewRec=numNewRec+1
 					Else					' 更新记录
-						sql2=sql2&"UPDATE TUTOR_LIST SET PRO_DUTYID="&fieldValue(1)&",RECRUIT_TYPE="&fieldValue(2)&_
+						sql2=sql2&"UPDATE TutorInfo SET PRO_DUTYID="&fieldValue(1)&",RECRUIT_TYPE="&fieldValue(2)&_
 								 ",DEFAULT_QUOTA="&fieldValue(6)&",PRIMARY_TYPE="&fieldValue(4)&",SECOND_TYPE="&fieldValue(5)&_
 								 ",SPECIALITY_ID="&specId&",RESEARCH_WAYID=0,APPLY_SPECIALITY="&specName&",APPLY_RESEARCH="&fieldValue(3)&_
 								 ",MEMO="&fieldValue(7)&",UPDATE_TIME="&updateTime&",VALID=1 WHERE ID="&rsDb(0)&";"
@@ -183,16 +183,13 @@ Case 2	' 数据读取，导入到数据库
 			rs.MoveNext()
 		Loop
 		If numNewRec>0 Then
-			sql="INSERT INTO TUTOR_LIST(TEACHER_ID,PRO_DUTYID,RECRUIT_TYPE,DEFAULT_QUOTA,PRIMARY_TYPE,SECOND_TYPE,SPECIALITY_ID,RESEARCH_WAYID,APPLY_SPECIALITY,APPLY_RESEARCH,MEMO,UPDATE_TIME,VALID) "&sql
+			sql="INSERT INTO TutorInfo (TEACHER_ID,PRO_DUTYID,RECRUIT_TYPE,DEFAULT_QUOTA,PRIMARY_TYPE,SECOND_TYPE,SPECIALITY_ID,RESEARCH_WAYID,APPLY_SPECIALITY,APPLY_RESEARCH,MEMO,UPDATE_TIME,VALID) "&sql
 			conn.Execute sql
 		End If
 		If numUpdTeacher>0 Then conn.Execute sql2
 		' 添加教师权限
-		sql4="UPDATE TEACHER_INFO SET WRITEPRIVILEGETAGSTRING=dbo.addPrivilege(WRITEPRIVILEGETAGSTRING,'U6',''),"&_
-					"READPRIVILEGETAGSTRING=dbo.addPrivilege(READPRIVILEGETAGSTRING,'U6','') WHERE TEACHERID IN (SELECT TEACHER_ID FROM TUTOR_LIST);"
-		sql4=sql4&"UPDATE TEACHER_INFO SET WRITEPRIVILEGETAGSTRING=dbo.addPrivilege(WRITEPRIVILEGETAGSTRING,'I11',''),"&_
-					"READPRIVILEGETAGSTRING=dbo.addPrivilege(READPRIVILEGETAGSTRING,'I11','') WHERE TEACHERID IN (SELECT TEACHER_ID FROM TUTOR_LIST)"
-		conn.Execute sql4
+		sql="EXEC spSwitchAllTutorPrivilege 1"
+		conn.Execute sql
 		CloseConn conn
 		arrRet(0)=numNewTeacher
 		arrRet(1)=numUpdTeacher

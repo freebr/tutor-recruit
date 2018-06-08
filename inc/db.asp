@@ -7,7 +7,7 @@ Sub GetRecordSet(conn,rs,sqlStr,result)
 	'================判断SQL注入漏洞如果出现SELECT、exec、0x两次就报错====================
 	PSafeRequest(sqlStr)
 	'===================================================
-	Set rs=Server.CreateObject("ADODB.RECORDSET")
+	Set rs=Server.CreateObject("ADODB.RecordSet")
 	If IsEmpty(conn) Then Connect conn
 	rs.activeConnection=conn
 	rs.source=sqlStr
@@ -19,7 +19,7 @@ Sub GetProcRecordSet(conn,rs,sqlStr,result)
 	'================判断SQL注入漏洞如果出现SELECT、exec、0x两次以上就报错================
 	FormProcSafeRequest(sqlStr)
 	'===================================================
-	Set rs=Server.CreateObject("ADODB.RECORDSET")
+	Set rs=Server.CreateObject("ADODB.RecordSet")
 	If IsEmpty(conn) Then Connect conn
 	rs.activeConnection=conn
 	rs.source=sqlStr
@@ -32,11 +32,10 @@ Sub GetRecordSetNoLock(conn,rsNoLock,sqlStr,result)
 	'================判断SQL注入漏洞如果出现SELECT、exec、0x两次(或一次就报错====================
 	'PSafeRequest(sqlStr)
 	'===================================================
-	Set rsNoLock=Server.CreateObject("ADODB.RECORDSET")
+	Set rsNoLock=Server.CreateObject("ADODB.RecordSet")
 	If IsEmpty(conn) Then Connect conn
 	rsNoLock.activeConnection=conn
 	rsNoLock.source=sqlStr
-	'response.write sqlStr
 	rsNoLock.Open , ,AdOpenKeyset,AdLockReadOnly
 	result=rsNoLock.RecordCount
 End Sub
@@ -47,7 +46,7 @@ Sub GetRecordSetNoLockNoLimit(conn,rsNoLock,sqlStr,result)
 	'================判断SQL注入漏洞如果出现SELECT、exec、0x两次(或一次就报错====================
 	'PSafeRequest(sqlStr)
 	'===================================================
-	Set rsNoLock=Server.CreateObject("ADODB.RECORDSET")
+	Set rsNoLock=Server.CreateObject("ADODB.RecordSet")
 	If IsEmpty(conn) Then Connect conn
 	rsNoLock.activeConnection=conn
 	rsNoLock.source=sqlStr

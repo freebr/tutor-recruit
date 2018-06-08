@@ -23,6 +23,7 @@ function switchReason(v) {
 	return;
 }
 function showStudentInfo(id) {
-	top.mainF.tabmgr.goTo("showStudentInfo.asp?id="+id,"查看学生信息",true);
+	var tabmgr=window.tabmgr||parent.tabmgr;
+	tabmgr.goTo("/TutorRecruit/tutor/showStudentInfo.asp?id="+id,"查看学生信息",true);
 	return false;
 }

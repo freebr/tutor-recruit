@@ -1,11 +1,10 @@
-﻿<%Response.Charset="utf-8"%>
-<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/db.asp"-->
 <!--#include file="../inc/setEditor.asp"-->
 <!--#include file="../inc/ckeditor/ckeditor.asp"-->
 <!--#include file="../inc/ckfinder/ckfinder.asp"-->
 <!--#include file="common.asp"-->
 <%Response.Expires=-1
-If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 curstep=Request.QueryString("step")
 If Len(curstep)=0 Or Not IsNumeric(curstep) Then curstep="1"	
 sem_info=getCurrentSemester()
@@ -25,7 +24,7 @@ If curstep="1" Then
 	ReDim tut_clientstatus(SYS_TUT_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	ReDim stu_clientstatus(SYS_STU_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	Connect conn
-	sql="SELECT * FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
+	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSetNoLock conn,rs,sql,result
 	If result=0 Then	' 本学期无系统设置
 		stu_startdate=Date
@@ -51,7 +50,7 @@ If curstep="1" Then
 		isValid=rs("VALID")
 	End If
 	CloseRs rs
-	sql="SELECT * FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&(sem_info(0)-1)&" AND USE_SEMESTER="&sem_info(1)
+	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&(sem_info(0)-1)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSetNoLock conn,rs,sql,result
 	If result>0 Then
 		bLastSet=True
@@ -61,7 +60,7 @@ If curstep="1" Then
 		last_tut_enddate=rs("TUT_ENDDATE")
 	End If
 	If Not bSet Then
-		sql="SELECT TOP 1 * FROM TUTOR_SYSTEM_SETTINGS ORDER BY ID DESC"
+		sql="SELECT TOP 1 * FROM SystemSettings ORDER BY ID DESC"
 		GetRecordSetNoLock conn,rs,sql,result
 		If result Then ' 显示最新学期的邮件内容
 			For i=1 To UBound(arrMailId)
@@ -113,7 +112,7 @@ If curstep="1" Then
 	Next
 %>
 </select><br />
-<input type="submit" value="导出本批志愿双选名单" onclick="document.all.fmOpentime.action='exportChoiceList.asp?fn=<%=sem_info(3)%>_<%=turn_num%>&turn=<%=turn_num%>'" />
+<input type="submit" value="导出本批志愿双选名单" onclick="document.all.fmOpentime.action='exportConfirmedList.asp?fn=<%=sem_info(3)%>_<%=turn_num%>&turn=<%=turn_num%>'" />
 &nbsp;<input type="button" name="viewexportfiles" value="查看以往批次志愿双选名单" onclick="window.open('export/spec')" /></p>
 <p><table width="680" cellpadding="0" cellspacing="0" border="0">
 <tr bgcolor="ghostwhite"><td align="center" colspan="3">导师端上传通道开放时间和开放对象：</td></tr>
@@ -239,7 +238,7 @@ Else
 	
 	bTurnChanged=False
 	Connect conn
-	sql="SELECT * FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
+	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSet conn,rs,sql,result
 	On Error Resume Next
 	If result=0 Then
@@ -268,7 +267,7 @@ Else
 	On Error GoTo 0
 	
 	If ok Then
-		sql="UPDATE TUTOR_SYSTEM_SETTINGS SET "
+		sql="UPDATE SystemSettings SET "
 		For i=1 To 4
 			template_name=sem_info(0)&"-"&(sem_info(0)+1)&"年度"&sem_info(2)&"学期"&arrMailSubject(i)
 			arrMailId(i)=updateEmailTemplate(arrMailId(i),template_name,arrMailSubject(i),mail_content(i),fieldlist)

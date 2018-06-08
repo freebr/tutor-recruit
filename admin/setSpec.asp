@@ -1,11 +1,11 @@
 ﻿<!--#include file="../inc/db.asp"-->
-<!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<!--#include file="common.asp"--><%
+If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Connect conn
 For i=1 To Request.Form("sel").Count
 	specControlName="spec"&Request.Form("sel")(i)
 	specName=Trim(Request.Form(specControlName))
-	sql="SELECT * FROM TUTOR_LIST WHERE ID="&Request.Form("sel")(i)
+	sql="SELECT * FROM ViewTutorInfo WHERE ID="&Request.Form("sel")(i)
 	GetRecordSet conn,rs,sql,result
 	specId=getItemIdByName(specName,"SPECIALITY_ID","SPECIALTY_NAME","CODE_SPECIALITY")
 	If specId<>0 Then
