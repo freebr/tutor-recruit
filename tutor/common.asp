@@ -45,11 +45,11 @@ End Function
 Function semesterList(ctlname,sel)	' 显示学期选择框
 	Dim conn,sql,rs,result
 	Connect conn
-	sql="SELECT * FROM ViewAvailableSemesterInfo"
+	sql="SELECT DISTINCT PERIOD_ID,PERIOD_NAME FROM ViewAvailableSemesterInfo"
 	GetRecordSet conn,rs,sql,result
 	%><select id="<%=ctlname%>" name="<%=ctlname%>"><option value="0">请选择</option><%
 	Do While Not rs.EOF %>
-	<option value="<%=rs("cur_period_id")%>"<% If sel=rs("cur_period_id") Then %> selected<% End If %>><%=rs("PERIOD_NAME")%></option><%
+	<option value="<%=rs("PERIOD_ID")%>"<% If sel=rs("PERIOD_ID") Then %> selected<% End If %>><%=rs("PERIOD_NAME")%></option><%
 		rs.MoveNext()
 	Loop
 	CloseRs rs
