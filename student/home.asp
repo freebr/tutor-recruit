@@ -27,7 +27,11 @@ If Len(pageCur)=0 Or Not IsNumeric(pageCur) Then pageCur=1 Else pageCur=Int(page
 If Not bSystemOpen Then disabled_flag=" disabled"
 sql="SELECT TURN_NUM FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 GetRecordSetNoLock conn,rs,sql,result
-nTurn=rs("TURN_NUM")
+If rs.EOF Then
+	nTurn=0
+Else
+	nTurn=rs("TURN_NUM").Value
+End If
 bRefill=False
 
 sql="SELECT * FROM ViewApplyInfo WHERE STU_ID="&Session("Stuid")
