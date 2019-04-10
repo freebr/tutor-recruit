@@ -56,13 +56,13 @@ End Function
 Connect conn
 stuType=Session("StuType")
 turnNum=Request.QueryString("turn")
-pageSize=Request.Form("pageSize")
-pageCur=Request.Form("pageNo")
+page_size=Request.Form("pageSize")
+page_cur=Request.Form("pageNo")
 finalFilter=Request.Form("finalFilter")
 If IsEmpty(finalFilter) Then finalFilter=vbNullString
 
-If Len(pageSize)=0 Or Not IsNumeric(pageSize) Then pageSize=-1 Else pageSize=Int(pageSize)
-If Len(pageCur)=0 Or Not IsNumeric(pageCur) Then pageCur=1 Else pageCur=Int(pageCur)
+If Len(page_size)=0 Or Not IsNumeric(page_size) Then page_size=-1 Else page_size=Int(page_size)
+If Len(page_cur)=0 Or Not IsNumeric(page_cur) Then page_cur=1 Else page_cur=Int(page_cur)
 
 sem_info=getCurrentSemester()
 cur_year=sem_info(0)
@@ -77,19 +77,24 @@ comm.CommandType=adCmdStoredProc
 Set pmPeriod=comm.CreateParameter("cur_period_id",adInteger,adParamInput,5,cur_period_id)
 Set pmObject=comm.CreateParameter("teachtype_id",adInteger,adParamInput,5,stuType)
 Set pmWhere=comm.CreateParameter("where",adVarChar,adParamInput,2000,finalFilter)
-Set pmPageSize=comm.CreateParameter("pageSize",adInteger,adParamInput,5,pageSize)
-Set pmPageCur=comm.CreateParameter("pageCur",adInteger,adParamInput,5,pageCur)
+Set pmPageSize=comm.CreateParameter("page_size",adInteger,adParamInput,5,page_size)
+Set pmPageCur=comm.CreateParameter("page_cur",adInteger,adParamInput,5,page_cur)
 comm.Parameters.Append pmPeriod
 comm.Parameters.Append pmObject
 comm.Parameters.Append pmWhere
 comm.Parameters.Append pmPageSize
 comm.Parameters.Append pmPageCur
-Set rs=comm.Execute()
-Set rs=rs.NextRecordSet().NextRecordSet().NextRecordSet()
-recNum=rs(0)
-pageNum=recNum/pageSize
-If Int(pageNum)<>pageNum Then pageNum=Int(pageNum)+1
-Set rs=rs.NextRecordSet()
+Set rs = comm.Execute()
+Set rs = rs.NextRecordSet().NextRecordSet()
+count_rec = rs(0).Value
+If page_size = -1 Then
+	page_size = count_rec
+	count_page = 1
+Else
+	count_page = count_rec/page_size
+End If
+If Int(count_page)<>count_page Then count_page=Int(count_page)+1
+Set rs = rs.NextRecordSet()
 %><p><font size=4><b>选择<%=arrTurnName(turnNum)%>导师</b></font><br />
 <table cellspacing=4 cellpadding=0>
 <form id="search" method="post">
@@ -113,26 +118,26 @@ Set rs=rs.NextRecordSet()
 	&nbsp;
 	每页
 	<select id="pageSize" name="pageSize" onchange="this.form.submit()">
-		<option value="20" <%If pageSize=20 Then%>selected<%End If%>>20</option>
-		<option value="40" <%If pageSize=40 Then%>selected<%End If%>>40</option>
-		<option value="60" <%If pageSize=60 Then%>selected<%End If%>>60</option>
-		<option value="-1" <%If pageSize=-1 Then%>selected<%End If%>>全部</option>
+		<option value="20" <%If page_size=20 Then%>selected<%End If%>>20</option>
+		<option value="40" <%If page_size=40 Then%>selected<%End If%>>40</option>
+		<option value="60" <%If page_size=60 Then%>selected<%End If%>>60</option>
+		<option value="-1" <%If page_size=-1 Then%>selected<%End If%>>全部</option>
 	</select>
 	条
 	&nbsp;
 	转到
 	<select id="pageNo" name="pageNo" onchange="this.form.submit()">
 	<%
-	For i=1 to pageNum
+	For i=1 to count_page
 	    Response.write "<option value="&i
-	    If pageCur=i Then Response.write " selected"
+	    If page_cur=i Then Response.write " selected"
 	    Response.write ">"&i&"</option>"
 	Next
 	%>
 	</select>
 	页
 	&nbsp;
-	共<%=recNum%>条&nbsp;<input type="button" name="btnrefresh" value="刷新页面" onclick="location.reload()" />
+	共<%=count_rec%>条&nbsp;<input type="button" name="btnrefresh" value="刷新页面" onclick="location.reload()" />
 </td></tr></form></table>
 <table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
@@ -145,14 +150,11 @@ Set rs=rs.NextRecordSet()
   <td align="center">工程领域</td>
   <td width="50" align="center">选择</td>
 </tr><%
-	If pageSize=-1 Then
-		pageSize=recNum
-	End If
 	Dim appliedNum,arrData
 	j=1
 	k=0
-	ReDim arrData(pageSize,9)
-	For i=1 to pageSize
+	ReDim arrData(page_size,9)
+	For i=1 to page_size
 		If rs.EOF Then Exit For
 		remainingQuota=rs("REMAINING_NUM")
 		appliedNum=rs("APPLIED_NUM")
