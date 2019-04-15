@@ -70,7 +70,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<link href="css.css" rel="stylesheet" type="text/css">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%
@@ -89,8 +89,8 @@ Case 2	' 数据读取，导入到数据库
 	Function updateData()
 		Connect conn
 		Do While Not rs.EOF
-			sql="SELECT TEACHER_ID,RECRUIT_ID FROM VIEW_TUTOR_RECRUIT_INFO WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"
-			'sql="SELECT Count(*) FROM VIEW_TUTOR_RECRUIT_INFO WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"
+			sql="SELECT TEACHER_ID,RECRUIT_ID FROM ViewRecruitInfo WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"
+			'sql="SELECT Count(*) FROM ViewRecruitInfo WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"
 			Set rs2=conn.Execute(sql)
 			'response.write rs2(0) &"<br/>"
 			sql="UPDATE STUDENT_INFO SET TUTOR_ID="&rs2("TEACHER_ID")&", TUTOR_RECRUIT_ID="&rs2("RECRUIT_ID")&" WHERE STU_NAME='"&rs(1)&"' AND TEACH_TYPEID=6 AND STU_NO LIKE '2013%' AND VALID=0"

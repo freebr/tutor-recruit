@@ -45,7 +45,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<link href="css.css" rel="stylesheet" type="text/css">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%

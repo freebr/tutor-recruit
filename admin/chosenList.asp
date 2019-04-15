@@ -2,27 +2,7 @@
 Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
-<script type="text/javascript">
-	window.tabmgr=parent.tabmgr;
-</script>
-<style type="text/css">
-	span.accepted {color:#090}
-	span.unaccepted {color:#00f}
-	span.withdrawn {color:#c00}
-	span.hidden {color:#666}
-</style>
-</head>
-<body bgcolor="ghostwhite" onload="On_Load();">
-<center>
-<%
+<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
 	Dim object,PubTerm,PageNo,PageSize
 
 	object=Request.Form("In_TEACHTYPE_ID")
@@ -56,7 +36,7 @@ Response.Expires=-1%>
 
 	'------------------------------------------------------
 	Connect conn
-	sql="SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
+	sql="SELECT * FROM ViewApplyInfo WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
 	GetRecordSetNoLock conn,rs,sql,result
 	If PageSize<>"" Then
 		rs.PageSize=CInt(PageSize)
@@ -74,7 +54,26 @@ Response.Expires=-1%>
 		If rs.PageCount<>0 Then rs.AbsolutePage=1
 		PageNo=1
 	End If
-%><font size=4><b>已选导师学员名单</b></font>
+%><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../scripts/utils.js"></script>
+<script type="text/javascript" src="../scripts/query.js"></script>
+<script type="text/javascript" src="../scripts/admin.js"></script>
+<script type="text/javascript">
+	window.tabmgr=parent.tabmgr;
+</script>
+<style type="text/css">
+	span.accepted {color:#090}
+	span.unaccepted {color:#00f}
+	span.withdrawn {color:#c00}
+	span.hidden {color:#666}
+</style>
+</head>
+<body bgcolor="ghostwhite">
+<center>
+<font size=4><b>已选导师学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>
@@ -82,7 +81,7 @@ Response.Expires=-1%>
 <input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 <!--查找-->
 填报状态：<select name="In_APPLY_STATUS"><option value="-1">所有</option><%
-GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_status,"AND ID>0"
+GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 %></select>
 <select name="field" id="field" onchange="ReloadOperator()">
 <option value="s_STU_NAME">学生姓名</option>
@@ -139,9 +138,9 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 <input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setApplyStatus.asp?hide';this.form.submit();}" />
 <input type="button" value="删除填报记录" onclick="if(confirm('是否删除所选填报记录？这将恢复到未填报状态！'))this.form.submit();" />
 </td></tr>
-<tr bgcolor="ghostwhite"><td colspan="2"><table width=600" cellpadding="2" cellspacing="1"><%
+<tr bgcolor="ghostwhite"><td colspan="2"><table width="600" cellpadding="2" cellspacing="1"><%
 	Dim ArrayList(1,5),k
-	Table="VIEW_TUTOR_RECRUIT_INFO"
+	Table="ViewRecruitInfo"
 	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
 	k=0
 	
@@ -155,7 +154,7 @@ GetMenuListPubTerm "CODE_TUTOR_RECRUIT_STATUS","ID","STATUS_NAME",query_apply_st
 	k=1
 	ArrayList(k,0)="专业"
 	ArrayList(k,1)=Table
-	ArrayList(k,2)="SPECIALITY_NAME"
+	ArrayList(k,2)="SPECIALITY_ID"
 	ArrayList(k,3)="SPECIALITY_NAME"
 	ArrayList(k,4)=""
 	ArrayList(k,5)=WhereStr

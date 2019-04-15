@@ -4,7 +4,7 @@
 
 sem_info=getCurrentSemester()
 teachtype_id=Request.Form("In_TEACHTYPE_ID")
-cur_period_id=Request.Form("In_PERIOD_ID")
+period_id=Request.Form("In_PERIOD_ID")
 finalFilter=Request.Form("finalFilter")
 If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 If Len(teachtype_id) And teachtype_id<>"0" Then
@@ -12,17 +12,19 @@ If Len(teachtype_id) And teachtype_id<>"0" Then
 Else
 	teachtype_id=5
 End If
+teachtype_name=getStudentTypeName(teachtype_id)
+
 PubTerm=PubTerm&" AND TEACHTYPE_ID="&toSqlString(teachtype_id)
-If Len(cur_period_id) And cur_period_id<>"0" Then
-	cur_period_id=Int(cur_period_id)
+If Len(period_id) And period_id<>"0" Then
+	period_id=Int(period_id)
 Else
-	cur_period_id=sem_info(3)
+	period_id=cur_period_id
 End If
-PubTerm=PubTerm&" AND cur_period_id="&toSqlString(cur_period_id)
+PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
 Connect conn
 sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM ViewRecruitInfo WHERE 1=1"&finalFilter&_
-		" GROUP BY TEACHER_ID,TEACHER_NAME,cur_period_id,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
+		" GROUP BY TEACHER_ID,TEACHER_NAME,PERIOD_ID,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then
   rs.PageSize=CInt(Request.Form("pageSize"))
@@ -52,13 +54,13 @@ End If
 </head>
 <body bgcolor="ghostwhite">
 <center>
-<form id="search" method="post" onsubmit="if(Chk_Select())return chkField();else return false">
-<font size=4><b>学员导师名单(按姓名排序)</b></font>
+<form id="search" method="post">
+<font size=4><b><%=teachtype_name%> 学员导师名单(按姓名排序)</b></font>
 <table cellspacing="1" cellpadding="1">
 <tr><td><table width="400" cellspacing="1" cellpadding="1">
 <tr><td>学生类型&nbsp;<select name="In_TEACHTYPE_ID"><%
 GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id,"AND TEACHTYPE_ID IN (5,6,7,9)"
-%></select></td><td>学期&nbsp;<%=semesterList("In_PERIOD_ID",Int(cur_period_id))%></td></tr></table></td></tr>
+%></select></td><td>学期&nbsp;<%=semesterList("In_PERIOD_ID",Int(period_id))%></td></tr></table></td></tr>
 <tr align="center"><td>
 	<!--查找-->
 	<select name="field" onchange="ReloadOperator()">
@@ -117,7 +119,7 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
 			countRecruitInfo=rs("Count")
 			tid=rs("Teacher_Id")
 			sql="SELECT RECRUIT_ID,LIST_ID,SPECIALITY_NAME,RESEARCH_WAYNAME,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM ViewRecruitInfo WHERE TEACHER_ID="&_
-					tid&" AND cur_period_id="&cur_period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
+					tid&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
 			GetRecordSetNoLock conn,rs2,sql,result
 			j=0
 			Do While Not rs2.EOF
@@ -148,7 +150,7 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
 				k=k+1
 %><td bgcolor="<%=tdbgcolor%>"><%
 				If Len(confirmedNum) Then
-%><a href="#" onclick="return showApplyList(<%=rs2("RECRUIT_ID")%>)">查看确认名单</a><%
+%><a href="#" onclick="return showApplyList(<%=rs2("RECRUIT_ID")%>);">查看确认名单</a><%
 				End If
 %></td></tr><%
 				rs2.MoveNext()
@@ -159,7 +161,7 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
   %>
 </table>
 <input type="hidden" name="In_TEACHTYPE_ID2" value="<%=teachtype_id%>" />
-<input type="hidden" name="In_PERIOD_ID2" value="<%=cur_period_id%>" />
+<input type="hidden" name="In_PERIOD_ID2" value="<%=period_id%>" />
 <input type="hidden" name="finalFilter2" value="<%=Request.Form("finalFilter")%>">
 <input type="hidden" name="pageNo" value="<%=Request.Form("pageNo")%>" />
 <input type="hidden" name="pageSize" value="<%=Request.Form("pageSize")%>" />

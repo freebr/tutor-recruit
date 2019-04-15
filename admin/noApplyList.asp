@@ -14,21 +14,7 @@ If Not IsNumeric(stuType) Or  Not IsNumeric(cur_period_id) Or cur_period_id="0" 
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
-%><html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
-<style type="text/css">
-	p.true_flag { color:#0c0 }
-	p.false_flag { color:#aaa }
-</style>
-</head>
-<body bgcolor="ghostwhite" onload="On_Load();">
-<center>
-<%
+
 ' 对查询条件作等效转换
 Dim regExp,matches,op:Set regExp=New RegExp
 regExp.Pattern="(PERMITTED|PROFILE_FILLED) (=|<>) '(.*)'$"
@@ -80,7 +66,20 @@ Else
   If rs.PageCount<>0 Then rs.AbsolutePage=1
 	PageNo=1
 End If
-%>
+%><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../scripts/utils.js"></script>
+<script type="text/javascript" src="../scripts/query.js"></script>
+<script type="text/javascript" src="../scripts/admin.js"></script>
+<style type="text/css">
+	p.true_flag { color:#0c0 }
+	p.false_flag { color:#aaa }
+</style>
+</head>
+<body bgcolor="ghostwhite" onload="On_Load();">
+<center>
 <font size=4><b>未选导师学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
@@ -129,7 +128,7 @@ Next
 <%
 Dim ArrayList(1,5),k
 Table="ViewRecruitInfo"
-WhereStr="AND VALID=1 AND TEACHTYPE_ID="&stuType&" AND cur_period_id="&cur_period_id
+WhereStr="AND TEACHTYPE_ID="&stuType&" AND PERIOD_ID="&cur_period_id
 k=0
 
 ArrayList(k,0)="导师"

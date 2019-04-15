@@ -74,7 +74,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<link href="css.css" rel="stylesheet" type="text/css">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%
@@ -120,7 +120,7 @@ Case 2	' 数据读取，导入到数据库
 			Else
 				fieldValue(0)=s
 				' 职称
-				s=getItemIdByName(rs("职称"),"PRO_DUTYID","PRO_DUTYNAME","CODE_PRO_DUTY")
+				s=getItemIdByName(rs("职称"),"PRO_DUTYID","PRO_DUTYNAME","ViewDutyInfo")
 				fieldValue(1)=s
 				
 				' 专业学位类型
@@ -145,7 +145,7 @@ Case 2	' 数据读取，导入到数据库
 					End If
 				Next
 				For i=0 To UBound(arrSpec)
-					specId=getItemIdByName(arrSpec(i),"SPECIALITY_ID","SPECIALTY_NAME","CODE_SPECIALITY")
+					specId=getItemIdByName(arrSpec(i),"SPECIALITY_ID","SPECIALTY_NAME","ViewSpecialityInfo")
 					If specId=0 Then
 						specName=toSqlString(arrSpec(i))
 					Else
@@ -229,12 +229,10 @@ Case 2	' 数据读取，导入到数据库
 	CloseConn connExcel
 	
 	' 刷新指导名额
-	Dim sem_info
 	Dim countInsert,countUpdate
 	
-	sem_info=getCurrentSemester()
 	sql="CREATE TABLE #ret(CountInsert int,CountUpdate int,CountError int,IsError bit,ErrMsg nvarchar(MAX));"&_
-			"INSERT INTO #ret EXEC sp_updateRecruitQuota "&sem_info(0)&","&sem_info(1)&","&updateTime&",'"&stuTypes&"',"&removeAllRecInfo&","&appendQuota&"; SELECT * FROM #ret"
+			"INSERT INTO #ret EXEC spUpdateRecruitQuota "&sem_info(0)&","&sem_info(1)&","&updateTime&",'"&stuTypes&"',"&removeAllRecInfo&","&appendQuota&"; SELECT * FROM #ret"
 	Connect conn
 	Set rs=conn.Execute(sql).NextRecordSet
 	countInsert=rs("CountInsert")

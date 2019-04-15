@@ -4,25 +4,25 @@
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
 stuType=Request.form("In_TEACHTYPE_ID2")
-spec_name=Request.form("In_SPECIALITY_NAME")
 cur_period_id=Request.form("In_PERIOD_ID2")
 tutor_id=Request.form("In_TEACHER_ID")
+spec_id=Request.form("In_SPECIALITY_ID")
 
 FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(spec_name)
+FormGetToSafeRequest(spec_id)
 FormGetToSafeRequest(cur_period_id)
 FormGetToSafeRequest(tutor_id)
 
-PageNo=Request.Form("In_PageNo2")
-PageSize=Request.Form("In_PageSize2")
-
-If cur_period_id="" or stuType="" or tutor_id="" or spec_name="" Then
+If cur_period_id="" Or stuType="" Or tutor_id="" Or spec_id="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整，请确认是否已选择导师和专业！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
 
+PageNo=Request.Form("In_PageNo2")
+PageSize=Request.Form("In_PageSize2")
+
 Connect conn
-sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_NAME="&toSqlString(spec_name)&" AND cur_period_id="&cur_period_id&" AND TEACHTYPE_ID="&stuType&" AND VALID=1"
+sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_ID="&spec_id&" AND PERIOD_ID="&cur_period_id&" AND TEACHTYPE_ID="&stuType
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
