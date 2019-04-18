@@ -71,7 +71,7 @@ Response.Expires=-1%>
 	span.hidden {color:#666}
 </style>
 </head>
-<body bgcolor="ghostwhite">
+<body bgcolor="ghostwhite" onload="On_Load()">
 <center>
 <font size=4><b>已选导师学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
