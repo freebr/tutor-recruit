@@ -3,21 +3,20 @@
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 stat=Request.QueryString("stat")
 If stat="" Then stat=0
-stuType=Request.Form("In_TEACHTYPE_ID")
-period_id=Request.Form("In_PERIOD_ID")
+stu_type=Request.Form("In_TEACHTYPE_ID2")
+period_id=Request.Form("In_PERIOD_ID2")
 finalFilter=Request.Form("finalFilter2")
+page_no=Request.Form("In_PAGE_NO2")
+page_size=Request.Form("In_PAGE_SIZE2")
 FormGetToSafeRequest(stat)
-FormGetToSafeRequest(stuType)
+FormGetToSafeRequest(stu_type)
 FormGetToSafeRequest(period_id)
-
-PageNo=Request.Form("In_PageNo")
-PageSize=Request.Form("In_pageSize")
 
 If Not IsNumeric(stat) Then
 	errdesc="参数无效。":bError=True
 ElseIf stat<0 Or stat>4 Then
 	errdesc="参数无效。":bError=True
-ElseIf IsEmpty(period_id) Or IsEmpty(stuType) Then
+ElseIf IsEmpty(period_id) Or IsEmpty(stu_type) Then
 	errdesc="参数无效。":bError=True
 End If
 If bError Then
@@ -27,8 +26,10 @@ End If
 
 Dim conn,sql
 Dim mail_id:mail_id=getTutorSystemMailIdByType(Now)
-Dim arrSelStu:arrSelStu=Split(Request.Form("sel"),",")
-Dim arrSelTurn:arrSelTurn=Split(Request.Form("sel_turn"),",")
+Dim ids:ids=Replace(Request.Form("sel")," ","")
+Dim id_turns:id_turns=Replace(Request.Form("sel_turn")," ","")
+Dim arrSelStu:arrSelStu=Split(ids,",")
+Dim arrSelTurn:arrSelTurn=Split(id_turns,",")
 Dim dictStu:Set dictStu=Server.CreateObject("Scripting.Dictionary")
 Dim bSendEmail:bSendEmail=False
 
@@ -43,24 +44,28 @@ Case Empty
 		Else
 			valid="0"
 		End If
-		sql="EXEC spSetApplyDisplayState "&toSqlString(Request.Form("sel_turn"))&","&valid
+		sql="EXEC spSetApplyDisplayState "&toSqlString(id_turns)&","&valid
 		conn.Execute sql
 	Else	' 删除记录
 		' 删除所选学生的全部填报信息
-		sql="EXEC spDeleteApplyInfo 0,"&toSqlString(Request.Form("sel"))
+		sql="EXEC spDeleteApplyInfo 0,"&toSqlString(ids)
 		conn.Execute sql
 		' 删除所选学生的指定填报信息
-		sql="EXEC spDeleteApplyInfo 1,"&toSqlString(Request.Form("sel_turn"))
+		sql="EXEC spDeleteApplyInfo 1,"&toSqlString(id_turns)
 		conn.Execute sql
 	End If
 Case 1,2,3,4	' 未提交/导师未确认/导师已确认/导师已退回
 	If stat=1 Or stat=2 Then
 		' 设置所选学生的全部填报信息
-		sql="EXEC spBatchSetApplyInfo 0,"&toSqlString(Request.Form("sel"))&",NULL,NULL,NULL,"&stat&",NULL"
+		sql="EXEC spBatchSetApplyInfo 0,"&toSqlString(ids)&",NULL,NULL,NULL,"&stat&",NULL"
 		conn.Execute sql
 	End If
 	' 设置所选学生的指定填报信息
-	sql="EXEC spBatchSetApplyInfo 1,"&toSqlString(Request.Form("sel_turn"))&",NULL,NULL,NULL,"&stat&",NULL"
+	Dim withdraw_reason
+	If stat=4 Then
+		withdraw_reason="名额限制"
+	End If
+	sql="EXEC spBatchSetApplyInfo 1,"&toSqlString(id_turns)&",NULL,NULL,NULL,"&stat&","&toSqlString(withdraw_reason)
 	conn.Execute sql
 End Select
 
@@ -109,13 +114,12 @@ If Len(stat) Then
 End If
 Set dictStu=Nothing
 CloseConn conn
-%>
-<form method="post" action="applyList.asp">
-	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
-	<input type="hidden" name="finalFilter" value="<%=finalFilter%>">
-	<input type="hidden" name="In_PageNo" value=<%=PageNo%>>
-	<input type="hidden" name="In_PageSize" value=<%=PageSize%>>
+%><form method="post" action="applyList.asp">
+	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>" />
+	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>" />
+	<input type="hidden" name="finalFilter" value="<%=finalFilter%>" />
+	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>" />
+	<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>" />
 </form>
 <script type="text/javascript">
 	alert("操作完成。");

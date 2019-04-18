@@ -2,15 +2,15 @@
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
-Dim stuType,PubTerm,PageNo,PageSize
+Dim stu_type,PubTerm,page_no,page_size
 
-stuType=Request.Form("In_TEACHTYPE_ID")
-cur_period_id=Request.Form("In_PERIOD_ID")
+stu_type=Request.Form("In_TEACHTYPE_ID")
+period_id=Request.Form("In_PERIOD_ID")
 finalFilter=Request.Form("finalFilter")
-FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(cur_period_id)
+FormGetToSafeRequest(stu_type)
+FormGetToSafeRequest(period_id)
 
-If Not IsNumeric(stuType) Or  Not IsNumeric(cur_period_id) Or cur_period_id="0" Then
+If Not IsNumeric(stu_type) Or Not IsNumeric(period_id) Or period_id="0" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
@@ -37,34 +37,34 @@ If matches.Count>0 Then
 End If
 If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
 '----------------------PAGE-------------------------
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("pageSize")
+page_no=""
+page_size=""
+If Request.Form("In_PAGE_NO").Count=0 Then
+	page_no=Request.Form("page_no")
+	page_size=Request.Form("pageSize")
 Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_pageSize")
+	page_no=Request.Form("In_PAGE_NO")
+	page_size=Request.Form("In_PAGE_SIZE")
 End If
 '------------------------------------------------------
 Connect conn
-sql="SELECT * FROM ViewNoApplyStudentInfo WHERE TEACHTYPE_ID="&stuType&finalFilter&" ORDER BY CLASS_NAME,STU_NAME"
+sql="SELECT * FROM ViewNoApplyStudentInfo WHERE TEACHTYPE_ID="&stu_type&finalFilter&" ORDER BY CLASS_NAME,STU_NAME"
 GetRecordSetNoLock conn,rs,sql,result
-If PageSize<>"" Then
-  rs.PageSize=CInt(PageSize)
+If page_size<>"" Then
+  rs.PageSize=CInt(page_size)
 Else
   rs.PageSize=120
-	PageSize=120
+	page_size=120
 End If
-If PageNo<>"" Then
-  If CInt(PageNo)<=rs.PageCount Then
-    rs.AbsolutePage=CInt(PageNo)
+If page_no<>"" Then
+  If CInt(page_no)<=rs.PageCount Then
+    rs.AbsolutePage=CInt(page_no)
 Else
     If rs.PageCount<>0 Then rs.AbsolutePage=1
   End If
 Else
   If rs.PageCount<>0 Then rs.AbsolutePage=1
-	PageNo=1
+	page_no=1
 End If
 %><html>
 <head>
@@ -84,8 +84,8 @@ End If
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>">
+<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 <!--查找-->
 <select name="field" id="field" onchange="ReloadOperator()">
 <option value="s_STU_NAME">学生姓名</option>
@@ -120,15 +120,15 @@ Next
 页&nbsp;共<%=rs.recordCount%>条
 </td></tr></form></table>
 <form id="fmStuList" method="post" action="arrangeTutor.asp">
-<input type="hidden" name="In_TEACHTYPE_ID2" value="<%=stuType%>">
-<input type="hidden" name="In_PERIOD_ID2" value="<%=cur_period_id%>">
-<input type="hidden" name="In_PageNo2" value=<%=PageNo%>>
-<input type="hidden" name="In_PageSize2" value=<%=PageSize%>>
+<input type="hidden" name="In_TEACHTYPE_ID2" value="<%=stu_type%>">
+<input type="hidden" name="In_PERIOD_ID2" value="<%=period_id%>">
+<input type="hidden" name="In_PAGE_NO2" value="<%=page_no%>">
+<input type="hidden" name="In_PAGE_SIZE2" value="<%=page_size%>">
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <%
 Dim ArrayList(1,5),k
 Table="ViewRecruitInfo"
-WhereStr="AND TEACHTYPE_ID="&stuType&" AND PERIOD_ID="&cur_period_id
+WhereStr="AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id
 k=0
 
 ArrayList(k,0)="导师"
@@ -141,7 +141,7 @@ ArrayList(k,5)=WhereStr
 k=1
 ArrayList(k,0)="专业"
 ArrayList(k,1)=Table
-ArrayList(k,2)="SPECIALITY_ID"
+ArrayList(k,2)="SPECIALITY_HASH"
 ArrayList(k,3)="SPECIALITY_NAME"
 ArrayList(k,4)=""
 ArrayList(k,5)=WhereStr
@@ -154,36 +154,36 @@ Get_ListJavaMenu ArrayList,k,FormName,""
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <!--报名学生信息-->
   <tr bgcolor="gainsboro" align="center" height="25">
-    <td align=center width="100">学号</td>
-    <td width="150" align=center>姓名</td>
-    <td width="50" align=center>性别</td>
-		<td align=center>班级</td>
-		<td align=center>系统权限</td>
-		<td align=center>个人资料状态</td>
-    <td width="30" align=center>选择</td>
+    <td align="center" width="100">学号</td>
+    <td width="150" align="center">姓名</td>
+    <td width="50" align="center">性别</td>
+		<td align="center">班级</td>
+		<td align="center">系统权限</td>
+		<td align="center">个人资料状态</td>
+    <td width="30" align="center">选择</td>
   </tr>
   <%
   For i=1 to rs.PageSize
       If rs.EOF Then Exit For
   %>
   <tr bgcolor="ghostwhite">
-    <td align=center><%=HtmlEncode(rs("STU_NO"))%></td>
-    <td align=center><a href="#" onclick="return showStudentInfo('<%=rs("STU_ID")%>')"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
-    <td align=center><%=HtmlEncode(rs("SEX"))%></td>
-    <td align=center><%=HtmlEncode(rs("CLASS_NAME"))%></td>
-    <td align=center><%
+    <td align="center"><%=HtmlEncode(rs("STU_NO"))%></td>
+    <td align="center"><a href="#" onclick="return showStudentInfo('<%=rs("STU_ID")%>')"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
+    <td align="center"><%=HtmlEncode(rs("SEX"))%></td>
+    <td align="center"><%=HtmlEncode(rs("CLASS_NAME"))%></td>
+    <td align="center"><%
 			If rs("PERMITTED") Then
 %><p class="true_flag">开放</p><%
 			Else
 %><p class="false_flag">不开放</p><%
 			End If %></td>
-    <td align=center><%
+    <td align="center"><%
 			If rs("PROFILE_FILLED") Then
 %><p class="true_flag">已填写</p><%
 			Else
 %><p class="false_flag">未完善</p><%
 			End If %></td>
-    <td align=center><input type="checkbox" name="sel" value="<%=rs("STU_ID")%>">
+    <td align="center"><input type="checkbox" name="sel" value="<%=rs("STU_ID")%>">
 	</td>
   </tr>
   <%

@@ -6,8 +6,8 @@ Response.Charset="utf-8"%>
 <%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
 ids=Request.Form("sel")
 numRecord=UBound(Split(ids,","))+1
-curStep=Request.QueryString("step")
-Select Case curStep
+step=Request.QueryString("step")
+Select Case step
 Case vbNullString	' 选择页面
 	rarFilenamePostfix="(共"&numRecord&"份)"
 %><html>

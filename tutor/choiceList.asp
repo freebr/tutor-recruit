@@ -1,78 +1,58 @@
 ﻿<%Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
-<!--#include File="common.asp"-->
+<!--#include file="common.asp"-->
 <%If IsEmpty(Session("Tuser")) Then Response.Redirect("../error.asp?timeout")
-Dim object,Speciality_Name,PubTerm,PageNo,PageSize
+Dim teachtype_id,spec_hash,PubTerm,page_cur,page_size
 
-object=Request.form("In_TEACHTYPE_ID")
-Speciality_Name=Request.form("In_SPECIALITY_NAME")
-period_id=Request.form("In_PERIOD_ID")
+teachtype_id=Request.Form("In_TEACHTYPE_ID")
+spec_hash=Request.Form("In_SPECIALITY_HASH")
+period_id=Request.Form("In_PERIOD_ID")
+page_size=Request.Form("pageSize")
+page_cur=Request.Form("pageNo")
 finalFilter=Request.Form("finalFilter")
+If IsEmpty(finalFilter) Then finalFilter=vbNullString
 
-FormGetToSafeRequest(object)
-FormGetToSafeRequest(Speciality_Name)
+If Len(page_size)=0 Or Not IsNumeric(page_size) Then page_size=30 Else page_size=Int(page_size)
+If Len(page_cur)=0 Or Not IsNumeric(page_cur) Then page_cur=1 Else page_cur=Int(page_cur)
+
+FormGetToSafeRequest(teachtype_id)
+FormGetToSafeRequest(spec_hash)
 FormGetToSafeRequest(period_id)
 
-If object="" or Speciality_Name="" or period_id="" Then
+If IsEmpty(teachtype_id) Or IsEmpty(spec_hash) Or IsEmpty(period_id) Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
+	Response.End()
 End If
 
 Dim bOpen
 sem_info=getCurrentSemester()
-bOpen=tutclient.isOpenFor(Int(object),SYS_OPR_CONFIRM)
-'----------------------PAGE-------------------------
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("pageSize")
-Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_pageSize")
-End If
-'------------------------------------------------------
+bOpen=tutclient.isOpenFor(Int(teachtype_id),SYS_OPR_CONFIRM)
 
 Connect conn
-sql="SELECT TURN_NUM FROM TUTOR_SYSTEM_SETTINGS WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
+sql="SELECT TURN_NUM FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 GetRecordSetNoLock conn,rs,sql,result
-nTurn=rs("TURN_NUM")
+show_turn_num=rs("TURN_NUM")
 
-sql="SELECT * FROM VIEW_TUTOR_RECRUIT_INFO WHERE TEACHER_ID="&Session("tid")&" AND SPECIALITY_NAME="&toSqlString(Speciality_Name)&" AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
+sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("tid")&" AND SPECIALITY_HASH="&toSqlString(spec_hash)&" AND TEACHTYPE_ID="&teachtype_id&" AND PERIOD_ID="&period_id
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
+	Response.End()
 Else
-	recruitID=rs("RECRUIT_ID")
-	recruitQuota=rs("RECRUIT_QUOTA")
-	confirmedNum=rs("CONFIRMED_NUM")
+	recruit_id=rs("RECRUIT_ID")
+	recruit_quota=rs("RECRUIT_QUOTA")
+	count_confirmed=rs("CONFIRMED_NUM")
 End If
 CloseRs rs
 
-If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
-PubTerm="AND RECRUIT_ID="&recruitID&" AND TEACHTYPE_ID="&object&finalFilter
-OrderBy=" ORDER BY TURN_NUM DESC,APPLY_STATUS DESC,APPLY_TIME DESC,CLASS_NAME,STU_NAME"
-sql="IF EXISTS(SELECT 1 FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE APPLY_STATUS=2 AND TURN_NUM<"&nTurn&" AND VALID=1 "&PubTerm&") "&_
-		"SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE (APPLY_STATUS=2 AND TURN_NUM<"&nTurn&" OR APPLY_STATUS=4) AND VALID=1 "&PubTerm&OrderBy&_
-		" ELSE SELECT * FROM VIEW_TUTOR_STUDENT_APPLY_INFO_BY_TURN WHERE (APPLY_STATUS=2 AND TURN_NUM<="&nTurn&" OR APPLY_STATUS IN (3,4)) AND VALID=1 "&PubTerm&OrderBy
-GetRecordSetNoLock conn,rs,sql,result
-If PageSize<>"" Then
-  rs.PageSize=CInt(PageSize)
-Else
-  rs.PageSize=120
-	PageSize=120
-End If
-If PageNo<>"" Then
-  If CInt(PageNo)<=rs.PageCount Then
-		rs.AbsolutePage=CInt(PageNo)
-  Else
-		If rs.PageCount<>0 Then rs.AbsolutePage=1
-  End If
-Else
-  If rs.PageCount<>0 Then rs.AbsolutePage=1
-	PageNo=1
-End If
+sql="EXEC dbo.spQueryApplyInfo "&period_id&","&teachtype_id&","&recruit_id&","&show_turn_num&","&toSqlString(finalFilter)&","&page_size&","&page_cur
+Set rs = conn.Execute(sql)
+Set rs = rs.NextRecordSet()
+count_rec = rs(0).Value
+If page_size = -1 Then page_size = count_rec
+count_page = count_rec/page_size
+If Int(count_page)<>count_page Then count_page=Int(count_page)+1
+Set rs = rs.NextRecordSet()
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -95,8 +75,8 @@ End If
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=object%>">
-<input type="hidden" name="In_SPECIALITY_NAME" value="<%=Speciality_Name%>">
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=teachtype_id%>">
+<input type="hidden" name="In_SPECIALITY_HASH" value="<%=spec_hash%>">
 <input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 <!--查找-->
 <select id="field" name="field" onchange="ReloadOperator()">
@@ -113,28 +93,29 @@ End If
 <input type="submit" value="在结果中查找" onclick="genFinalFilter()">
 &nbsp;每页
 <select name="pageSize" onchange="this.form.submit()">
-<option value="120" <%If rs.PageSize=120 Then%>selected<%End If%>>120</option>
-<option value="240" <%If rs.PageSize=240 Then%>selected<%End If%>>240</option>
-<option value="360" <%If rs.PageSize=360 Then%>selected<%End If%>>360</option>
-<option value="480" <%If rs.PageSize=480 Then%>selected<%End If%>>480</option>
+<option value="-1" <%If page_size=-1 Then%>selected<%End If%>>全部</option>
+<option value="30" <%If page_size=30 Then%>selected<%End If%>>30</option>
+<option value="60" <%If page_size=60 Then%>selected<%End If%>>60</option>
+<option value="90" <%If page_size=90 Then%>selected<%End If%>>90</option>
+<option value="120" <%If page_size=120 Then%>selected<%End If%>>120</option>
 </select>
 条&nbsp;转到
 <select name="pageNo" onchange="this.form.submit()">
 <%
-For i=1 to rs.PageCount
+For i=1 to count_page
     Response.write "<option value="&i
-    If rs.AbsolutePage=i Then Response.write " selected"
+    If page_cur=i Then Response.write " selected"
     Response.write ">"&i&"</option>"
 Next
 %></select>
-页&nbsp;共<%=rs.recordCount%>条
+页&nbsp;共<%=count_rec%>条
 </td></tr></form></table>
 <form id="fmConfirm" method="post" action="doChoice.asp?type=0">
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=object%>">
-<input type="hidden" name="In_SPECIALITY_NAME" value="<%=Speciality_Name%>">
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=teachtype_id%>">
+<input type="hidden" name="In_SPECIALITY_HASH" value="<%=spec_hash%>">
 <input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
-<input type="hidden" name="In_PageNo" value="<%=PageNo%>">
-<input type="hidden" name="In_PageSize" value="<%=PageSize%>">
+<input type="hidden" name="In_PAGE_NO" value="<%=page_cur%>">
+<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>">
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray" ID="Table2">
   <!--报名学生信息-->
   <tr bgcolor="gainsboro" align="center" height="25">
@@ -150,9 +131,11 @@ Next
   </tr>
   <%
   Dim arrCssClass:arrCssClass=Array("","unaccepted","unaccepted","accepted","withdrawn")
-  For i=1 to rs.PageSize
+  For i=1 to page_size
       If rs.EOF Then Exit For
     	stat=rs("APPLY_STATUS")
+    	is_confirmed=Abs(CInt(stat=3))
+      apply_info=rs("STU_ID")&"|"&rs("TURN_NUM")&"|"&is_confirmed
   %>
   <tr bgcolor="ghostwhite" height="25">
   	<td align=center><%=i%></td>
@@ -171,8 +154,7 @@ Next
 			stat_text=stat_text&"("&reason&")"
 		End If
 %><p class="<%=cssClass%>"><%=stat_text%></p></td>
-    <td align=center><input type="checkbox" name="sel" value="<%=rs("STU_ID")%>" /></td>
-    <input type="hidden" name="s<%=rs("STU_ID")%>" value="<%=Abs(CInt(rs("APPLY_STATUS")=3))%>" />
+    <td align=center><input type="checkbox" name="sel" value="<%=apply_info%>" /></td>
   </tr><%
   	rs.MoveNext()
   Next
@@ -181,7 +163,7 @@ Next
 <table width="900" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="ghostwhite">
 <td width="250">
-本方向名额数:&nbsp;<strong><%=recruitQuota%></strong><br />已确认人数:&nbsp;<strong><%=confirmedNum%></strong>&nbsp;剩余名额:&nbsp;<strong><%=recruitQuota-confirmedNum%></strong></td>
+本方向名额数:&nbsp;<strong><%=recruit_quota%></strong><br />已确认人数:&nbsp;<strong><%=count_confirmed%></strong>&nbsp;剩余名额:&nbsp;<strong><%=recruit_quota-count_confirmed%></strong></td>
 <td align="right">全选<input type="checkbox" onclick="checkAll()" id="chk" name="chk">
 <input type="button" value="确认选择名单" onclick="doChoice(0)" <%If Not bOpen Then %>disabled <% End If %>/><br />
 <input type="text" name="reasontext" id="reasontext" size="60" style="display:none" value="名额限制" onfocus="setTimeout('document.execCommand(\'selectAll\')',10)" />

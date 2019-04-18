@@ -16,7 +16,7 @@
 <body bgcolor="ghostwhite">
 <center>
 <%
-Dim finalFilter,PageNo,PageSize
+Dim finalFilter,page_no,page_size
 
 finalFilter=Request.Form("finalFilter")
 ' 对查询条件作等效转换
@@ -37,14 +37,14 @@ If matches.Count>0 Then
 End If
 If Len(finalFilter) Then finalFilter="AND "&finalFilter
 '----------------------PAGE-------------------------
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("pageSize")
+page_no=""
+page_size=""
+If Request.Form("In_PAGE_NO").Count=0 Then
+	page_no=Request.Form("page_no")
+	page_size=Request.Form("pageSize")
 Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_pageSize")
+	page_no=Request.Form("In_PAGE_NO")
+	page_size=Request.Form("In_PAGE_SIZE")
 End If
 '------------------------------------------------------
 Connect conn
@@ -125,8 +125,8 @@ Next
 </td><td>全选<input type="checkbox" onclick="checkAll()" id="chk" />&nbsp;<input type="button" value="开放" onclick="setPermission(0)">&nbsp;<input type="button" value="关闭" onclick="setPermission(1)">
 &nbsp;<input type="button" value="删除权限记录" onclick="setPermission(2)"></td></tr></form></table>
 <form id="fmStuList" method="post" action="setPermission.asp?open=0">
-<input type="hidden" name="In_PageNo" value=<%=PageNo%>>
-<input type="hidden" name="In_PageSize" value=<%=PageSize%>>
+<input type="hidden" name="In_PAGE_NO" value=<%=page_no%>>
+<input type="hidden" name="In_PAGE_SIZE" value=<%=page_size%>>
 <table width="95%" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <!--报名学生信息-->
   <tr bgcolor="gainsboro" align="center" height="25">

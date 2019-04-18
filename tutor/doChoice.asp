@@ -9,14 +9,14 @@ If IsNull(opr) Then opr=0
 If Not IsNumeric(opr) Then opr=0
 
 stuType=Request.Form("In_TEACHTYPE_ID")
-spec_id=Request.Form("In_SPECIALITY_ID")
+spec_hash=Request.Form("In_SPECIALITY_HASH")
 period_id=Request.Form("In_PERIOD_ID")
 
 FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(spec_id)
+FormGetToSafeRequest(spec_hash)
 FormGetToSafeRequest(period_id)
-PageNo=Request.Form("In_PageNo")
-PageSize=Request.Form("In_PageSize")
+page_no=Request.Form("In_PAGE_NO")
+page_size=Request.Form("In_PAGE_SIZE")
 
 Dim bOpen:bOpen=tutclient.isOpenFor(Int(stuType),SYS_OPR_CONFIRM) Or Session("Debug")
 If Not bOpen Then
@@ -24,21 +24,22 @@ If Not bOpen Then
 	Response.End()
 End If
 
-If period_id="" or stuType="" Then
+If IsEmpty(period_id) Or IsEmpty(stuType) Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整或格式不正确！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
 
-Dim ids,arrIds,selcount
+Dim ids,arr_ids,arr_apply_info,selcount
 
 selcount=0
-ReDim arrIds(Request.Form("sel").Count)
+ReDim arr_ids(Request.Form("sel").Count)
 For i=1 To Request.Form("sel").Count
-	If Request.Form("s"&Request.Form("sel")(i))="0" Then
+	arr_apply_info=Split(Request.Form("sel")(i),"|")
+	If arr_apply_info(2)="0" Then	' 导师未确认该学生填报
 		selcount=selcount+1
-		arrIds(selcount)=Request.Form("sel")(i)
+		arr_ids(selcount)=arr_apply_info(0)&"|"&arr_apply_info(1)
 		If Len(ids) Then ids=ids&","
-		ids=ids&arrIds(selcount)
+		ids=ids&arr_ids(selcount)
 	End If
 Next
 If Request.Form("sel").Count=0 Then
@@ -51,20 +52,18 @@ If selcount=0 Then
 End If
 
 Connect conn
-sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("tid")&" AND TEACHTYPE_ID="&stuType&" AND PERIOD_ID="&period_id&" AND SPECIALITY_ID="&spec_id
+sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("tid")&" AND TEACHTYPE_ID="&stuType&" AND PERIOD_ID="&period_id&" AND SPECIALITY_HASH='"&spec_hash&"'"
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
+	CloseRs rs
+	CloseConn conn
 	Response.End()
 End If
-tutor_id=Session("Tid")
 recruit_id=rs("RECRUIT_ID").Value
 CloseRs rs
 
 Dim mail_id:mail_id=getTutorSystemMailIdByType(Now)
-sql="SELECT TURN_NUM FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester
-GetRecordSetNoLock conn,rs,sql,result
-turn_num=rs("TURN_NUM").Value
 Select Case opr
 Case 0	' 确认操作
 	sql="SELECT RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE RECRUIT_ID="&recruit_id
@@ -79,15 +78,12 @@ Case 0	' 确认操作
 	End If
 	confirmed_count=confirmed_count+selcount
 	
-	sql="EXEC spTutorClientAuditApply "&toSqlString(Request.Form("sel"))&","&recruit_id&","&
+	sql="EXEC spTutorClientAuditApply "&toSqlString(ids)&","&recruit_id&",1,NULL"
 	conn.Execute sql
 	logtxt0="教师["&Session("Tname")&"]在选导师系统执行确认填报操作。"
 Case 1	' 退回操作
 	withdraw_reason=Request.Form("reasontext")
-	sql=""
-	For i=1 To selcount
-		sql=sql&"EXEC spSetApplyInfo "&arrIds(i)&","&period_id&","&turn_num&","&tutor_id&","&recruit_id&",4,"&toSqlString(withdraw_reason)&";"
-	Next
+	sql="EXEC spTutorClientAuditApply "&toSqlString(ids)&","&recruit_id&",0,"&toSqlString(withdraw_reason)
 	conn.Execute sql
 	logtxt0="教师["&Session("Tname")&"]在选导师系统执行退回填报操作。"
 End Select
@@ -122,10 +118,10 @@ CloseConn conn
 
 %><form method="post" action="choiceList.asp">
 	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-	<input type="hidden" name="In_SPECIALITY_ID" value="<%=spec_id%>">
+	<input type="hidden" name="In_SPECIALITY_HASH" value="<%=spec_hash%>">
 	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
-	<input type="hidden" name="In_PageNo" value="<%=PageNo%>">
-	<input type="hidden" name="In_PageSize" value="<%=PageSize%>">
+	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>">
+	<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>">
 </form>
 <script type="text/javascript">
 	alert("操作完成。");

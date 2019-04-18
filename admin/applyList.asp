@@ -2,84 +2,85 @@
 Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
-<style type="text/css">
-	span.accepted { color:#090 }
-	span.unaccepted { color:#00f }
-	span.withdrawn { color:#c00 }
-	span.hidden { color:#666 }
-</style>
-</head>
-<body bgcolor="ghostwhite" onload="On_Load();">
-<center>
-<%
-	Dim stuType,PubTerm,PageNo,PageSize
+<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+	Dim object,PubTerm,page_no,page_size
 
-	stuType=Request.Form("In_TEACHTYPE_ID")
-	cur_period_id=Request.Form("In_PERIOD_ID")
-	query_apply_status=Request.Form("In_APPLY_STATUS")
+	object=Request.Form("In_TEACHTYPE_ID")
+	period_id=Request.Form("In_PERIOD_ID")
+	apply_status=Request.Form("In_APPLY_STATUS")
 	finalFilter=Request.Form("finalFilter")
-	FormGetToSafeRequest(stuType)
-	FormGetToSafeRequest(cur_period_id)
+	FormGetToSafeRequest(object)
+	FormGetToSafeRequest(period_id)
 
-	If cur_period_id="" or stuType="" Then
+	If period_id="" or object="" Then
 	%><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 		Response.end
 	End If
 	If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
-	PubTerm="AND cur_period_id="&cur_period_id&" AND TEACHTYPE_ID="&stuType&finalFilter
+	PubTerm="AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&object&finalFilter
 
-	If Len(query_apply_status)=0 Then query_apply_status="-1"
-	If query_apply_status<>"-1" Then
-		PubTerm=PubTerm&" AND APPLY_STATUS="&toSqlString(query_apply_status)
+	If Len(apply_status)=0 Then apply_status="-1"
+	If apply_status<>"-1" Then
+		PubTerm=PubTerm&" AND APPLY_STATUS="&toSqlString(apply_status)
 	End If
 	'----------------------PAGE-------------------------
-	PageNo=""
-	PageSize=""
-	If Request.Form("In_PageNo").Count=0 Then
-		PageNo=Request.Form("PageNo")
-		PageSize=Request.Form("pageSize")
+	page_no=""
+	page_size=""
+	If Request.Form("In_PAGE_NO").Count=0 Then
+		page_no=Request.Form("page_no")
+		page_size=Request.Form("pageSize")
 	Else
-		PageNo=Request.Form("In_PageNo")
-		PageSize=Request.Form("In_pageSize")
+		page_no=Request.Form("In_PAGE_NO")
+		page_size=Request.Form("In_PAGE_SIZE")
 	End If
 
 	'------------------------------------------------------
 	Connect conn
 	sql="SELECT * FROM ViewApplyInfo WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
 	GetRecordSetNoLock conn,rs,sql,result
-	If PageSize<>"" Then
-		rs.PageSize=CInt(PageSize)
+	If page_size<>"" Then
+		rs.PageSize=CInt(page_size)
 	Else
 		rs.PageSize=120
-		PageSize=120
+		page_size=120
 	End If
-	If PageNo<>"" Then
-		If CInt(PageNo)<=rs.PageCount Then
-		  rs.AbsolutePage=CInt(PageNo)
+	If page_no<>"" Then
+		If CInt(page_no)<=rs.PageCount Then
+		  rs.AbsolutePage=CInt(page_no)
 		Else
 		  If rs.PageCount<>0 Then rs.AbsolutePage=1
 		End If
 	Else
 		If rs.PageCount<>0 Then rs.AbsolutePage=1
-		PageNo=1
+		page_no=1
 	End If
-%><font size=4><b>已选导师学员名单</b></font>
-<table cellspacing=4 cellpadding=0>
+%><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../scripts/utils.js"></script>
+<script type="text/javascript" src="../scripts/query.js"></script>
+<script type="text/javascript" src="../scripts/admin.js"></script>
+<script type="text/javascript">
+	window.tabmgr=parent.tabmgr;
+</script>
+<style type="text/css">
+	span.accepted {color:#090}
+	span.unaccepted {color:#00f}
+	span.withdrawn {color:#c00}
+	span.hidden {color:#666}
+</style>
+</head>
+<body bgcolor="ghostwhite" onload="On_Load()">
+<center>
+<font size=4><b>已选导师学员名单</b></font>
+<table cellspacing="4" cellpadding="0">
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-<!--查找-->
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=object%>">
+<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 填报状态：<select name="In_APPLY_STATUS"><option value="-1">所有</option><%
-GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
+GetMenuListPubTerm "ApplyStatusInfo","ID","Name",apply_status,"AND ID>0"
 %></select>
 <select name="field" id="field" onchange="ReloadOperator()">
 <option value="s_STU_NAME">学生姓名</option>
@@ -116,11 +117,11 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 页&nbsp;共<%=rs.recordCount%>条
 </td></tr></form></table>
 <form id="fmView" method="post" action="setApplyStatus.asp">
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-<input type="hidden" name="In_APPLY_STATUS" value="<%=query_apply_status%>">
-<input type="hidden" name="In_PageNo" value=<%=PageNo%>>
-<input type="hidden" name="In_PageSize" value=<%=PageSize%>>
+<input type="hidden" name="In_TEACHTYPE_ID2" value="<%=object%>">
+<input type="hidden" name="In_PERIOD_ID2" value="<%=period_id%>">
+<input type="hidden" name="In_APPLY_STATUS2" value="<%=apply_status%>">
+<input type="hidden" name="In_PAGE_NO2" value=<%=page_no%>>
+<input type="hidden" name="In_PAGE_SIZE2" value=<%=page_size%>>
 <input type="hidden" name="finalFilter2" value="<%=Request.Form("finalFilter")%>">
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="ghostwhite">
@@ -136,10 +137,10 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 <input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setApplyStatus.asp?hide';this.form.submit();}" />
 <input type="button" value="删除填报记录" onclick="if(confirm('是否删除所选填报记录？这将恢复到未填报状态！'))this.form.submit();" />
 </td></tr>
-<tr bgcolor="ghostwhite"><td colspan="2"><table width=600" cellpadding="2" cellspacing="1"><%
+<tr bgcolor="ghostwhite"><td colspan="2"><table width="600" cellpadding="2" cellspacing="1"><%
 	Dim ArrayList(1,5),k
 	Table="ViewRecruitInfo"
-	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&stuType&" AND cur_period_id="&cur_period_id
+	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
 	k=0
 	
 	ArrayList(k,0)="导师"
@@ -152,13 +153,13 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 	k=1
 	ArrayList(k,0)="专业"
 	ArrayList(k,1)=Table
-	ArrayList(k,2)="SPECIALITY_ID"
+	ArrayList(k,2)="SPECIALITY_HASH"
 	ArrayList(k,3)="SPECIALITY_NAME"
 	ArrayList(k,4)=""
 	ArrayList(k,5)=WhereStr
 	FormName="fmView"
 	Get_ListJavaMenu ArrayList,k,FormName,""
-%><td>填报状态：<select name="apply_status"><%
+%><td>填报状态：<select name="new_apply_status"><%
 	For i=0 To UBound(arrApplyStatus)
 %><option value="<%=arrApplyStatus(i)(0)%>"><%=arrApplyStatus(i)(1)%></option><%
 	Next
@@ -167,16 +168,16 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 </tr></table></td></tr></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <tr bgcolor="gainsboro" align="center" height=25>
-    <td width="100" align=center>学号</td>
-    <td width="60" align=center>学生姓名</td>
-    <td width="120" align=center>班级</td>
-    <td width="80" align=center>学生提交时间</td>
-		<td width="120" align=center>第一志愿</td>
-		<td width="120" align=center>第二志愿</td>
-		<td width="120" align=center>第三志愿</td>
-		<td width="60" align=center>确认导师</td>
-		<td align=center>填报状态</td>
-    <td width="30" align=center>选择</td>
+    <td width="100" align="center">学号</td>
+    <td width="60" align="center">学生姓名</td>
+    <td width="120" align="center">班级</td>
+    <td width="80" align="center">学生提交时间</td>
+		<td width="120" align="center">第一志愿</td>
+		<td width="120" align="center">第二志愿</td>
+		<td width="120" align="center">第三志愿</td>
+		<td width="60" align="center">确认导师</td>
+		<td align="center">填报状态</td>
+    <td width="30" align="center">选择</td>
   </tr>
   <%
   Dim arrCssClass:arrCssClass=Array("","unaccepted","unaccepted","accepted","withdrawn")
@@ -189,13 +190,13 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 		End If
   %>
   <tr bgcolor="ghostwhite">
-    <td align=center><%=HtmlEncode(rs("STU_NO"))%></td>
-    <td align=center><a href="#" onclick="return showStudentInfo(<%=rs("STU_ID")%>);"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
-    <td align=center><%=HtmlEncode(rs("CLASS_NAME"))%></td>
-		<td align=center><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td><%
+    <td align="center"><%=HtmlEncode(rs("STU_NO"))%></td>
+    <td align="center"><a href="#" onclick="return showStudentInfo(<%=rs("STU_ID")%>);"><%=HtmlEncode(rs("STU_NAME"))%></a></td>
+    <td align="center"><%=HtmlEncode(rs("CLASS_NAME"))%></td>
+		<td align="center"><%=FormatDateTime(rs("APPLY_TIME"),2)%><br/><%=FormatDateTime(rs("APPLY_TIME"),4)%></td><%
 		For j=1 To 3
 			stat=rs("APPLY_STATUS"&j) %>
-    <td align=center>
+    <td align="center">
     <input type="checkbox" name="sel_turn" value="<%=rs("STU_ID")%>|<%=j%>"><%
     	If Not IsNull(rs("RECRUIT_ID"&j)) Then %>
    	<a href="#" onclick="return showTeacherResume('<%=rs("TUTOR_ID"&j)%>')"><%=HtmlEncode(rs("TUTOR_NAME"&j))%></a><br/><%=HtmlEncode(rs("SPECIALITY_NAME"&j))%><br/><%
@@ -214,13 +215,13 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",query_apply_status,"AND ID>0"
 %><span class="<%=cssClass%>"><%=stat_text%></span></p><%
 			End If %></td><%
 		Next %>
-    <td align=center><%
+    <td align="center"><%
    	If rs("TUTOR_ID")<>0 Then
 %><a href="#" onclick="return showTeacherResume(<%=rs("TUTOR_ID")%>);"><p><%=HtmlEncode(rs("TUTOR_NAME"))%></p></a><%
 		End If
 %></td>
-		<td align=center><%=rs("APPLY_STATUS_NAME")%><%=tutor_reply_time%></td>
-    <td align=center><input type="checkbox" name="sel" value="<%=rs("STU_ID")%>"></td>
+		<td align="center"><%=rs("APPLY_STATUS_NAME")%><%=tutor_reply_time%></td>
+    <td align="center"><input type="checkbox" name="sel" value="<%=rs("STU_ID")%>"></td>
   </tr><%
   	rs.MoveNext()
   Next

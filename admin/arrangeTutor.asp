@@ -3,26 +3,25 @@
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
-stuType=Request.form("In_TEACHTYPE_ID2")
-cur_period_id=Request.form("In_PERIOD_ID2")
-tutor_id=Request.form("In_TEACHER_ID")
-spec_id=Request.form("In_SPECIALITY_ID")
+stu_type=Request.Form("In_TEACHTYPE_ID2")
+period_id=Request.Form("In_PERIOD_ID2")
+page_no=Request.Form("In_PAGE_NO2")
+page_size=Request.Form("In_PAGE_SIZE2")
+tutor_id=Request.Form("In_TEACHER_ID")
+spec_hash=Request.Form("In_SPECIALITY_HASH")
 
-FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(spec_id)
-FormGetToSafeRequest(cur_period_id)
+FormGetToSafeRequest(stu_type)
+FormGetToSafeRequest(period_id)
 FormGetToSafeRequest(tutor_id)
+FormGetToSafeRequest(spec_hash)
 
-If cur_period_id="" Or stuType="" Or tutor_id="" Or spec_id="" Then
+If period_id="" Or stu_type="" Or tutor_id="" Or spec_hash="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整，请确认是否已选择导师和专业！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
 
-PageNo=Request.Form("In_PageNo2")
-PageSize=Request.Form("In_PageSize2")
-
 Connect conn
-sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_ID="&spec_id&" AND PERIOD_ID="&cur_period_id&" AND TEACHTYPE_ID="&stuType
+sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_HASH="&toString(spec_hash)&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&stu_type
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
@@ -44,7 +43,7 @@ sql=""
 turn_num=1
 For i=1 To selcount
 	stu_id=Request.Form("sel")(i)
-	sql=sql&"EXEC spSetApplyInfo "&stu_id&","&cur_period_id&","&turn_num&","&tutor_id&","&recruit_id&",3;"
+	sql=sql&"EXEC spSetApplyInfo "&stu_id&","&period_id&","&turn_num&","&tutor_id&","&recruit_id&",3;"
 Next
 If Len(sql) Then conn.Execute sql
 
@@ -52,10 +51,10 @@ CloseConn conn
 CloseRs rs
 %>
 <form method="post" action="applyList.asp">
-	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-	<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-	<input type="hidden" name="In_PageNo" value=<%=PageNo%>>
-	<input type="hidden" name="In_PageSize" value=<%=PageSize%>>
+	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>" />
+	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>" />
+	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>" />
+	<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>" />
 </form>
 <script type="text/javascript">
 	alert("操作完成。");

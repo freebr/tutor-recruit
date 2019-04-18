@@ -2,17 +2,17 @@
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
-Dim recruitID,PubTerm,PageNo,PageSize
+Dim recruitID,PubTerm,page_no,page_size
 
-recruitID=Request.QueryString("recruit_id")
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("pageSize")
+recruitID=Request.QueryString("recruit-id")
+page_no=""
+page_size=""
+If Request.Form("In_PAGE_NO").Count=0 Then
+	page_no=Request.Form("page_no")
+	page_size=Request.Form("pageSize")
 Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_pageSize")
+	page_no=Request.Form("In_PAGE_NO")
+	page_size=Request.Form("In_PAGE_SIZE")
 End If
 
 Connect conn
@@ -30,21 +30,21 @@ CloseRs rs
 
 sql="SELECT * FROM ViewApplyInfoByTurn WHERE RECRUIT_ID="&recruitID&" AND APPLY_STATUS=3 ORDER BY TUTOR_REPLY_TIME DESC"
 GetRecordSetNoLock conn,rs,sql,result
-If PageSize<>"" Then
-	rs.PageSize=CInt(PageSize)
+If page_size<>"" Then
+	rs.PageSize=CInt(page_size)
 Else
 	rs.PageSize=10
-	PageSize=10
+	page_size=10
 End If
-If PageNo<>"" Then
-	If CInt(PageNo)<=rs.PageCount Then
-	  rs.AbsolutePage=CInt(PageNo)
+If page_no<>"" Then
+	If CInt(page_no)<=rs.PageCount Then
+	  rs.AbsolutePage=CInt(page_no)
 	Else
 	  If rs.PageCount<>0 Then rs.AbsolutePage=1
 	End If
 Else
 	If rs.PageCount<>0 Then rs.AbsolutePage=1
-	PageNo=1
+	page_no=1
 End If
 %><html>
 <head>
@@ -86,7 +86,6 @@ Next
     <td width="150">学生提交时间</td>
 		<td width="150">导师确认时间</td>
   </tr><%
-Dim arrTurnName:arrTurnName=Array("","第一志愿","第二志愿","第三志愿")
 Dim id:id=(rs.AbsolutePage-1)*rs.PageSize
 For i=1 to rs.PageSize
   If rs.EOF Then Exit For

@@ -1,34 +1,34 @@
 ﻿<!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
-Dim stuType,spec_id,PubTerm,PageNo,PageSize
+Dim stu_type,spec_id,PubTerm,page_no,page_size
 
-stuType=Request.Form("In_TEACHTYPE_ID")
+stu_type=Request.Form("In_TEACHTYPE_ID")
 spec_id=Request.Form("In_SPECIALITY_ID")
-cur_period_id=Request.Form("In_PERIOD_ID")
+period_id=Request.Form("In_PERIOD_ID")
 finalFilter=Request.Form("finalFilter")
 
-FormGetToSafeRequest(stuType)
+FormGetToSafeRequest(stu_type)
 FormGetToSafeRequest(spec_id)
-FormGetToSafeRequest(cur_period_id)
+FormGetToSafeRequest(period_id)
 
-If stuType="" or spec_id="" or cur_period_id="" Then
+If stu_type="" or spec_id="" or period_id="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()()
 End If
 
 Dim bOpen
 sem_info=getCurrentSemester()
-bOpen=tutclient.isOpenFor(Int(stuType),SYS_OPR_CONFIRM)
+bOpen=tutclient.isOpenFor(Int(stu_type),SYS_OPR_CONFIRM)
 
-PageNo=""
-PageSize=""
-If Request.Form("In_PageNo").Count=0 Then
-	PageNo=Request.Form("PageNo")
-	PageSize=Request.Form("PageSize")
+page_no=""
+page_size=""
+If Request.Form("In_PAGE_NO").Count=0 Then
+	page_no=Request.Form("page_no")
+	page_size=Request.Form("page_size")
 Else
-	PageNo=Request.Form("In_PageNo")
-	PageSize=Request.Form("In_PageSize")
+	page_no=Request.Form("In_PAGE_NO")
+	page_size=Request.Form("In_PAGE_SIZE")
 End If
 
 Connect conn
@@ -36,7 +36,7 @@ sql="SELECT TURN_NUM FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_
 GetRecordSetNoLock conn,rs,sql,result
 nTurn=rs("TURN_NUM")
 
-sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("TId")&" AND SPECIALITY_ID="&spec_id&" AND TEACHTYPE_ID="&stuType&" AND cur_period_id="&cur_period_id
+sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("TId")&" AND SPECIALITY_ID="&spec_id&" AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">招生信息不存在！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
@@ -49,27 +49,27 @@ End If
 CloseRs rs
 
 If Len(finalFilter) Then finalFilter=" AND ("&finalFilter&")"
-PubTerm="AND RECRUIT_ID="&recruitID&" AND TEACHTYPE_ID="&stuType&finalFilter
+PubTerm="AND RECRUIT_ID="&recruitID&" AND TEACHTYPE_ID="&stu_type&finalFilter
 OrderBy=" ORDER BY TURN_NUM DESC,APPLY_STATUS DESC,APPLY_TIME DESC,CLASS_NAME,STU_NAME"
 sql="IF EXISTS(SELECT 1 FROM ViewApplyInfoByTurn WHERE APPLY_STATUS=2 AND TURN_NUM<"&nTurn&" AND VALID=1 "&PubTerm&") "&_
 		"SELECT * FROM ViewApplyInfoByTurn WHERE (APPLY_STATUS=2 AND TURN_NUM<"&nTurn&" OR APPLY_STATUS=4) AND VALID=1 "&PubTerm&OrderBy&_
 		" ELSE SELECT * FROM ViewApplyInfoByTurn WHERE (APPLY_STATUS=2 AND TURN_NUM<="&nTurn&" OR APPLY_STATUS IN (3,4)) AND VALID=1 "&PubTerm&OrderBy
 GetRecordSetNoLock conn,rs,sql,result
-If PageSize<>"" Then
-  rs.PageSize=CInt(PageSize)
+If page_size<>"" Then
+  rs.PageSize=CInt(page_size)
 Else
   rs.PageSize=120
-	PageSize=120
+	page_size=120
 End If
-If PageNo<>"" Then
-  If CInt(PageNo)<=rs.PageCount Then
-		rs.AbsolutePage=CInt(PageNo)
+If page_no<>"" Then
+  If CInt(page_no)<=rs.PageCount Then
+		rs.AbsolutePage=CInt(page_no)
   Else
 		If rs.PageCount<>0 Then rs.AbsolutePage=1
   End If
 Else
   If rs.PageCount<>0 Then rs.AbsolutePage=1
-	PageNo=1
+	page_no=1
 End If
 %><html>
 <head>
@@ -93,9 +93,9 @@ End If
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>">
 <input type="hidden" name="In_SPECIALITY_ID" value="<%=spec_id%>">
-<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
+<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 <!--查找-->
 <select id="field" name="field" onchange="ReloadOperator()">
 <option value="s_STU_NAME">学生姓名</option>
@@ -128,11 +128,11 @@ Next
 页&nbsp;共<%=rs.recordCount%>条
 </td></tr></form></table>
 <form id="fmConfirm" method="post" action="doChoice.asp?type=0">
-<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
+<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>">
 <input type="hidden" name="In_SPECIALITY_ID" value="<%=spec_id%>">
-<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-<input type="hidden" name="In_PageNo" value="<%=PageNo%>">
-<input type="hidden" name="In_PageSize" value="<%=PageSize%>">
+<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
+<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>">
+<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>">
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray" ID="Table2">
   <!--报名学生信息-->
   <tr bgcolor="gainsboro" align="center" height="25">
@@ -201,8 +201,7 @@ End If %>
 </form>
 </center>
 </body>
-</html>
-<%
+</html><%
   CloseConn conn
   CloseRs rs
 %>

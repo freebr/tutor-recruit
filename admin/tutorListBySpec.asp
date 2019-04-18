@@ -1,7 +1,6 @@
-﻿<%Response.Expires=-1%>
-<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
 sem_info=getCurrentSemester()
 teachtype_id=Request.Form("In_TEACHTYPE_ID")
@@ -13,16 +12,18 @@ If Len(teachtype_id) And teachtype_id<>"0" Then
 Else
 	teachtype_id=5
 End If
+teachtype_name=getStudentTypeName(teachtype_id)
+
 PubTerm=PubTerm&" AND TEACHTYPE_ID="&toSqlString(teachtype_id)
 If Len(period_id) And period_id<>"0" Then
 	period_id=Int(period_id)
 Else
-	period_id=sem_info(3)
+	period_id=cur_period_id
 End If
 PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
 Connect conn
-sql="SELECT SPECIALITY_NAME,COUNT(*) AS [COUNT] FROM VIEW_TUTOR_LIST WHERE VALID=1 "&Request.Form("finalFilter")&" GROUP BY SPECIALITY_NAME"
+sql="SELECT SPECIALITY_NAME,COUNT(*) AS [COUNT] FROM ViewTutorInfo WHERE VALID=1 "&Request.Form("finalFilter")&" GROUP BY SPECIALITY_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then
   rs.PageSize=CInt(Request.Form("pageSize"))
@@ -52,11 +53,11 @@ End If
 </head>
 <body bgcolor="ghostwhite">
 <center><form id="search" method="post">
-<font size=4><b>学员导师名单(按专业排序)</b></font>
+<font size=4><b><%=teachtype_name%> 学员导师名单(按专业排序)</b></font>
 <table cellspacing="1" cellpadding="1">
 <tr><td><table width="400" cellspacing="1" cellpadding="1">
 <tr><td>学生类型&nbsp;<select name="In_TEACHTYPE_ID"><%
-GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id,"AND TEACHTYPE_ID IN (5,6,7,9)"
+GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id,"AND TEACHTYPE_ID IN (5,6,7,9)"
 %></select></td><td>学期&nbsp;<%=semesterList("In_PERIOD_ID",Int(period_id))%></td></tr></table></td></tr>
 <tr align=center><td>
 	<!--查找-->
@@ -112,13 +113,13 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
   	k=0:l=1
   	For i=1 to rs.PageSize
 			If rs.EOF Then Exit For
-			strSub="SELECT * FROM VIEW_TUTOR_RECRUIT_INFO WHERE SPECIALITY_NAME="&toSqlString(rs("SPECIALITY_NAME"))&PubTerm
+			strSub="SELECT * FROM ViewRecruitInfo WHERE SPECIALITY_NAME="&toSqlString(rs("SPECIALITY_NAME"))&PubTerm
 			GetRecordSetNoLock conn,rs2,strSub,result
 			j=0
 			Do While Not rs2.EOF
 				listID=rs2("LIST_ID")
 				recruitID=rs2("RECRUIT_ID")
-				strSub2="SELECT RECRUIT_ID,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM VIEW_TUTOR_RECRUIT_INFO WHERE RECRUIT_ID="&recruitID
+				strSub2="SELECT RECRUIT_ID,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM ViewRecruitInfo WHERE RECRUIT_ID="&recruitID
 				GetRecordSetNoLock conn,rs22,strSub2,result2
 				If Not rs22.EOF Then
 					recruitQuota=rs22(1)
@@ -146,7 +147,7 @@ GetMenuListPubTerm "CODE_TEACHTYPE","TEACHTYPE_ID","TEACHTYPE_NAME",teachtype_id
 					k=k+1
 %><td bgcolor="<%=tdbgcolor%>" align=center><%
 				If Len(confirmedNum) Then
-%><a href="#" onclick="tabmgr.goTo('applyList.asp?recruit_id=<%=rs2("RECRUIT_ID")%>','查看填报学员名单',true);return false;">查看确认名单</a><%
+%><a href="#" onclick="return showApplyList(<%=rs2("RECRUIT_ID")%>);">查看确认名单</a><%
 				End If
 %></td></tr><%
 				End If

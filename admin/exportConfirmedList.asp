@@ -10,20 +10,20 @@ Else
 End If
 retlink=Request.QueryString("ret")
 
-stuType=Request.Form("In_TEACHTYPE_ID")
-cur_period_id=Request.Form("In_PERIOD_ID")
-query_recruit_status=Request.Form("In_RECRUIT_STATUS")
+stu_type=Request.Form("In_TEACHTYPE_ID2")
+period_id=Request.Form("In_PERIOD_ID2")
+apply_status=Request.Form("In_APPLY_STATUS2")
 finalFilter=Request.Form("finalFilter2")
 If Len(finalFilter) Then PubTerm=" AND "&finalFilter
-If Len(query_recruit_status) And query_recruit_status<>"-1" Then
-	PubTerm=PubTerm&" AND TUTOR_RECRUIT_STATUS="&query_recruit_status
+If Len(apply_status) And apply_status<>"-1" Then
+	PubTerm=PubTerm&" AND TUTOR_RECRUIT_STATUS="&apply_status
 End If
-FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(cur_period_id)
+FormGetToSafeRequest(stu_type)
+FormGetToSafeRequest(period_id)
 
-If cur_period_id="" or stuType="" Then
+If period_id="" or stu_type="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整或格式不正确！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.end
+	Response.End()
 End If
 
 Class ExcelGen
@@ -81,7 +81,7 @@ Class ExcelGen
 		  If Not rsCur.EOF Then
 				iCol=iColOffset
 				iRow=iRowOffset
-	  		sheet.Name=rsCur("SHEET_NAME")
+	  			sheet.Name=rsCur("SHEET_NAME")
 				For i=0 To UBound(arrFields)
 					strFieldName = arrFields(i)
 					spSheet.Cells(iRow, iCol).Value = strFieldName
@@ -159,7 +159,7 @@ If exportall=1 Then
 	obj(2)=9
 Else
 	ReDim obj(0)
-	obj(0)=stuType
+	obj(0)=stu_type
 End If
 sql=""
 For i=0 To UBound(obj)
@@ -169,7 +169,7 @@ For i=0 To UBound(obj)
 	Case 9:obj_name="MPAcc"
 	End Select
 	sheetName=obj_name&"选导师情况"
-	PubTerm2="cur_period_id="&cur_period_id&" AND TEACHTYPE_ID="&obj(i)&PubTerm
+	PubTerm2="PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&obj(i)&PubTerm
 	sql=sql&"SELECT STU_ID,''''+STU_NO AS STU_NO,STU_NAME,BEFORE_UNIT,DUTY,CLASS_NAME,(SELF_TEL+Char(9)) AS SELF_TEL,EMAIL,"&_
 		"TUTOR_NAME1,SPECIALITY_NAME1,TUTOR_NAME2,SPECIALITY_NAME2,TUTOR_NAME3,SPECIALITY_NAME3,TUTOR_NAME,"&_
 		"APPLY_STATUS_NAME,TUTOR_REPLY_TIME,SHEET_NAME='"&sheetName&"'"&_

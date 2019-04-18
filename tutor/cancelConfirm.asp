@@ -2,18 +2,18 @@
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
 
-stuType=Request.form("In_TEACHTYPE_ID")
-Speciality_Id=Request.form("In_Speciality_Id")
-cur_period_id=Request.form("In_PERIOD_ID")
-ids=Request.Form("sel")
+stu_type=Request.Form("In_TEACHTYPE_ID")
+spec_id=Request.Form("In_SPECIALITY_ID")
+period_id=Request.Form("In_PERIOD_ID")
+page_no=Request.Form("In_PAGE_NO")
+page_size=Request.Form("In_PAGE_SIZE")
+ids=Replace(Request.Form("sel")," ","")
 
-FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(Speciality_Id)
-FormGetToSafeRequest(cur_period_id)
-PageNo=Request.Form("In_PageNo")
-PageSize=Request.Form("In_pageSize")
+FormGetToSafeRequest(stu_type)
+FormGetToSafeRequest(spec_id)
+FormGetToSafeRequest(period_id)
 
-If cur_period_id="" or stuType="" Then
+If period_id="" or stu_type="" Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 ElseIf ids="" Then
@@ -23,7 +23,7 @@ End If
 
 Connect conn
 
-sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("TId")&" AND TEACHTYPE_ID="&stuType&" AND cur_period_id="&cur_period_id
+sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("TId")&" AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
@@ -37,11 +37,11 @@ conn.Execute sql
 CloseRs rs
 CloseConn conn
 %><form method="post" action="applyList.asp">
-	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-	<input type="hidden" name="In_Speciality_Id" value="<%=Speciality_Id%>">
-	<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-	<input type="hidden" name="In_PageNo" value="<%=PageNo%>">
-	<input type="hidden" name="In_PageSize" value="<%=PageSize%>">
+	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>">
+	<input type="hidden" name="In_Speciality_Id" value="<%=spec_id%>">
+	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
+	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>">
+	<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>">
 </form>
 <script type="text/javascript">
 	alert("操作完成。");

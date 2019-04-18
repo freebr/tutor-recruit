@@ -1,18 +1,18 @@
 ﻿<!--#include file="../inc/db.asp"-->
 <%
-pmtype=Request.QueryString("type")
-If IsNull(pmtype) Then
-	pmtype=0
-End If
+stu_type=Request.Form("In_TEACHTYPE_ID2")
+period_id=Request.Form("In_PERIOD_ID2")
 finalFilter=Request.Form("finalFilter2")
-stuType=Request.Form("In_TEACHTYPE_ID2")
-cur_period_id=Request.Form("In_PERIOD_ID2")
+page_no=Request.Form("In_PAGE_NO2")
+page_size=Request.Form("In_PAGE_SIZE2")
 
-FormGetToSafeRequest(stuType)
-FormGetToSafeRequest(cur_period_id)
+FormGetToSafeRequest(stu_type)
+FormGetToSafeRequest(period_id)
 
-PageNo=Request.Form("In_PageNo2")
-PageSize=Request.Form("In_pageSize2")
+pm_type=Request.QueryString("type")
+If IsNull(pm_type) Then
+	pm_type=0
+End If
 
 Connect conn
 For i=1 To Request.Form("sel").Count
@@ -20,7 +20,7 @@ For i=1 To Request.Form("sel").Count
 	sql=sql&Request.Form("sel")(i)
 Next
 If Len(sql) Then
-	Select Case pmtype
+	Select Case pm_type
 	Case 0
 		sql="EXEC spSwitchStudentPrivilege "&toSqlString(sql)&",1,0;"
 	Case 1
@@ -34,10 +34,10 @@ CloseConn conn
 CloseRs rs
 %><form id="ret" method="post" action="<%=Request.ServerVariables("HTTP_REFERER")%>">
 	<input type="hidden" name="finalFilter" value="<%=finalFilter%>" />
-	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
-	<input type="hidden" name="In_PERIOD_ID" value="<%=cur_period_id%>">
-	<input type="hidden" name="In_PageNo" value=<%=PageNo%>>
-	<input type="hidden" name="In_PageSize" value=<%=PageSize%>>
+	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>" />
+	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>" />
+	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>" />
+	<input type="hidden" name="In_PAGE_SIZE" value="<%=page_size%>" />
 </form>
 <script type="text/javascript">
 	alert("操作成功。");
