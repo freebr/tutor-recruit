@@ -57,9 +57,8 @@ Response.Expires=-1%>
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
+<% useStylesheet("global") %>
+<% useScript("common") %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 <script type="text/javascript">
 	window.tabmgr=parent.tabmgr;
@@ -137,7 +136,8 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",apply_status,"AND ID>0"
 <input type="button" value="隐藏" onclick="if(confirm('是否将所选填报记录设为对导师隐藏？')){this.form.action='setApplyStatus.asp?hide';this.form.submit();}" />
 <input type="button" value="删除填报记录" onclick="if(confirm('是否删除所选填报记录？这将恢复到未填报状态！'))this.form.submit();" />
 </td></tr>
-<tr bgcolor="ghostwhite"><td colspan="2"><table width="600" cellpadding="2" cellspacing="1"><%
+<tr bgcolor="ghostwhite"><td align="center"><b>修改填报志愿</b></td>
+<td colspan="2"><table width="700" cellpadding="2" cellspacing="1" style="display: inline-block"><%
 	Dim ArrayList(1,5),k
 	Table="ViewRecruitInfo"
 	WhereStr="AND VALID=1 AND TEACHTYPE_ID="&object&" AND PERIOD_ID="&period_id
@@ -164,7 +164,7 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",apply_status,"AND ID>0"
 %><option value="<%=arrApplyStatus(i)(0)%>"><%=arrApplyStatus(i)(1)%></option><%
 	Next
 %></select></td>
-<td><input type="button" value="修改填报信息" onclick="if(Chk_Select())if(confirm('是否修改所选的填报信息？')){this.form.action='updateApply.asp';this.form.submit();}"></td>
+<td><input type="button" value="提交修改" onclick="if(Chk_Select())if(confirm('是否修改所选的填报信息？')){this.form.action='updateApply.asp';this.form.submit();}"></td>
 </tr></table></td></tr></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <tr bgcolor="gainsboro" align="center" height=25>

@@ -13,8 +13,8 @@ Case vbNullString	' 选择页面
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script src="../scripts/jquery-1.6.3.min.js" type="text/javascript"></script>
+<% useStylesheet("global") %>
+<% useScript("jquery") %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b>批量导出学生个人信息</b><br />

@@ -23,14 +23,12 @@ End Function
 Function getClientInfo(cli)
 	Dim conn,rs,sql,result,i
 	Connect conn
-	sql="SELECT TUT_CLIENT_STATUS,TUT_STARTDATE,TUT_ENDDATE,IF_SEND_MAIL FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
+	sql="SELECT TUT_CLIENT_STATUS,TUT_STARTDATE,TUT_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	If rs.EOF Then
 		tutclient.SystemStatus=SYS_STATUS_CLOSED
-		tutclient.IfSendMail=False
 	Else
 		tutclient.SystemStatus=SYS_STATUS_OPEN
-		tutclient.IfSendMail=rs("IF_SEND_MAIL")
 		cli.setClientStatus rs(0)
 		For i=SYS_OPR_CONFIRM To SYS_OPR_CONFIRM
 			cli.setOpentime i,SYS_OPENTIME_START,rs(2*i-1)

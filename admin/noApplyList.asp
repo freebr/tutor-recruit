@@ -69,9 +69,9 @@ End If
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
+<% useScript("common") %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 <style type="text/css">
 	p.true_flag { color:#0c0 }
@@ -125,7 +125,8 @@ Next
 <input type="hidden" name="In_PAGE_NO2" value="<%=page_no%>">
 <input type="hidden" name="In_PAGE_SIZE2" value="<%=page_size%>">
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
-<%
+<tr bgcolor="ghostwhite"><td><b>安排导师</b></td><td>
+<table width="600" cellpadding="2" cellspacing="1" style="display: inline-block"><%
 Dim ArrayList(1,5),k
 Table="ViewRecruitInfo"
 WhereStr="AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id
@@ -147,9 +148,11 @@ ArrayList(k,4)=""
 ArrayList(k,5)=WhereStr
 FormName="fmStuList"
 Get_ListJavaMenu ArrayList,k,FormName,""
-%><td><input type="button" value="安排导师" onclick="if(Chk_Select())if(confirm('是否为所选的'+countClk()+'个学生安排导师？'))this.form.submit();"></td>
-<td align="right">全选<input type="checkbox" onclick="checkAll()" id="chk" name="chk">&nbsp;<input type="button" value="开放系统权限" onclick="setPermission(0)">&nbsp;<input type="button" value="关闭系统权限" onclick="setPermission(1)">
-&nbsp;<input type="button" value="删除权限记录" onclick="setPermission(2)">
+%><td><input type="button" value="安排导师" onclick="if(Chk_Select())if(confirm('是否为所选的'+countClk()+'个学生安排导师？'))this.form.submit();" /></td>
+<td align="right">全选<input type="checkbox" onclick="checkAll()" id="chk" name="chk" /></td></tr></table>
+</td><td align="right"><input type="button" value="开放系统权限" onclick="setPermission(0)" />
+<input type="button" value="关闭系统权限" onclick="setPermission(1)" />
+<input type="button" value="删除权限记录" onclick="setPermission(2)" />
 </td></tr></table>
 <table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <!--报名学生信息-->

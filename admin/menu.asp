@@ -1,10 +1,12 @@
 ﻿<!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")%>
-<html>
+<!--#include file="common.asp"-->
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
+stu_type=Request.QueryString("stu_type")
+%><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
 <title></title>
 </head>
 <body bgcolor="ghostwhite" onload="return On_Load()">
@@ -19,7 +21,7 @@ ArrayList(k,0)="学生类型"
 ArrayList(k,1)="ViewStudentTypeInfo"
 ArrayList(k,2)="TEACHTYPE_ID"
 ArrayList(k,3)="TEACHTYPE_NAME"
-ArrayList(k,4)="5"
+ArrayList(k,4)=stu_type
 ArrayList(k,5)="AND TEACHTYPE_ID IN (5,6,7,9)"
 
 k=1

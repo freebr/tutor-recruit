@@ -7,7 +7,7 @@
 	End If
 	stu_id=toSqlString(stu_id)
 	Connect conn
-  sql="SELECT *,dbo.getTeachTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM ViewStudentInfo WHERE STU_ID="&stu_id
+  sql="SELECT *,dbo.getStudentTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM ViewStudentInfo WHERE STU_ID="&stu_id
   GetRecordSetNoLock conn,rs,sql,result
   If result=0 Then
     Response.Write "<center><font color=red>该学生资料不存在！</font></center>"
@@ -37,9 +37,9 @@
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
+<% useScript(Array("common", "tutor")) %>
 </head>
 <body bgcolor="ghostwhite">
 <center>

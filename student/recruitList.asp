@@ -1,21 +1,7 @@
 ﻿<!--#include file="../inc/db.asp"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("StuId")) Then Response.Redirect("../error.asp?timeout")%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/jquery-1.6.3.min.js"></script>
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/student.js"></script>
-<style type="text/css">
-	a:visited, a:link { text-decoration:underline }
-	span.no-quota { color:#aaa;cursor:not-allowed }
-</style>
-</head>
-<body bgcolor="ghostwhite">
-<center><%
+<%If IsEmpty(Session("StuId")) Then Response.Redirect("../error.asp?timeout")
+
 Function showTable(data)
 	Dim i
 	For i=1 To UBound(data,1)
@@ -32,16 +18,18 @@ Function showTable(data)
 %><td bgcolor="#ddddff" valign="middle" align="center" rowspan="<%=data(i,0)%>"><%=speciality_name%></td><%
 		End If %>
 <td width="40" bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,2)%></td>
-<td bgcolor="<%=tdbgcolor%>" align="center"><a href="#" onclick="return showTeacherResume(<%=data(i,4)%>)"><%=tutor_name%></a></td>
+<td bgcolor="<%=tdbgcolor%>" align="center"><a href="#" onclick="return showTeacherResume(<%=data(i,4)%>)"><%=tutor_name%></a></td><%
+		If show_tutor_quota_student Then %>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%
-		If data(i,6)=0 Then
+			If data(i,6)=0 Then
 %><span class="no-quota">0</span><%
-		Else
+			Else
 %><%=data(i,6)%><%
-		End If %></td>
+			End If %></td>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,7)%></td>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,8)%></td>
-<td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,9)%></td>
+<td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,9)%></td><%
+		End If %>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%=HtmlEncode(data(i,3))%></td>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%
 		If data(i,6)=0 Then
@@ -54,7 +42,7 @@ Function showTable(data)
 End Function
 
 Connect conn
-stuType=Session("StuType")
+stu_type=Session("StuType")
 turnNum=Request.QueryString("turn")
 page_size=Request.Form("pageSize")
 page_cur=Request.Form("pageNo")
@@ -64,28 +52,12 @@ If IsEmpty(finalFilter) Then finalFilter=vbNullString
 If Len(page_size)=0 Or Not IsNumeric(page_size) Then page_size=-1 Else page_size=Int(page_size)
 If Len(page_cur)=0 Or Not IsNumeric(page_cur) Then page_cur=1 Else page_cur=Int(page_cur)
 
-sem_info=getCurrentSemester()
-cur_year=sem_info(0)
-cur_semester=sem_info(1)
-cur_semester_name=sem_info(2)
-cur_period_id=sem_info(3)
-
-Set comm = Server.CreateObject("ADODB.Command")
-comm.ActiveConnection=conn
-comm.CommandText="spQueryRecruitInfo"
-comm.CommandType=adCmdStoredProc
-Set pmPeriod=comm.CreateParameter("cur_period_id",adInteger,adParamInput,5,cur_period_id)
-Set pmObject=comm.CreateParameter("teachtype_id",adInteger,adParamInput,5,stuType)
-Set pmWhere=comm.CreateParameter("where",adVarChar,adParamInput,2000,finalFilter)
-Set pmPageSize=comm.CreateParameter("page_size",adInteger,adParamInput,5,page_size)
-Set pmPageCur=comm.CreateParameter("page_cur",adInteger,adParamInput,5,page_cur)
-comm.Parameters.Append pmPeriod
-comm.Parameters.Append pmObject
-comm.Parameters.Append pmWhere
-comm.Parameters.Append pmPageSize
-comm.Parameters.Append pmPageCur
-Set rs = comm.Execute()
-Set rs = rs.NextRecordSet().NextRecordSet()
+sql="EXEC spQueryRecruitInfo ?,?,?,?,?"
+Set rs=ExecQuery(conn,sql,Array(CmdParam("period_id",adInteger,adParamInput,4,cur_period_id),_
+	CmdParam("teachtype_id",adInteger,adParamInput,4,stu_type),_
+	CmdParam("where",adVarChar,adParamInput,2000,finalFilter),_
+	CmdParam("page_size",adInteger,adParamInput,4,page_size),_
+	CmdParam("page_cur",adInteger,adParamInput,4,page_cur)),result).NextRecordSet().NextRecordSet()
 count_rec = rs(0).Value
 If page_size = -1 Then
 	page_size = count_rec
@@ -95,7 +67,19 @@ Else
 End If
 If Int(count_page)<>count_page Then count_page=Int(count_page)+1
 Set rs = rs.NextRecordSet()
-%><p><font size=4><b>选择<%=arrTurnName(turnNum)%>导师</b></font><br />
+show_tutor_quota_student = getSystemOption("show_tutor_quota_student", stu_type)
+%><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/global.css" rel="stylesheet" type="text/css">
+<% useScript(Array("jquery", "common", "student")) %>
+<style type="text/css">
+	a:visited, a:link { text-decoration:underline }
+	span.no-quota { color:#aaa;cursor:not-allowed }
+</style>
+</head>
+<body bgcolor="ghostwhite">
+<center><p><font size=4><b>选择<%=arrTurnName(turnNum)%>导师</b></font><br />
 <table cellspacing=4 cellpadding=0>
 <form id="search" method="post">
 <tr align="center"><td colspan=4>
@@ -103,9 +87,11 @@ Set rs = rs.NextRecordSet()
 	<select id="field" name="field" onchange="ReloadOperator()">
 		<option value="s_SPECIALITY_NAME">专业名称</option>
 		<option value="n_RECRUIT_ID">选项号</option>
-		<option value="s_TEACHER_NAME">导师姓名</option>
+		<option value="s_TEACHER_NAME">导师姓名</option><%
+		If show_tutor_quota_student Then %>
 		<option value="n_APPLIED_NUM">报名人数</option>
-		<option value="n_REMAINING_NUM">剩余名额</option>
+		<option value="n_REMAINING_NUM">剩余名额</option><%
+		End If %>
 	</select>
 	<select id="operator" name="operator">
 		<script>ReloadOperator()</script>
@@ -142,11 +128,13 @@ Set rs = rs.NextRecordSet()
 <table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
   <td width="150" align="center">专业名称</td>
-  <td align="center" width="120" colspan="2">导师姓名</td>
+  <td align="center" width="120" colspan="2">导师姓名</td><%
+	If show_tutor_quota_student Then %>
   <td width="90" align="center">指导名额</td>
   <td width="90" align="center">报名人数</td>
   <td width="90" align="center">已确认人数</td>
-  <td width="90" align="center">剩余名额</td>
+  <td width="90" align="center">剩余名额</td><%
+	End If %>
   <td align="center">工程领域</td>
   <td width="50" align="center">选择</td>
 </tr><%

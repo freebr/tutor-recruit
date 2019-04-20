@@ -207,7 +207,7 @@ CloseConn conn
 If Len(retlink) Then
 	Response.Redirect retlink
 End If
-%><html><head><link href="../css/global.css" rel="stylesheet" type="text/css"></head><body bgcolor="ghostwhite"><p align="center"><%
+%><html><head><% useStylesheet("global") %></head><body bgcolor="ghostwhite"><p align="center"><%
 Select Case nResult
 Case 0
 %>未生成Excel文件，因为没有数据库记录!<%

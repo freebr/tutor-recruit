@@ -1,14 +1,16 @@
-﻿<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
-stuType=Request.QueryString("stuType")
+﻿<%Response.Expires=-1%>
+<!--#include file="common.asp"-->
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
+stu_type=Request.QueryString("stu_type")
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<link href="../css/global.css" rel="stylesheet" type="text/css">
+<% useStylesheet("global") %>
 <title>学员选导师情况</title>
 </head>
 <frameset rows="65,*" frameborder="no" border="0" cols="*">
-	<frame name="topFrame" src="menu.asp?stuType=<%=stuType%>" frameborder="no" scrolling="no" noresize>
+	<frame name="topFrame" src="menu.asp?stu_type=<%=stu_type%>" frameborder="no" scrolling="no" noresize>
 	<frame name="detailFrame" src="blank.html" frameborder="no" noresize>
 </frameset>
 <noframes><body bgcolor="#FFFFFF">

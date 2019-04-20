@@ -1,4 +1,5 @@
-﻿<%If IsEmpty(Session("Id")) Then Response.Redirect("../err/timeout.asp")
+﻿<!--#include file="common.asp"-->
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../err/timeout.asp")
 logDate=Request.Form("logdate")
 If Len(logDate)=0 Then
 	logDate=FormatDateTime(Date,1)
@@ -10,13 +11,12 @@ If fso.FileExists(logFile) Then
 Else
 	bNotExist=True
 End If
-%>
-<html>
+%><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script src="/index/javascript/jquery-1.6.3.min.js" type="text/javascript"></script>
 <meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
+<% useScript("jquery") %>
 <title>用户操作日志(<%=logDate%>)</title>
 </head>
 <body bgcolor="ghostwhite">

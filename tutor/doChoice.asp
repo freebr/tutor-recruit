@@ -8,23 +8,23 @@ opr=Request.QueryString("type")
 If IsNull(opr) Then opr=0
 If Not IsNumeric(opr) Then opr=0
 
-stuType=Request.Form("In_TEACHTYPE_ID")
+stu_type=Request.Form("In_TEACHTYPE_ID")
 spec_hash=Request.Form("In_SPECIALITY_HASH")
 period_id=Request.Form("In_PERIOD_ID")
 
-FormGetToSafeRequest(stuType)
+FormGetToSafeRequest(stu_type)
 FormGetToSafeRequest(spec_hash)
 FormGetToSafeRequest(period_id)
 page_no=Request.Form("In_PAGE_NO")
 page_size=Request.Form("In_PAGE_SIZE")
 
-Dim bOpen:bOpen=tutclient.isOpenFor(Int(stuType),SYS_OPR_CONFIRM) Or Session("Debug")
+Dim bOpen:bOpen=tutclient.isOpenFor(Int(stu_type),SYS_OPR_CONFIRM) Or Session("Debug")
 If Not bOpen Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">导师确认时间为&nbsp;<%=startdate%>&nbsp;至&nbsp;<%=enddate%>，当前还不是确认时间或系统设置为本专业禁止确认填报。</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
 
-If IsEmpty(period_id) Or IsEmpty(stuType) Then
+If IsEmpty(period_id) Or IsEmpty(stu_type) Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整或格式不正确！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
@@ -52,7 +52,7 @@ If selcount=0 Then
 End If
 
 Connect conn
-sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("tid")&" AND TEACHTYPE_ID="&stuType&" AND PERIOD_ID="&period_id&" AND SPECIALITY_HASH='"&spec_hash&"'"
+sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("tid")&" AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id&" AND SPECIALITY_HASH='"&spec_hash&"'"
 Set rs=conn.Execute(sql)
 If rs.EOF Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
@@ -81,16 +81,18 @@ Case 0	' 确认操作
 	sql="EXEC spTutorClientAuditApply "&toSqlString(ids)&","&recruit_id&",1,NULL"
 	conn.Execute sql
 	logtxt0="教师["&Session("Tname")&"]在选导师系统执行确认填报操作。"
+	send_email = getSystemOption("send_accept_email", stu_type)
 Case 1	' 退回操作
 	withdraw_reason=Request.Form("reasontext")
 	sql="EXEC spTutorClientAuditApply "&toSqlString(ids)&","&recruit_id&",0,"&toSqlString(withdraw_reason)
 	conn.Execute sql
 	logtxt0="教师["&Session("Tname")&"]在选导师系统执行退回填报操作。"
+	send_email = getSystemOption("send_withdraw_email", stu_type)
 End Select
 
-If tutclient.IfSendMail Then
+If send_email Then
 	sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL,TUTOR_RECRUIT_STATUS FROM ViewStudentInfo A "&_
-	 		"LEFT JOIN ViewTeacherInfo B ON B.TEACHERID=A.TUTOR_ID WHERE STU_ID IN ("&ids&")"
+	 	"LEFT JOIN ViewTeacherInfo B ON B.TEACHERID=A.TUTOR_ID WHERE STU_ID IN ("&ids&")"
 	Set rs=conn.Execute(sql)
 	Do While Not rs.EOF
 		stu_name=rs(0).Value
@@ -116,8 +118,8 @@ Else
 End If
 CloseConn conn
 
-%><form method="post" action="choiceList.asp">
-	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stuType%>">
+%><form method="post" action="applyList.asp">
+	<input type="hidden" name="In_TEACHTYPE_ID" value="<%=stu_type%>">
 	<input type="hidden" name="In_SPECIALITY_HASH" value="<%=spec_hash%>">
 	<input type="hidden" name="In_PERIOD_ID" value="<%=period_id%>">
 	<input type="hidden" name="In_PAGE_NO" value="<%=page_no%>">

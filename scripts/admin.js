@@ -64,7 +64,31 @@ function cancelConfirm(lid,id) {
 }
 function showStudentInfo(id) {
 	var tabmgr=window.tabmgr||parent.tabmgr;
-	tabmgr.goTo("/TutorRecruit/admin/showStudentInfo.asp?id="+id,"查看学生信息",true);
+	var uri="/TutorRecruit/admin/showStudentInfo.asp?id="+id;
+	if (!tabmgr) {
+		window.open(uri,'_blank');
+	} else {
+		tabmgr.goTo(uri,"查看学生信息",true);
+	}
+	return false;
+}
+function showApplyList(recruit_id) {
+	var tabmgr=window.tabmgr||parent.tabmgr;
+	var uri="/TutorRecruit/admin/confirmedList.asp?recruit-id="+recruit_id;
+	if (!tabmgr) {
+		window.open(uri,'_blank');
+	} else {
+		tabmgr.goTo(uri,"查看确认名单",true);
+	}
+	return false;
+}
+function closeWindow() {
+	var tabmgr=window.tabmgr||parent.tabmgr;
+	if (!tabmgr) {
+		window.close();
+	} else {
+		tabmgr.close(window);
+	}
 	return false;
 }
 function showTeacherResume(id) {

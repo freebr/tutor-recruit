@@ -42,10 +42,9 @@ End If
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
+<% useScript(Array("common", "admin")) %>
 <style type="text/css">
 	p.confirmed {color:#0c0}
 	p.unconfirmed {color:#aaa}

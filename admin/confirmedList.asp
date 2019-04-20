@@ -49,10 +49,9 @@ End If
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
+<% useStylesheet("global") %>
 <title>导师[<%=tutorName%>]已确认学员名单</title>
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
+<% useScript("common") %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 </head>
 <body bgcolor="ghostwhite">

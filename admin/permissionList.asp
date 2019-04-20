@@ -1,21 +1,7 @@
 ﻿<%Response.Expires=-1%>
 <!--#include file="../inc/db.asp"-->
-<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
-<style type="text/css">
-	p.permitted {color:#0c0}
-	p.unpermitted {color:#aaa}
-</style>
-</head>
-<body bgcolor="ghostwhite">
-<center>
-<%
+<!--#include file="common.asp"-->
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Dim finalFilter,page_no,page_size
 
 finalFilter=Request.Form("finalFilter")
@@ -72,7 +58,19 @@ Else
 	End If
 End If
 If rs.RecordCount>0 Then rs.AbsolutePage=pageNo
-%>
+%><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
+<% useScript(Array("common", "admin")) %>
+<style type="text/css">
+	p.permitted {color:#0c0}
+	p.unpermitted {color:#aaa}
+</style>
+</head>
+<body bgcolor="ghostwhite">
+<center>
 <font size=4><b>开放选导师系统权限学员名单</b></font>
 <form id="fmUpload" action="importPermissionList.asp?step=1" method="POST" enctype="multipart/form-data">
 <table width="95%" cellpadding="2" cellspacing="1" bgcolor="dimgray">

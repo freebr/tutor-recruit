@@ -1,4 +1,5 @@
 ﻿<!--#include file="../inc/db.asp"-->
+<!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 	stu_id=Request.QueryString("id")
 	If Len(stu_id)=0 Then
@@ -37,10 +38,10 @@
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet("global") %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
+<% useScript("common") %>
 </head>
 <body bgcolor="ghostwhite">
 <center>

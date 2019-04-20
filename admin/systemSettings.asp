@@ -11,7 +11,6 @@ sem_info=getCurrentSemester()
 Dim arrMailId(4),arrMailSubject
 Dim arrStuOprFlag,arrStuOprName
 Dim arrTutOprFlag,arrTutOprName
-Dim arrStuTypeId,arrStuType
 Dim tutor_startdate,tutor_enddate
 Dim stu_startdate,stu_enddate
 Dim tut_clientstatus,stu_clientstatus
@@ -32,7 +31,6 @@ If curstep="1" Then
 		tut_startdate=Date+7
 		tut_enddate=Date+9
 		turn_num=1
-		ifsendmail_flag="true"
 		isValid=False
 	Else	' 本学期有系统设置
 		bSet=True
@@ -43,7 +41,6 @@ If curstep="1" Then
 		stu_clientstatus=Split(rs("STU_CLIENT_STATUS"),",")
 		tut_clientstatus=Split(rs("TUT_CLIENT_STATUS"),",")
 		turn_num=rs("TURN_NUM")
-		If rs("IF_SEND_MAIL") Then ifsendmail_flag="true" Else ifsendmail_flag="false"
 		For i=1 To 4
 			arrMailId(i)=rs("MAIL_"&i)
 		Next
@@ -69,14 +66,12 @@ If curstep="1" Then
 		End If
 	End If
 	CloseRs rs
-	CloseConn conn
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="../scripts/utils.js"></script>
-<script type="text/javascript" src="../scripts/query.js"></script>
-<script type="text/javascript" src="../scripts/admin.js"></script>
+<meta name="theme-color" content="#2D79B2" />
+<% useStylesheet(Array("global", "jeasyui")) %>
+<% useScript(Array("jquery", "jeasyui", "common", "admin")) %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b><%=sem_info(0)%>-<%=sem_info(0)+1%>年度<%=sem_info(2)%>学期硕士生选导师系统设置</b><br><%
@@ -163,8 +158,32 @@ If curstep="1" Then
 %><br/><span>注：<%=sem_info(0)-1%>-<%=sem_info(0)%>年度<%=sem_info(2)%>学期的选导师系统开放时间：<br/>
 学生端：&nbsp;<%=last_stu_startdate%>&nbsp;至&nbsp;<%=last_stu_enddate%><br/>教师端：&nbsp;<%=last_tut_startdate%>&nbsp;至&nbsp;<%=last_tut_enddate%></span><%
 End If %></p></td></tr>
-<tr bgcolor="ghostwhite"><td align="left"><font style="font-weight:bold">通知邮件内容设置</font></td></tr>
-<tr bgcolor="ghostwhite"><td align="left"><input name="ifsendmail" id="chkIfSendMail" type="checkbox" /><label for="chkIfSendMail">导师确认/退回填报时向学生发送通知邮件</label></td></tr>
+<tr bgcolor="ghostwhite"><td align="left"><font style="font-weight:bold">选项设置</font></td></tr>
+<tr bgcolor="ghostwhite"><td align="left">
+<div id="stu_type_tabs" style="width: 400px;height: 250px"><%
+	For i=1 To UBound(arrStuType)
+		sql="EXEC spGetSystemOptionForStuType ?"
+		Set rs=ExecQuery(conn,sql,CmdParam("StuTypeId",adInteger,adParamInput,4,arrStuTypeId(i)),result)
+%><div title="<%=arrStuType(i)%>">
+<ul class="option-list"><%
+		keys=dictSystemOptions.Keys()
+		items=dictSystemOptions.Items()
+		For j=0 To dictSystemOptions.Count-1
+			option_name=keys(j)
+			option_text=items(j)(0)
+			rs.Find "Name='"&option_name&"'"	// 不支持Unicode前导符，不可用 toSqlString
+			If Not rs.EOF Then
+				If rs("Value").Value Then
+					html_checked="checked "
+				Else
+					html_checked=""
+				End If
+			End If
+%><li><input name="<%=option_name&CStr(i)%>" id="<%=option_name&CStr(i)%>" type="checkbox" <%=html_checked%>/><label for="<%=option_name&CStr(i)%>"><%=option_text%></label></li><%
+		Next %>
+</ul></div><%
+	Next %>
+</div></td></tr>
 <tr bgcolor="ghostwhite"><td align="left"><%
 	For i=1 To 4
 %><input name="mail" id="mail<%=i%>" type="radio" onclick="switchMailContent(<%=i%>)" /><label for="mail<%=i%>"><%=arrMailSubject(i)%></label><%
@@ -187,15 +206,42 @@ End If %></p></td></tr>
 %></p><p>提示：点击下面的按钮，可按导师名单中的信息设定以上学生类型的指导名额。</p></td></tr>
 <tr bgcolor="ghostwhite"><td align="center"><input type="button" id="btnUpdateQuota" value="刷新指导名额"></td></tr>
 </table></form>
-</center><script type="text/javascript">
-	document.all.chkIfSendMail.checked=<%=ifsendmail_flag%>;
+</center>
+<script type="text/javascript">
 	document.all.btnUpdateQuota.onclick=function() {
 		this.form.action='updateQuota.asp';
 		this.form.submit();
 	}
+$(function () {
+	$('#stu_type_tabs').tabs({
+		width: '100%',
+		height: 150,
+		// 是否不显示控制面板背景。
+		plain: false,
+		// 选项卡是否将铺满它所在的容器
+		fit: false,
+		// 是否显示选项卡容器边框
+		border: true,
+		// 选项卡滚动条每次滚动的像素值
+		scrollIncrement: 200,
+		// 每次滚动动画持续的时间
+		scrollDuration: 400,
+		// 选项卡位置
+		tabPosition: 'top',
+		// 标签条的宽度
+		tabWidth: 100,
+		// 标签条的高度
+		tabHeight: 25,
+		// 初始化选中一个 tab 页, 从0开始
+		selected: 0,
+		// 是否显示 tab 页标题
+		showHeader: true
+	});
+ });
 </script>
 </body>
 </html><%
+	CloseConn conn
 Else
 	Dim mail_content(4),fieldlist
 	stu_startdate=Request.Form("stu_startdate")
@@ -228,7 +274,6 @@ Else
 		turn_num=1
 	End If
 	turn_num=Int(turn_num)
-	ifsendmail=Request.Form("ifsendmail")="on"
 	
 	For i=1 To 4
 		arrMailId(i)=0
@@ -240,7 +285,7 @@ Else
 	Connect conn
 	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSet conn,rs,sql,result
-	On Error Resume Next
+	'On Error Resume Next
 	If result=0 Then
 		rs.AddNew()
 		rs("USE_YEAR")=sem_info(0)
@@ -256,13 +301,33 @@ Else
 	rs("STU_CLIENT_STATUS")=stu_clientstatus
 	rs("TUT_CLIENT_STATUS")=tut_clientstatus
 	rs("TURN_NUM")=turn_num
-	rs("IF_SEND_MAIL")=ifsendmail
 	For i=1 To UBound(arrMailSubject)
 		arrMailId(i)=rs("MAIL_"&i)
 		If result=0 Or IsNull(arrMailId(i)) Then arrMailId(i)=0
 	Next
 	rs.Update()
-	
+
+	' 设置系统选项
+	For i=1 To UBound(arrStuType)
+		keys=dictSystemOptions.Keys()
+		items=dictSystemOptions.Items()
+		For j=0 To dictSystemOptions.Count-1
+			option_name=keys(j)
+			option_text=items(j)(0)
+			option_value=Request.Form(option_name&CStr(i))
+			If IsEmpty(option_value) Then	' 未给出选项值，取默认值
+				option_value=items(j)(1)
+			Else
+				option_value=option_value="on"
+			End If
+			sql="EXEC spSetSystemOption ?,?,?,?"
+			ExecNonQuery conn,sql,Array(CmdParam("Name",adVarChar,adParamInput,50,option_name),_
+				CmdParam("StuTypeId",adInteger,adParamInput,4,arrStuTypeId(i)),_
+				CmdParam("Value",adBoolean,adParamInput,1,option_value),_
+				CmdParam("Text",adVarChar,adParamInput,50,option_text))
+		Next
+	Next
+
 	If Err.Number=0 Then ok=1 Else ok=0
 	On Error GoTo 0
 	

@@ -8,7 +8,7 @@ Case vbNullstring ' 文件选择页面
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="../css/global.css" rel="stylesheet" type="text/css">
+<% useStylesheet("global") %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b>导入自EXCEL文件</b><br>
@@ -70,7 +70,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<link href="../css/global.css" rel="stylesheet" type="text/css">
+<% useStylesheet("global") %>
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%

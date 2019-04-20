@@ -4,71 +4,7 @@ Session("DebugInfo")=""
 Sub debug(info)
 	Session("DebugInfo")=Session("DebugInfo")&vbNewLine&info
 End Sub
-Sub LoadingPage()
-	'**************************************************************
-	'Author:华工ASP开发小组
-	'Name:打开ASP页面时 显示 装载页面信息
-	'Created Date:	2004/11/04
-	'Purpose:服务器运行ASP文件时 强制把 装载信息发到客户端显示 
-	'Relate pages:与 EndPage()并用 该函数一般放在ASP文件头
-	'Modify By:	Dajing
-	'Modify date:	2004/11/04
-	'**************************************************************
-	Response.Write("<div id='LoadingPage' >")&vbcrlf
-	Response.Write("_")&vbcrlf
-	Response.Write("</div>")&vbcrlf
-	Response.Write("<script>LoadingPage.innerText = '';</script>")&vbcrlf
-	Response.Write("<script language=javascript>;")&vbcrlf
-	Response.Write("var dots = 0;var dotmax = 10;function ShowWait()")&vbcrlf
-	Response.Write("{var output; output = '正在装载页面';dots++;if(dots>=dotmax)dots=1;")&vbcrlf
-	Response.Write("for(var x = 0;x < dots;x++){output += '·';}LoadingPage.innerText =  output;}")&vbcrlf
-	Response.Write("function StartShowWait(){LoadingPage.style.visibility = 'visible'; ")&vbcrlf
-	Response.Write("window.setInterval('ShowWait()',1000);}")&vbcrlf
-	Response.Write("function HideWait(){LoadingPage.style.display='none';")&vbcrlf
-	Response.Write("window.clearInterval();}")&vbcrlf
-	Response.Write("StartShowWait();</script>")&vbcrlf
-	Response.Flush		'强制把 装载信息发到客户端显示
-End Sub
-Sub EndPage()
-	'**************************************************************
-	'Author:华工ASP开发小组
-	'Name:关闭 函数LoadingPage() 显示出的提示信息
-	'Created Date:	2004/11/04
-	'Purpose:与函数并用LoadingPage()
-	'Relate pages:一般该函数放在ASP文件末端
-	'Modify By:	Dajing
-	'Modify date:	2004/11/04
-	'**************************************************************
-	Response.write "<SCRIPT LANGUAGE=""JavaScript"">"&vbcrlf
-	Response.write "HideWait()"&vbcrlf				'该函数在LoadingPage 用来关闭显示出来的信息
-	'Response.write "LoadingPage.style.display=""none"""&vbcrlf
-	Response.write "</SCRIPT>"&vbcrlf
-End Sub
 
-Sub Save_Visit_UserIP(Visit_Module,Visit_UserIp,Visit_UserNo,Visit_FrontURL)					'by Dajing
-'该过程 是记录访问者IP 到表Visit_Info
-'Visit_Ip  访问者IP
-'Visit_UserNo 访问者 登陆名(可从SESSION处获得)
-'Visit_Module 访问者 访问的模块
-	Dim InsStr,conn
-
-	Connect conn
-
-	If Visit_UserIp="" or Visit_UserNo="" or Visit_Module="" or Visit_FrontURL="" Then
-		Response.write "<SCRIPT LANGUAGE=""JavaScript"">"
-		Response.write "alert('超时，请重新登陆');"
-		Response.write "window.location.href='../admin/err/timeout.asp'"
-		Response.write "</SCRIPT>"
-		Response.end
-	Else
-		InsStr="Insert Into Visit_Info (Visit_UserIp,Visit_UserNo,Visit_Module,Visit_FrontURL) VALUES ("&"'"&Visit_UserIp&"','"&Visit_UserNo&"','"&Visit_Module&"','"&Visit_FrontURL&"')"
-	End If 
-	'Response.write InsStr
-	'Response.end
-	conn.Execute InsStr
-End Sub
-
-'=====================================================
 Sub Get_ListJavaMenu(ArrayList,j,FormName,Pub_Term)					'by Dajing
 		'该过程的功能是 关联下拉菜单（JAVASCIPT方式的）
 		'Pub_Term 为公共条件，每次刷新都会用到
@@ -92,21 +28,18 @@ Dim bNoCheck
 Dim conn
 
 bNoCheck=Right(FormName,8)="_nocheck"
-SelectLen=10
+SelectLen=20
 SelectLenStr=""
 FieldId=""
 Field=""
 Connect con
 
 '-----------------把SELECT 里的东东从数据库里倒到JAVASCRIPT的数组里--------------
-Response.write "<script language=""JavaScript"">"&vbcrlf
+Response.write "<script>"&vbcrlf
 For i=0 to j
 
 	SelectLenNew=SelectLen*(i+1)
-
-	For ii=1 To SelectLen
-		SelectLenStr=SelectLenStr&"0"
-	Next
+	SelectLenStr=SelectLenStr&String(SelectLen,"0")
 	FieldId="replace(right('"&SelectLenStr&"',"&SelectLenNew&"-len(convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"))) + convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"),' ','')"
 	If i<>0 Then
 		Field=Field&" + "
@@ -116,7 +49,6 @@ For i=0 to j
 	RsSqlStr="Select DISTINCT "&ArrayList(i,2)&"="&Field&","&ArrayList(i,3)&" From "&ArrayList(i,1)&" where 1=1"&ArrayList(i,5)&Pub_Term&" order by "&ArrayList(i,3)
 	If InStr(UCase(ArrayList(i,3)),"YEAR")>0 Or UCase(ArrayList(i,3))="PERIOD_NAME" Then RsSqlStr=RsSqlStr&" desc"
 	GetRecordSetNoLock conn,rsSelMenu,RsSqlStr,resultSelMenu
-
 '----------------把数据库里边的东东写到JAVA脚本，把数据内容传JAVA数组里------------
 	Response.write vbcrlf&"var "&ArrayList(i,2)&"Code = new Array("&resultSelMenu&");"&vbcrlf
 	Response.write "var "&ArrayList(i,2)&"Desc = new Array("&resultSelMenu&");"&vbcrlf
@@ -488,141 +420,7 @@ Function GetPartString(Str,SLen)
 	Else
 		GetPartString=Str
 	End If
-End Function
-
-Sub back(ValueName,Value,msg,ReturnURL,ReturnType)
-'**************************************************************
-'Author:华工ASP开发小组
-'Name:通用返回过程
-'Created Date:	2005/1/11
-'Purpose:通过传惨 ValueName,Value,ReturnURL生成HTML 后自动返回
-'Relate pages:多用于保存、修改、删除后的页面调用
-'Modify By:	Dajing
-'Modify date:	2005/3/3
-
-'ValueName 返回变更集字符串  
-'	例：返回变量名为 Plan_Year与TeachType_Id时 该变量的值为"Plan_Year,TeachType_Id" 值与值之间用逗号分隔
-'Value 返回变量值集字符串  
-'	例：返回变量值为 2004至2005与3时 该变量的值为"2004至2005,3" 值与值之间用逗号分隔
-'ReturnURL 返回URL地址
-'ReturnType 调用返回过程类型 为html则为单独页面，值为其它时表示与其它FORM共存
-'**************************************************************
-	dim i
-	ValueName=split(ValueName,",")
-	Value=split(Value,",")
-	If ReturnURL="" Then ReturnURL=Request.ServerVariables("HTTP_REFERER")
-
-	Response.write vbcrlf
-	If ucase(ReturnType)="HTML" Then
-		'-----HTML文件头------
-		Response.write "<HTML>"&vbcrlf
-		Response.write "<HEAD>"&vbcrlf
-		Response.write "<TITLE></TITLE>"&vbcrlf
-		Response.write "</HEAD>"&vbcrlf
-		Response.write "<BODY onLoad=""Retu_Load()"">"&vbcrlf
-	End If
-
-	'------FORM------
-	Response.write "<form id=""ReturnForm"" METHOD=POST ACTION="""&ReturnURL&""">"&vbcrlf&vbcrlf
-	For i=0 To ubound(ValueName)
-		Response.write "	<input type=""hidden"" name="""&ValueName(i)&""" value="""&Value(i)&""">"&vbcrlf
-	Next
-	Response.write "</FORM>"&vbcrlf
-	'------FORM------
-
-	If ucase(ReturnType)="HTML" Then
-		'-----HTML文件尾------
-		Response.write "</BODY>"&vbcrlf
-		Response.write "</HTML>"&vbcrlf&vbcrlf
-	End If
-
-	Response.write "<SCRIPT LANGUAGE=""JavaScript"">"&vbcrlf
-	Response.write "	function Retu_Load()"&vbcrlf
-	Response.write "	{"&vbcrlf
-	If ucase(ReturnType)="HTML" Then
-		Response.write "		alert('"&msg&"');"&vbcrlf
-	End If
-	Response.write "		document.all.ReturnForm.submit();"&vbcrlf
-	Response.write "	}"&vbcrlf
-	Response.write "</SCRIPT>"&vbcrlf
-End Sub
-
-
-Sub queryForm(actionURL,ValueName,Value,optValueName,optValue,finalFilter,RecordCount,PageNoCount,PageSizeString,PageSize,PageNo)
-'======================================================
-'actionURL=""		'FORM提交的URL文件名
-'ValueName="In_TeachType_Id,In_Plan_Year,In_Plan_Term"	'保留的变量名
-'Value=TeachType_Id&","&Plan_Year&","&Plan_Term			'保留的变量值
-'optValueName="s_Lesson_Name,s_TeacherName,d_Start_Date,d_End_Date"		'查找条件字段名
-'optValue="课程名称,任课教师,开始时间,截止时间"						'查找条件名
-'finalFilter=Request.Form("finalFilter")								'已经生成的条件
-'RecordCount=result													'记录总数
-'PageNoCount=rs.PageCount											'页总数
-'PageSizeString="30,50,100"											'分页选项
-'PageSize=rs.PageSize												'当前每页值
-'PageNo=rs.AbsolutePage												'当前第几页
-'======================================================
-	Dim i
-	Response.write "<script language=""javascript"" src=""../scripts/query.js""></script>"&vbcrlf
-	Response.write "<form id=""query"" action="""&actionURL&""" method=""post"" onsubmit=""return chkField()"">"&vbcrlf
-
-	'----开始 传参变量
-'	Response.write Value
-	ValueName=split(ValueName,",")
-	Value=split(Value,",")
-	For i=0 To ubound(ValueName)
-		Response.write "	<input type=""hidden"" name="""&ValueName(i)&""" value="""&Value(i)&""">"&vbcrlf
-	Next
-	'----结束 传参变量
-
-	Response.write vbcrlf
-	Response.write "	<table cellspacing=4 cellpadding=0 width=""750""><tr align=center><td>"&vbcrlf
-
-	'----开始 显示查询条件
-	Response.write "		<select name=""field"" onchange=""ReloadOperator()"">"&vbcrlf
-	optValueName=split(optValueName,",")
-	optValue=split(optValue,",")
-	For i=0 To ubound(optValueName)
-		Response.write "			<option name="""&optValueName(i)&""">"&optValue(i)&"</option>"&vbcrlf
-	Next
-	Response.write "		</select>"&vbcrlf
-	Response.write "		<select name=""operator"">"&vbcrlf
-	Response.write "			<script>ReloadOperator()</script>"&vbcrlf
-	Response.write "		</select>"&vbcrlf
-	'----结束 显示查询条件
-
-	Response.write "		<input type=""text"" name=""filter"" size=""10""  onkeypress=""checkKey()"">"&vbcrlf
-	Response.write "		<input type=""hidden"" name=""finalFilter"" value="""&finalFilter&""">"&vbcrlf
-	Response.write "		<input type=""submit"" value=""查找"" onclick=""genFilter()"">"&vbcrlf
-	Response.write "		<input type=""submit"" value=""在结果中查找"" onclick=""genFinalFilter()"">"&vbcrlf
-
-	'----开始 分页条件
-	Response.write "		&nbsp;每页"&vbcrlf
-	Response.write "		<select name=""pageSize"" onchange=""this.form.submit()"">"&vbcrlf
-	PageSizeString=split(PageSizeString,",")
-	For i=0 To ubound(PageSizeString)
-		Response.write "			<option value="""&PageSizeString(i)&""""
-		If PageSizeString(i)=PageSize Then Response.write "selected"
-		Response.write ">"&PageSizeString(i)&"</option>"&vbcrlf
-	Next
-	Response.write "		</select>"&vbcrlf
-	Response.write "		条&nbsp;转到"&vbcrlf
-
-	Response.write "		<select name=""pageNo"" onchange=""this.form.submit()"">"&vbcrlf
-	For i=1 To PageNoCount
-		Response.write "			<option value="""&i&""""
-		If i=Cint(PageNo) Then Response.write "selected"
-		Response.write ">"&i&"</option>"&vbcrlf
-	Next
-	Response.write "		</select>"&vbcrlf
-	Response.write "		页&nbsp;共"&RecordCount&"条"&vbcrlf
-	'----结束 分页条件
-
-	Response.write "	</td></tr></table>"&vbcrlf
-	Response.write "</form>"&vbcrlf
-End Sub
-
-
+End function
 Sub SafeRequest(SqlStr, StrType)
 '**************************************************************
 'Author:华工ASP开发小组
@@ -695,31 +493,6 @@ Function WriteLogForTutorSystem(content)	' 添加选导师系统日志记录
 	Set fso=Nothing
 End Function
 
-Function getCurrentSemester()
-	' 返回当前学期信息
-	Dim start_year,cur_semester,semester_name,period_id
-	Dim arr(3)
-	If Month(Now)>=9 Or Month(Now)=1 Then
-		If Month(Now)>=9 Then
-			start_year=Year(Now)
-		Else
-			start_year=Year(Now)-1
-		End If
-		cur_semester=1
-		semester_name="上"
-	Else
-		start_year=Year(Now)-1
-		cur_semester=2
-		semester_name="下"
-	End If
-	period_id=start_year&cur_semester
-	arr(0)=start_year
-	arr(1)=cur_semester
-	arr(2)=semester_name
-	arr(3)=period_id
-	getCurrentSemester=arr
-End Function
-'========================
 Function toSqlString(ByVal s)
 	If IsNull(s) Then
 		toSqlString="NULL"
