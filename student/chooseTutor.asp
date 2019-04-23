@@ -127,7 +127,7 @@ Else	' 提交填报
 		recruit_quota=rs(3).Value
 		CloseRs rs
 		
-		sql="SELECT dbo.getApplyStatusOfStudent "&stu_id&","&turn_num
+		sql="SELECT dbo.getApplyStatusOfStudent("&stu_id&","&turn_num&")"
 		Set rs=conn.Execute(sql)
 		status=rs(0).Value
 		CloseRs rs
