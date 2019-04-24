@@ -1,4 +1,5 @@
 ﻿<!--#include file="../inc/db.asp"-->
+<!--#include file="common.asp"-->
 <%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
 	stu_id=Request.QueryString("id")
 	If Len(stu_id)=0 Then
