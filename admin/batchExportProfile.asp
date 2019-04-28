@@ -60,7 +60,7 @@ Case 2	' 导出和下载页面
 	End If
 	rarFilename=rarFilename&".rar"
 	Connect conn
-	sql="SELECT * FROM VIEW_STUDENT_INFO WHERE STU_ID IN ("&ids&")"
+	sql="SELECT * FROM ViewStudentInfo WHERE STU_ID IN ("&ids&")"
 	GetRecordSet conn,rs,sql,result
 	If rs.EOF Then
 	%><body bgcolor="ghostwhite"><center><font color=red size="4">所选记录不存在！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
