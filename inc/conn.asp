@@ -19,7 +19,7 @@ Sub ConnectOriginDb(conn)
 End Sub
 Function getConnectionString(initDbName)
 	Dim ret
-	ret="Provider=SQLNCLI10;Persist Security Info=True;User ID=sa;Password=cnsba2016.net;Initial Catalog="&initDbName
+	ret="Provider=SQLNCLI10;Persist Security Info=True;User ID=TutorRecruitSys;Password=freebr@qq.com;Initial Catalog="&initDbName
 	ret=ret&";Data Source=116.57.68.162,14033;Pooling=true;Max Pool Size=512;Min Pool Size=50;Connection Lifetime=999;"
 	getConnectionString=ret
 End Function
