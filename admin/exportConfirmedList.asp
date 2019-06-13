@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 filename=Request.QueryString("fn")
@@ -207,7 +207,7 @@ CloseConn conn
 If Len(retlink) Then
 	Response.Redirect retlink
 End If
-%><html><head><% useStylesheet("global") %></head><body bgcolor="ghostwhite"><p align="center"><%
+%><html><head><% useStyleSheet "global" %></head><body bgcolor="ghostwhite"><p align="center"><%
 Select Case nResult
 Case 0
 %>未生成Excel文件，因为没有数据库记录!<%

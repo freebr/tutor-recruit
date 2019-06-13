@@ -1,5 +1,4 @@
-﻿<!--#include file="../inc/global.inc"-->
-<%
+﻿<%
 Function checkIfProfileFilledIn()
 	Dim conn,rs,sql,i,ret
 	Connect conn

@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%Response.Expires=-1
 If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
@@ -32,8 +32,8 @@ If rs.RecordCount>0 Then rs.AbsolutePage=pageNo
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
-<% useScript(Array("common", "admin")) %>
+<% useStyleSheet "global" %>
+<% useScript "common", "admin" %>
 <style type="text/css">
 	tr.valid {background-color:#ffffaa}
 	tr.invalid {background-color:ghostwhite}

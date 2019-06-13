@@ -15,8 +15,8 @@ End If
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
-<% useScript("jquery") %>
+<% useStyleSheet "global" %>
+<% useScript "jquery" %>
 <title>用户操作日志(<%=logDate%>)</title>
 </head>
 <body bgcolor="ghostwhite">

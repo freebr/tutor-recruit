@@ -1,14 +1,14 @@
 ﻿<!--#include file="../inc/upload_5xsoft.inc"-->
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"--><%
-curStep=Request.QueryString("step")
-Select Case curStep
+step=Request.QueryString("step")
+Select Case step
 Case vbNullstring ' 文件选择页面
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<% useStylesheet("global") %>
-<% useScript("jquery") %>
+<% useStyleSheet "global" %>
+<% useScript "jquery" %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b>导入导师名单自EXCEL文件</b><br>
@@ -74,7 +74,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<% useStylesheet("global") %>
+<% useStyleSheet "global" %>
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%
@@ -139,7 +139,7 @@ Case 2	' 数据读取，导入到数据库
 				fieldValue(7)=toSqlString(rs("备注"))
 				' 学术型招生专业名称
 				For j=0 To rs.Fields.Count-1
-					If InStr(rs.Fields(j).Name,"专业名称") Then
+					If isMatched("(专业名称|论文方向)",rs.Fields(j).Name,True) Then
 						arrSpec=getDataArray(rs(j))
 						Exit For
 					End If

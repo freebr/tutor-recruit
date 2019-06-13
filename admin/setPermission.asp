@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <%
 stu_type=Request.Form("In_TEACHTYPE_ID2")
 period_id=Request.Form("In_PERIOD_ID2")

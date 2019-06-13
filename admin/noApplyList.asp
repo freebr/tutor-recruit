@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
@@ -70,8 +70,8 @@ End If
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
-<% useScript("common") %>
+<% useStyleSheet "global" %>
+<% useScript "common" %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 <style type="text/css">
 	p.true_flag { color:#0c0 }

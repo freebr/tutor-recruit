@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 stu_type=Request.QueryString("stu_type")
@@ -6,7 +6,7 @@ stu_type=Request.QueryString("stu_type")
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
+<% useStyleSheet "global" %>
 <title></title>
 </head>
 <body bgcolor="ghostwhite" onload="return On_Load()">

@@ -1,6 +1,6 @@
 ﻿<%Response.Expires=-1
 Server.ScriptTimeout=5000
-%><!--#include file="../inc/db.asp"-->
+%><!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
 

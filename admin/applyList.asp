@@ -1,6 +1,6 @@
 ﻿<%Response.Charset="utf-8"
 Response.Expires=-1%>
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
 	Dim object,PubTerm,page_no,page_size
@@ -57,8 +57,8 @@ Response.Expires=-1%>
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<% useStylesheet("global") %>
-<% useScript("common") %>
+<% useStyleSheet "global" %>
+<% useScript "common" %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 <script type="text/javascript">
 	window.tabmgr=parent.tabmgr;

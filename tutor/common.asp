@@ -1,5 +1,4 @@
-﻿<!--#include file="../inc/global.inc"-->
-<%
+﻿<%
 Function checkIfSystemOpen()
 	Dim conn,rs,sql,result,bOpen
 	Connect conn

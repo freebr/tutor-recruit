@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 
@@ -30,6 +30,7 @@ CloseRs rs
 
 sql="SELECT * FROM ViewApplyInfoByTurn WHERE RECRUIT_ID="&recruitID&" AND APPLY_STATUS=3 ORDER BY TUTOR_REPLY_TIME DESC"
 GetRecordSetNoLock conn,rs,sql,result
+specName=rs("SPECIALITY_NAME")
 If page_size<>"" Then
 	rs.PageSize=CInt(page_size)
 Else
@@ -49,13 +50,13 @@ End If
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<% useStylesheet("global") %>
+<% useStyleSheet "global" %>
 <title>导师[<%=tutorName%>]已确认学员名单</title>
-<% useScript("common") %>
+<% useScript "common" %>
 <script type="text/javascript" src="../scripts/admin.js"></script>
 </head>
 <body bgcolor="ghostwhite">
-<center><font size=4><b>导师[<a href="#" onclick="return showTeacherResume(<%=tutorId%>);"><%=tutorName%></a>]已确认学员名单</b></font>
+<center><font size=4><b>导师[<a href="#" onclick="return showTeacherResume(<%=tutorId%>);"><%=tutorName%></a>]专业[<%=specName%>]已确认学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>每页
@@ -101,7 +102,7 @@ For i=1 to rs.PageSize
     <td><%=HtmlEncode(rs("CLASS_NAME"))%></td>
     <td><%=rs("PERIOD_NAME")%></td>
     <td><%=arrTurnName(rs("TURN_NUM"))%></td>
-		<td><%=FormatDateTime(rs("APPLY_TIME"),2)%>&nbsp;<%=FormatDateTime(rs("APPLY_TIME"),4)%></td>
+		<td><%=FormatDateTime(rs("APPLY_TIME"),2)%>&nbsp;<%=FormatDateTime(rs("APPLY_TIME"),3)%></td>
 		<td><%=tutor_reply_time%></td>
   </tr><%
   	rs.MoveNext()

@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Dim ids,tid_string
 ids=Request.Form("sel")

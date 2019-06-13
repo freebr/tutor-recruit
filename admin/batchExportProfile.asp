@@ -1,6 +1,6 @@
 ﻿<%Response.Expires=-1
 Response.Charset="utf-8"%>
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <!--#include file="profilegen.inc"-->
 <%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
@@ -13,8 +13,8 @@ Case vbNullString	' 选择页面
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<% useStylesheet("global") %>
-<% useScript("jquery") %>
+<% useStyleSheet "global" %>
+<% useScript "jquery" %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b>批量导出学生个人信息</b><br />

@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("TId")) Then Response.Redirect("../error.asp?timeout")
 	stu_id=Request.QueryString("id")
@@ -39,8 +39,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
-<% useScript(Array("common", "tutor")) %>
+<% useStyleSheet "global" %>
+<% useScript "common", "tutor" %>
 </head>
 <body bgcolor="ghostwhite">
 <center>

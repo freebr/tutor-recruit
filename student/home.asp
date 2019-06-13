@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("StuId")) Then Response.Redirect("../error.asp?timeout")%>
 <html>
@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <link href="../css/global.css" rel="stylesheet" type="text/css">
-<% useScript(Array("jquery", "common", "student")) %>
+<% useScript "jquery", "common", "student" %>
 </head>
 <body bgcolor="ghostwhite">
 <center>

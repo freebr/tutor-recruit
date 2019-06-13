@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("StuId")) Then Response.Redirect("../error.asp?timeout")
 
@@ -53,11 +53,12 @@ If Len(page_size)=0 Or Not IsNumeric(page_size) Then page_size=-1 Else page_size
 If Len(page_cur)=0 Or Not IsNumeric(page_cur) Then page_cur=1 Else page_cur=Int(page_cur)
 
 sql="EXEC spQueryRecruitInfo ?,?,?,?,?"
-Set rs=ExecQuery(conn,sql,Array(CmdParam("period_id",adInteger,adParamInput,4,cur_period_id),_
-	CmdParam("teachtype_id",adInteger,adParamInput,4,stu_type),_
-	CmdParam("where",adVarChar,adParamInput,2000,finalFilter),_
-	CmdParam("page_size",adInteger,adParamInput,4,page_size),_
-	CmdParam("page_cur",adInteger,adParamInput,4,page_cur)),result).NextRecordSet().NextRecordSet()
+Set ret=ExecQuery(conn,sql,CmdParam("period_id",adInteger,4,cur_period_id),_
+	CmdParam("teachtype_id",adInteger,4,stu_type),_
+	CmdParam("where",adVarChar,2000,finalFilter),_
+	CmdParam("page_size",adInteger,4,page_size),_
+	CmdParam("page_cur",adInteger,4,page_cur))
+Set rs=ret("rs").NextRecordSet().NextRecordSet()
 count_rec = rs(0).Value
 If page_size = -1 Then
 	page_size = count_rec
@@ -72,7 +73,7 @@ show_tutor_quota_student = getSystemOption("show_tutor_quota_student", stu_type)
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="../css/global.css" rel="stylesheet" type="text/css">
-<% useScript(Array("jquery", "common", "student")) %>
+<% useScript "jquery", "common", "student" %>
 <style type="text/css">
 	a:visited, a:link { text-decoration:underline }
 	span.no-quota { color:#aaa;cursor:not-allowed }

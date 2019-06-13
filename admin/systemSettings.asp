@@ -1,12 +1,12 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
+<!--#include file="common.asp"-->
 <!--#include file="../inc/setEditor.asp"-->
 <!--#include file="../inc/ckeditor/ckeditor.asp"-->
 <!--#include file="../inc/ckfinder/ckfinder.asp"-->
-<!--#include file="common.asp"-->
 <%Response.Expires=-1
 If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
-curstep=Request.QueryString("step")
-If Len(curstep)=0 Or Not IsNumeric(curstep) Then curstep="1"	
+step=Request.QueryString("step")
+If Len(step)=0 Or Not IsNumeric(step) Then step="1"	
 sem_info=getCurrentSemester()
 Dim arrMailId(4),arrMailSubject
 Dim arrStuOprFlag,arrStuOprName
@@ -19,7 +19,7 @@ arrTutOprName=Array("","确认填报")
 arrStuOprFlag=Array("","CHOOSE")
 arrStuOprName=Array("","选择导师")
 arrMailSubject=Array("","学员选导师确认通知","导师确认填报通知","导师退回填报通知","学员选导师填报状态变更通知")
-If curstep="1" Then
+If step="1" Then
 	ReDim tut_clientstatus(SYS_TUT_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	ReDim stu_clientstatus(SYS_STU_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	Connect conn
@@ -70,8 +70,8 @@ If curstep="1" Then
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet(Array("global", "jeasyui")) %>
-<% useScript(Array("jquery", "jeasyui", "common", "admin")) %>
+<% useStylesheet "global", "jeasyui" %>
+<% useScript "jquery", "jeasyui", "common", "admin" %>
 </head>
 <body bgcolor="ghostwhite">
 <center><font size=4><b><%=sem_info(0)%>-<%=sem_info(0)+1%>年度<%=sem_info(2)%>学期硕士生选导师系统设置</b><br><%
@@ -163,7 +163,8 @@ End If %></p></td></tr>
 <div id="stu_type_tabs" style="width: 400px;height: 250px"><%
 	For i=1 To UBound(arrStuType)
 		sql="EXEC spGetSystemOptionForStuType ?"
-		Set rs=ExecQuery(conn,sql,CmdParam("StuTypeId",adInteger,adParamInput,4,arrStuTypeId(i)),result)
+		Set ret=ExecQuery(conn,sql,CmdParam("StuTypeId",adInteger,4,arrStuTypeId(i)))
+		Set rs=ret("rs")
 %><div title="<%=arrStuType(i)%>">
 <ul class="option-list"><%
 		keys=dictSystemOptions.Keys()
@@ -212,32 +213,32 @@ End If %></p></td></tr>
 		this.form.action='updateQuota.asp';
 		this.form.submit();
 	}
-$(function () {
-	$('#stu_type_tabs').tabs({
-		width: '100%',
-		height: 150,
-		// 是否不显示控制面板背景。
-		plain: false,
-		// 选项卡是否将铺满它所在的容器
-		fit: false,
-		// 是否显示选项卡容器边框
-		border: true,
-		// 选项卡滚动条每次滚动的像素值
-		scrollIncrement: 200,
-		// 每次滚动动画持续的时间
-		scrollDuration: 400,
-		// 选项卡位置
-		tabPosition: 'top',
-		// 标签条的宽度
-		tabWidth: 100,
-		// 标签条的高度
-		tabHeight: 25,
-		// 初始化选中一个 tab 页, 从0开始
-		selected: 0,
-		// 是否显示 tab 页标题
-		showHeader: true
+	$(function () {
+		$('#stu_type_tabs').tabs({
+			width: '100%',
+			height: 150,
+			// 是否不显示控制面板背景。
+			plain: false,
+			// 选项卡是否将铺满它所在的容器
+			fit: false,
+			// 是否显示选项卡容器边框
+			border: true,
+			// 选项卡滚动条每次滚动的像素值
+			scrollIncrement: 200,
+			// 每次滚动动画持续的时间
+			scrollDuration: 400,
+			// 选项卡位置
+			tabPosition: 'top',
+			// 标签条的宽度
+			tabWidth: 100,
+			// 标签条的高度
+			tabHeight: 25,
+			// 初始化选中一个 tab 页, 从0开始
+			selected: 0,
+			// 是否显示 tab 页标题
+			showHeader: true
+		});
 	});
- });
 </script>
 </body>
 </html><%
@@ -321,10 +322,10 @@ Else
 				option_value=option_value="on"
 			End If
 			sql="EXEC spSetSystemOption ?,?,?,?"
-			ExecNonQuery conn,sql,Array(CmdParam("Name",adVarChar,adParamInput,50,option_name),_
-				CmdParam("StuTypeId",adInteger,adParamInput,4,arrStuTypeId(i)),_
-				CmdParam("Value",adBoolean,adParamInput,1,option_value),_
-				CmdParam("Text",adVarChar,adParamInput,50,option_text))
+			ExecNonQuery conn,sql,CmdParam("Name",adVarChar,50,option_name),_
+				CmdParam("StuTypeId",adInteger,4,arrStuTypeId(i)),_
+				CmdParam("Value",adBoolean,1,option_value),_
+				CmdParam("Text",adVarChar,50,option_text)
 		Next
 	Next
 

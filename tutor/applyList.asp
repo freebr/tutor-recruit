@@ -1,5 +1,5 @@
 ﻿<%Response.Expires=-1%>
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Tid")) Then Response.Redirect("../error.asp?timeout")
 Dim stu_type,spec_hash,PubTerm,page_cur,page_size
@@ -58,8 +58,8 @@ show_tutor_quota_tutor = getSystemOption("show_tutor_quota_tutor", stu_type)
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<% useStylesheet("global") %>
-<% useScript("common") %>
+<% useStyleSheet "global" %>
+<% useScript "common" %>
 <script type="text/javascript" src="../scripts/tutor.js"></script>
 <script type="text/javascript">
 	window.tabmgr=parent.tabmgr;

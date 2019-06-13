@@ -1,9 +1,9 @@
 ﻿<!--#include file="../inc/upload_5xsoft.inc"-->
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%
-curStep=Request.QueryString("step")
-Select Case curStep
+step=Request.QueryString("step")
+Select Case step
 Case 1	' 上传进程
 
 	Dim fso,Upload,File
@@ -45,7 +45,7 @@ Case 1	' 上传进程
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
 <title>导入自EXCEL文件</title>
-<% useStylesheet("global") %>
+<% useStyleSheet "global" %>
 </head>
 <body bgcolor="ghostwhite">
 <center><br /><b>导入自EXCEL文件</b><br /><br /><%

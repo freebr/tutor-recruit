@@ -1,5 +1,4 @@
-﻿<!--#include file="../inc/global.inc"-->
-<%
+﻿<%
 Function getTeacherIdByName(name)
 	If IsNull(name) Then
 		getTeacherIdByName=-1

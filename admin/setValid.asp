@@ -1,4 +1,4 @@
-﻿<!--#include file="../inc/db.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 valid=Request.QueryString("valid")
 If IsEmpty(valid) Or Not IsNumeric(valid) Then

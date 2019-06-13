@@ -1,5 +1,5 @@
 ﻿<%Response.Expires=-1%>
-<!--#include file="../inc/db.asp"-->
+<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Dim finalFilter,page_no,page_size
@@ -62,8 +62,8 @@ If rs.RecordCount>0 Then rs.AbsolutePage=pageNo
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
-<% useStylesheet("global") %>
-<% useScript(Array("common", "admin")) %>
+<% useStyleSheet "global" %>
+<% useScript "common", "admin" %>
 <style type="text/css">
 	p.permitted {color:#0c0}
 	p.unpermitted {color:#aaa}
