@@ -67,7 +67,7 @@ If isConfirm="1" Then	' 确认填报
 		End If
 		WriteLog logtxt
 	End If
-	tip="操作成功，请等待进一步通知！\n若导师确认您的申请，将第一时间以邮件方式向您通知！谢谢！"
+	tip="操作成功，请等待进一步通知！"&vbNewLine&"若导师确认您的申请，将第一时间以邮件方式向您通知！谢谢！"
 ElseIf isCancel="1" Then	' 取消填报
 	sql="EXEC spStudentClientSetApplyStatus "&stu_id&",0"
 	conn.Execute sql
@@ -131,7 +131,7 @@ Else	' 提交填报
 		Set rs=conn.Execute(sql)
 		status=rs(0).Value
 		CloseRs rs
-		If status=0 Then
+		If status<=1 Then
 			sql="SELECT dbo.countOfConfirmedApply("&recruit_id&")"
 			Set rs=conn.Execute(sql)
 			confirmed_count=rs(0).Value
@@ -152,7 +152,7 @@ Else	' 提交填报
 	End If
 	
 	If Len(sql_exec)=0 Then
-		errdesc="请填报至少两个志愿！"
+		errdesc="信息已确认，不能修改！"
 %>{"error":true,"tip":"<%=errdesc%>"}<%
 		CloseConn conn
 		Response.End()

@@ -22,7 +22,7 @@ Dim bNoCheck
 Dim conn
 
 bNoCheck=Right(FormName,8)="_nocheck"
-SelectLen=10
+SelectLen=32
 SelectLenStr=""
 FieldId=""
 Field=""

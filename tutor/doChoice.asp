@@ -91,16 +91,18 @@ Case 1	' 退回操作
 End Select
 
 If send_email Then
-	sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL,TUTOR_RECRUIT_STATUS FROM ViewStudentInfo A "&_
-	 	"LEFT JOIN ViewTeacherInfo B ON B.TEACHERID=A.TUTOR_ID WHERE STU_ID IN ("&ids&")"
+	sql="SELECT TEACHERNAME,EMAIL FROM ViewTeacherInfo WHERE TEACHERID="&Session("Tid")
+	Set rs=conn.Execute(sql)
+	tutor_name=rs(0).Value
+	tutor_email=rs(1).Value
+	CloseRs rs
+	sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,EMAIL,TUTOR_RECRUIT_STATUS FROM ViewStudentInfo WHERE STU_ID IN ("&ids&")"
 	Set rs=conn.Execute(sql)
 	Do While Not rs.EOF
 		stu_name=rs(0).Value
 		class_name=rs(1).Value
 		spec_name=rs(2).Value
 		stu_email=rs(3).Value
-		tutor_name=rs(4).Value
-		tutor_email=rs(5).Value
 		fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,"",withdraw_reason)
 		bSuccess=sendAnnouncementEmail(mail_id(opr+2),stu_email,fieldval)
 		logtxt=logtxt0&"通知邮件发至["&stu_name&":"&stu_email&"]"

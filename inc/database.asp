@@ -23,8 +23,7 @@ Function getConnectionString(initDbName)
 End Function
 Function CmdParam(name,ptype,size,value)
 	' 构造命令参数对象
-	Dim cmd
-	Set cmd=Server.CreateObject("ADODB.Command")
+	Dim cmd:Set cmd=Server.CreateObject("ADODB.Command")
 	Set CmdParam=cmd.CreateParameter(name,ptype,adParamInput,size,value)
 	Set cmd=Nothing
 End Function
@@ -42,7 +41,9 @@ End Function
 		var rs=cmd.Execute();
 		var dict=CreateDictionary();
 		dict.Add("rs", rs);
-		dict.Add("count", rs.RecordCount);
+		if (rs.State === adStateOpen) {
+			dict.Add("count", rs.RecordCount);
+		}
 		return dict;
 	}
 	function ExecNonQuery(conn,sql) {
