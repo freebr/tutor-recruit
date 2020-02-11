@@ -93,6 +93,10 @@ p.accepted {color:#090}
 p.unaccepted {color:#aaa}
 p.withdrawn {color:#c00}
 
+ul.option-list {
+	list-style: none;
+}
+
 ul.recruitprogress {
 	list-style: none;
 }

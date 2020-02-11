@@ -82,10 +82,10 @@ function getFilter(){
                 }
                 break;
         case "ms":
-        				fieldVals=fieldVal.split('|');
-        				filterText='';
-        				for(var i=0;i<fieldVals.length;i++) {
-        					if(!!i) filterText+=' OR ';
+                fieldVals=fieldVal.split('|');
+                filterText='';
+                for(var i=0;i<fieldVals.length;i++) {
+                    if(!!i) filterText+=' OR ';
 	                switch(currentOperator){
 	                    case "包含":filterText+=fieldVals[i]+" LIKE '%"+filterValue+"%'";break;
 	                    case "不包含":filterText+=fieldVals[i]+" NOT LIKE '%"+filterValue+"%'";break;

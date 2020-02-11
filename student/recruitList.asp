@@ -67,7 +67,7 @@ Else
 	count_page = count_rec/page_size
 End If
 If Int(count_page)<>count_page Then count_page=Int(count_page)+1
-Set rs = rs.NextRecordSet()
+Set rs=rs.NextRecordSet()
 show_tutor_quota_student = getSystemOption("show_tutor_quota_student", stu_type)
 %><html>
 <head>

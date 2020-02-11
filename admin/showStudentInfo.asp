@@ -21,16 +21,6 @@
   Else
   	ReDim Tutor_Outside(1)
   End If
-	'第一次进入程序给默认显示的变量赋值
-	If Request.Form("Teachtype_Id").Count=0 Then
-		Servb_Teachtype_Str=rs("Teachtype_Id")
-		Servb_Dept_Str=rs("Dept_Id")
-		Servb_Class_Str=rs("Class_Id")
-		Servb_Tutor_Str=rs("Tutor_Id")
-		Servb_Dept_Term=" And Teachtype_Id="&Servb_Teachtype_Str&" And Dept_Id="&Servb_Dept_Str
-		Showstudent_Stu_No_Term=rs("Stu_No")
-		Showstudent_Stu_Name_Term=rs("Stu_Name")
-	End If
 	thesis_topic=toPlainString(rs("THESIS_TOPIC"))
 	personal_resume=toPlainString(rs("PERSONAL_RESUME"))
 	experiences=toPlainString(rs("EXPERIENCES"))
@@ -39,9 +29,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="theme-color" content="#2D79B2" />
+<title>学生[<%=rs("STU_NAME")%>]基本资料</title>
 <% useStyleSheet "global" %>
-<script type="text/javascript" src="../scripts/admin.js"></script>
-<% useScript "common" %>
+<% useScript "common", "admin" %>
 </head>
 <body bgcolor="ghostwhite">
 <center>
@@ -49,11 +39,9 @@
   <caption><font size=3><b>学生基本资料</b></font></caption>
   <tr bgcolor="white">
     <td width="100">学号</td>
-	<%If request.Form("Stu_No")<>"" then Showstudent_Stu_No_Term=request.Form("Stu_No") End If%>
-    <td><%=HtmlEncode(SHOWSTUDENT_STU_NO_Term)%></td>
+    <td><%=rs("STU_NO")%></td>
     <td>姓名</td>
-	<%If request.Form("Stu_Name")<>"" then Showstudent_Stu_Name_Term=request.Form("Stu_Name") End If%>
-    <td width="183"><%=HtmlEncode(SHOWSTUDENT_STU_NAME_Term)%></td>
+    <td><%=rs("STU_NAME")%></td>
     <td width="76">性别</td>
     <td width="149"><%=rs("Sex")%></td>
   </tr>

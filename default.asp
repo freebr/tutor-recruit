@@ -1,4 +1,4 @@
-﻿<!--#include file="inc/db.asp"--><%
+﻿<!--#include file="inc/global.inc"--><%
 If Request.QueryString()="logout" Then
 	If Len(Session("Name")) Then
 		msg="行政人员["&Session("Name")&"]登出。"

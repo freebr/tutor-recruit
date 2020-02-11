@@ -83,12 +83,14 @@ For i=0 To UBound(arrSelTurn)
 Next
 
 If Len(stat) Then
-	If bSendEmail Then
-		Dim arrStatText:arrStatText=Array("未填报状态","未确认填报状态","导师未确认状态","导师已确认状态","导师已退回状态")
-		For Each item In dictStu.Items
-			stu_id=item
+	Dim arrStatText:arrStatText=Array("未填报状态","未确认填报状态","导师未确认状态","导师已确认状态","导师已退回状态")
+	stat_text=arrStatText(stat)
+	For Each item In dictStu.Items
+		stu_id=item
+		logtxt="教务员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]。"
+		If bSendEmail Then
 			sql="SELECT STU_NAME,CLASS_NAME,TUTOR_SPECIALITY_NAME,A.EMAIL,A.TEACHERNAME,B.EMAIL FROM ViewStudentInfo A,ViewTeacherInfo B"&_
-			 	  " WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
+				" WHERE STU_ID="&stu_id&" AND B.TEACHERID=A.TUTOR_ID"
 			Set rs=conn.Execute(sql)
 			If Not rs.EOF Then
 				stu_name=rs(0)
@@ -97,20 +99,19 @@ If Len(stat) Then
 				stu_email=rs(3)
 				tutor_name=rs(4)
 				tutor_email=rs(5)
-				stat_text=arrStatText(stat)
 				fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
 				bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
-				logtxt="行政人员["&Session("name")&"]在选导师系统执行学生填报状态变更操作["&stat_text&"]，通知邮件发至["&stu_name&":"&stu_email&"]"
+				logtxt=logtxt&"通知邮件发至["&stu_name&":"&stu_email&"]"
 				If bSuccess Then
 					logtxt=logtxt&"成功。"
 				Else
 					logtxt=logtxt&"失败。"
 				End If
-				WriteLog logtxt
 			End If
 			CloseRs rs
-		Next
-	End If
+		End If
+		WriteLog logtxt
+	Next
 End If
 Set dictStu=Nothing
 CloseConn conn

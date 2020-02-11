@@ -19,7 +19,7 @@ FormGetToSafeRequest(stu_type)
 FormGetToSafeRequest(spec_hash)
 FormGetToSafeRequest(period_id)
 
-If IsEmpty(stu_type) Or IsEmpty(spec_hash) Or IsEmpty(period_id) Then
+If Len(stu_type)=0 Or Len(spec_hash)=0 Or Len(period_id)=0 Then
 %><body bgcolor="ghostwhite"><center><font color=red size="4">请选择条件！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
 	Response.End()
 End If
