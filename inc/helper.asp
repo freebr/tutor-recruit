@@ -37,7 +37,7 @@ For i=0 to j
 	For ii=1 To SelectLen
 		SelectLenStr=SelectLenStr&"0"
 	Next
-	FieldId="replace(right('"&SelectLenStr&"',"&SelectLenNew&"-len(convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"))) + convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"),' ','')"
+	FieldId="replace(right('"&SelectLenStr&"',"&SelectLen&"-len(convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"))) + convert(char("&SelectLenNew&"),"&ArrayList(i,2)&"),' ','')"
 	If i<>0 Then
 		Field=Field&" + "
 	End If
@@ -57,7 +57,7 @@ For i=0 to j
 	For ii=1 To count
 		Response.write ArrayList(i,2)&"Code["&ii&"] = '"&rsSelMenu(0)&"';"&vbcrlf
 		Response.write ArrayList(i,2)&"Desc["&ii&"] = '"&GetPartString(rsSelMenu(1),15)&"';"&vbcrlf
-		rsSelMenu.MoveNext
+		rsSelMenu.MoveNext()
 	Next
 Next
 
@@ -71,13 +71,13 @@ For i=0 To j-1
 		'----------------------
 	SelectLenNew=0
 	For ii=0 to i
-		SelectLenNew=SelectLenNew+SelectLen*(ii)	'计算上一次 SelectLenNew的值
+		SelectLenNew=SelectLenNew+SelectLen	'计算上一次 SelectLenNew的值
 	Next
 '	ii=i+1
 	For ii=i+1 To j
-		SelectLenNew=SelectLenNew+SelectLen*(ii)	'计算这一次 SelectLenNew的值
-		'----------------------
 		Response.write "Change"&ArrayList(ii,2)&"(fm."&ArrayList(ii-1,2)&".value,"&SelectLenNew&");"&vbcrlf
+		'----------------------
+		SelectLenNew=SelectLenNew+SelectLen	'计算这一次 SelectLenNew的值
 	Next
 	Response.write "}//end"&i&vbcrlf&vbcrlf
 Next
@@ -98,7 +98,7 @@ For i=1 to j
 
 	If i<>j Then
 		If ArrayList(i,4)<>"" Then
-			Response.write "	if("&ArrayList(i,2)&"Code[i].substr(intLength).ltrim()"&"=='"&ArrayList(i,4)&"'){"&vbcrlf	'判断当前值是否为默认值
+			Response.write "	if("&ArrayList(i,2)&"Code[i].substr(intLength)"&"=='"&ArrayList(i,4)&"'){"&vbcrlf	'判断当前值是否为默认值
 			Response.write "		fm."&ArrayList(i,2)&".selectedIndex = k;"&vbcrlf	'设置默认值
 	  	Response.write "		var onchange=Sel"&ArrayList(i,2)&"_OnChange; if(onchange) onchange();"&vbcrlf	'更新下一个下拉框的内容
 			Response.write "	}//if"&i&vbcrlf
@@ -126,7 +126,7 @@ Next
 	Response.write "for (i = 0;i<"&ArrayList(i,2)&"Code.length;i++){"&vbcrlf
 	Response.write "fm."&ArrayList(i,2)&".options[i] = new Option("&ArrayList(i,2)&"Desc[i],"&ArrayList(i,2)&"Code[i]);"&vbcrlf
 	If ArrayList(i,4)<>"" Then
-		Response.write "	if("&ArrayList(i,2)&"Code[i].ltrim()"&"=='"&ArrayList(i,4)&"'){"&vbcrlf '判断当前值是否为默认值
+		Response.write "	if("&ArrayList(i,2)&"Code[i]"&"=='"&ArrayList(i,4)&"'){"&vbcrlf '判断当前值是否为默认值
 		Response.write "		fm."&ArrayList(i,2)&".selectedIndex = i;"&vbcrlf	'设置默认值
 	  Response.write "		var onchange=Sel"&ArrayList(i,2)&"_OnChange; if(onchange) onchange();"&vbcrlf	'更新下一个下拉框的内容
 		Response.write "	}//if"&vbcrlf
@@ -157,10 +157,9 @@ Next
 			End If
 		End If
 		'取结果
-		StartLen=StartLen+SelectLen*i
-		EndLen=EndLen+SelectLen*(i+1)
-
-		Response.write "fm.In_"&ArrayList(i,2)&".value=fm."&ArrayList(i,2)&".value.substr("&StartLen&","&EndLen&").ltrim();"&vbcrlf
+		StartLen=SelectLen*i
+		EndLen=StartLen+SelectLen 'SelectLen*(i+1)
+		Response.write "fm.In_"&ArrayList(i,2)&".value=fm."&ArrayList(i,2)&".value.substr("&StartLen&","&EndLen&");"&vbcrlf
 
 	Next
 	Response.write "return true;"&vbcrlf

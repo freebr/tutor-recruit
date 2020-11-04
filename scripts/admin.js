@@ -91,8 +91,8 @@ function closeWindow() {
 	}
 	return false;
 }
-function showTeacherResume(id) {
-	window.open("/teacher_resume.asp?id="+id,"_blank");
+function showTeacherProfile(id) {
+	window.open("http://oa.cnsba.com/teacher_resume.asp?id="+id,'teacher'+id);
 	return false;
 }
 function setPermission(type) {

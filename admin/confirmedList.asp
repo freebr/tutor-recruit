@@ -52,11 +52,10 @@ End If
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <% useStyleSheet "global" %>
 <title>导师[<%=tutorName%>]已确认学员名单</title>
-<% useScript "common" %>
-<script type="text/javascript" src="../scripts/admin.js"></script>
+<% useScript "common", "admin" %>
 </head>
 <body bgcolor="ghostwhite">
-<center><font size=4><b>导师[<a href="#" onclick="return showTeacherResume(<%=tutorId%>);"><%=tutorName%></a>]专业[<%=specName%>]已确认学员名单</b></font>
+<center><font size=4><b>导师[<a href="#" onclick="return showTeacherProfile(<%=tutorId%>);"><%=tutorName%></a>]专业[<%=specName%>]已确认学员名单</b></font>
 <table cellspacing=4 cellpadding=0>
 <form id="query" method="post" onsubmit="return chkField()">
 <tr><td>每页

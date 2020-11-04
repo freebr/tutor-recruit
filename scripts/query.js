@@ -131,16 +131,19 @@ function genFinalFilter(formname){
     	if(getFilter()!="")document.all.finalFilter.value+=getFilter();
 	}
 }
-function checkAll(){
+function checkAll(form){
+    var chk=form && form.chk || document.all.chk;
     idAll=document.getElementsByName("sel");
     for(i=0;i<idAll.length;i++){
-        idAll.item(i).checked=document.all.chk.checked;
+        if(form && idAll[i].form != form) continue;
+        idAll.item(i).checked=chk.checked;
     }
 }
-function countClk(){
+function countClk(form){
     var totalCount=0;
     idAll=document.getElementsByName("sel");
     for(i=0;i<idAll.length;i++){
+        if(form && idAll[i].form != form) continue;
         if(idAll.item(i).checked) totalCount++;
     }
     return totalCount;

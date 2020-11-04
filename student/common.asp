@@ -75,8 +75,7 @@ Dim stuclient:Set stuclient=New ClientInfo
 stuclient.setOprTypeCount(SYS_STU_OPRTYPE_COUNT)
 getClientInfo(stuclient)
 If stuclient.SystemStatus=SYS_STATUS_CLOSED And Session("Debug")=False Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4">选导师系统未启用！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End()
+	showErrorPage "选导师系统未启用！", "提示"
 End If
 
 Dim stu_type:stu_type=Session("StuType")

@@ -3,11 +3,12 @@
 If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 Connect conn
 For i=1 To Request.Form("sel").Count
-	specControlName="spec"&Request.Form("sel")(i)
+	id=Request.Form("sel")(i)
+	specControlName="spec"&id
 	specName=Trim(Request.Form(specControlName))
-	sql="SELECT * FROM ViewTutorInfo WHERE ID="&Request.Form("sel")(i)
+	sql="SELECT * FROM TutorInfo WHERE ID="&id
 	GetRecordSet conn,rs,sql,result
-	specId=getItemIdByName(specName,"SPECIALITY_ID","SPECIALTY_NAME","CODE_SPECIALITY")
+	specId=getItemIdByName(specName,"SPECIALITY_ID","SPECIALTY_NAME","ViewSpecialityInfo")
 	If specId<>0 Then
 		specName=Null
 	End If

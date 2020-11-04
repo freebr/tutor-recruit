@@ -2,7 +2,7 @@
 Response.Expires=-1%>
 <!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
+<%If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 	Dim object,PubTerm,page_no,page_size
 
 	object=Request.Form("In_TEACHTYPE_ID")
@@ -27,7 +27,7 @@ Response.Expires=-1%>
 	page_no=""
 	page_size=""
 	If Request.Form("In_PAGE_NO").Count=0 Then
-		page_no=Request.Form("page_no")
+		page_no=Request.Form("pageNo")
 		page_size=Request.Form("pageSize")
 	Else
 		page_no=Request.Form("In_PAGE_NO")
@@ -58,8 +58,7 @@ Response.Expires=-1%>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <% useStyleSheet "global" %>
-<% useScript "common" %>
-<script type="text/javascript" src="../scripts/admin.js"></script>
+<% useScript "common", "admin" %>
 <script type="text/javascript">
 	window.tabmgr=parent.tabmgr;
 </script>
@@ -199,7 +198,7 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",apply_status,"AND ID>0"
     <td align="center">
     <input type="checkbox" name="sel_turn" value="<%=rs("STU_ID")%>|<%=j%>"><%
     	If Not IsNull(rs("RECRUIT_ID"&j)) Then %>
-   	<a href="#" onclick="return showTeacherResume('<%=rs("TUTOR_ID"&j)%>')"><%=HtmlEncode(rs("TUTOR_NAME"&j))%></a><br/><%=HtmlEncode(rs("SPECIALITY_NAME"&j))%><br/><%
+   	<a href="#" onclick="return showTeacherProfile('<%=rs("TUTOR_ID"&j)%>')"><%=HtmlEncode(rs("TUTOR_NAME"&j))%></a><br/><%=HtmlEncode(rs("SPECIALITY_NAME"&j))%><br/><%
 				stat_text=rs("APPLY_STATUS_NAME"&j)
 				If stat=4 Then
 					reason=rs("TUTOR_REPLY"&j)
@@ -217,7 +216,7 @@ GetMenuListPubTerm "ApplyStatusInfo","ID","Name",apply_status,"AND ID>0"
 		Next %>
     <td align="center"><%
    	If rs("TUTOR_ID")<>0 Then
-%><a href="#" onclick="return showTeacherResume(<%=rs("TUTOR_ID")%>);"><p><%=HtmlEncode(rs("TUTOR_NAME"))%></p></a><%
+%><a href="#" onclick="return showTeacherProfile(<%=rs("TUTOR_ID")%>);"><p><%=HtmlEncode(rs("TUTOR_NAME"))%></p></a><%
 		End If
 %></td>
 		<td align="center"><%=rs("APPLY_STATUS_NAME")%><%=tutor_reply_time%></td>

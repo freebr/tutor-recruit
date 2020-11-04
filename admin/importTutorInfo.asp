@@ -125,8 +125,8 @@ Case 2	' 数据读取，导入到数据库
 				
 				' 专业学位类型
 				fieldValue(2)=getRecruitTypeValue(rs("专业学位类型"))
-				' 工程领域名称
-				fieldValue(3)=toSqlString(rs("工程领域名称"))
+				' 论文指导方向
+				fieldValue(3)=toSqlString(rs("论文指导方向"))
 				' 主副岗
 				fieldValue(4)=toSqlString(rs("主岗"))
 				fieldValue(5)=toSqlString(rs("兼岗"))
@@ -137,7 +137,7 @@ Case 2	' 数据读取，导入到数据库
 				End If
 				' 备注
 				fieldValue(7)=toSqlString(rs("备注"))
-				' 学术型招生专业名称
+				' 专硕招生专业名称
 				For j=0 To rs.Fields.Count-1
 					If isMatched("(专业名称|论文方向)",rs.Fields(j).Name,True) Then
 						arrSpec=getDataArray(rs(j))

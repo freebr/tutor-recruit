@@ -3,13 +3,10 @@ Response.Charset="utf-8"%>
 <!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"-->
 <!--#include file="profilegen.inc"-->
-<%If IsEmpty(Session("user")) Then Response.Redirect("../error.asp?timeout")
-ids=Request.Form("sel")
-numRecord=UBound(Split(ids,","))+1
+<%ids=Request.Form("sel")
 step=Request.QueryString("step")
 Select Case step
 Case vbNullString	' 选择页面
-	rarFilenamePostfix="(共"&numRecord&"份)"
 %><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,9 +16,9 @@ Case vbNullString	' 选择页面
 <body bgcolor="ghostwhite">
 <center><font size=4><b>批量导出学生个人信息</b><br />
 <form id="fmFetchFile" action="?step=2" method="POST">
-<p>您选择了&nbsp;<%=numRecord%>&nbsp;个学生</p>
-<p>打包压缩文件名：<input type="text" name="rarfilename" size="40" value="学生个人信息(共<%=numRecord%>份)"/>.rar&nbsp;</p>
-<input type="hidden" name="sel" value="<%=ids%>" />
+<p>请输入学生ID，以换行符分隔：</p>
+<p><textarea name="sel" style="width: 800px; height: 400px"></textarea></p>
+<p>打包压缩文件名：<input type="text" name="rarfilename" size="40" value="学生个人信息"/>.rar&nbsp;</p>
 <input type="submit" name="btnsubmit" value="导 出" />&nbsp;
 <input type="button" name="btnret" value="返 回" onclick="history.go(-1)" /></p></form>
 <p align="left"><span id="output" style="color:#000099;font-size:9pt"></span></p></center></body>
@@ -43,9 +40,10 @@ $(document).ready(function(){
 </script></html><%
 Case 2	' 导出和下载页面
 
+	numRecord=UBound(Split(ids,vbNewLine))+1
 	If numRecord=0 Then
 		bError=True
-		errdesc="请选择学生！"
+		errdesc="请输入学生ID！"
 	End If
 	If bError Then
 		showErrorPage errdesc, "提示"
@@ -58,12 +56,14 @@ Case 2	' 导出和下载页面
 	End If
 	rarFilename=rarFilename&".rar"
 	Connect conn
-	sql="SELECT * FROM ViewStudentInfo WHERE STU_ID IN ("&ids&")"
+	sql="SELECT * FROM ViewStudentInfo WHERE STU_ID IN ("&Replace(ids,vbNewLine,",")&")"
 	GetRecordSet conn,rs,sql,result
 	If rs.EOF Then
 		showErrorPage "所选记录不存在！", "提示"
 	End If
 	
+	Server.ScriptTimeout = 1800
+
 	' 导出个人信息
 	Dim pg:Set pg=New ProfileGen
 	' 打包文件
@@ -183,6 +183,7 @@ Case 2	' 导出和下载页面
 	Set wsh=Nothing
 	Set fso=Nothing
 	url="/TutorRecruit/admin/rar/"&rarFilename
+	Server.ScriptTimeout = 90
 %><script type="text/javascript">
 	alert("文件已打包完毕，点击“确定”按钮开始下载。")
 	window.location.href='<%=url%>';

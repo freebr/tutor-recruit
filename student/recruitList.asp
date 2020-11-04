@@ -12,13 +12,13 @@ Function showTable(data)
 		Else
 			tdbgcolor="#ffffff"
 		End If
-		tutor_name=HtmlEncode(data(i,5))
+		tutor_name=data(i,5)
 		If data(i,0)<>0 Then
-			speciality_name=HtmlEncode(data(i,1))
-%><td bgcolor="#ddddff" valign="middle" align="center" rowspan="<%=data(i,0)%>"><%=speciality_name%></td><%
+			speciality_name=data(i,1)
+%><!--<td bgcolor="#ddddff" valign="middle" align="center" rowspan="<%=data(i,0)%>"><%=speciality_name%></td>--><%
 		End If %>
-<td width="40" bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,2)%></td>
-<td bgcolor="<%=tdbgcolor%>" align="center"><a href="#" onclick="return showTeacherResume(<%=data(i,4)%>)"><%=tutor_name%></a></td><%
+<!--<td width="40" bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,2)%></td>-->
+<td bgcolor="<%=tdbgcolor%>" align="center"><a href="#" onclick="return showTeacherProfile(<%=data(i,4)%>)"><%=tutor_name%></a></td><%
 		If show_tutor_quota_student Then %>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%
 			If data(i,6)=0 Then
@@ -30,12 +30,12 @@ Function showTable(data)
 <td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,8)%></td>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,9)%></td><%
 		End If %>
-<td bgcolor="<%=tdbgcolor%>" align="center"><%=HtmlEncode(data(i,3))%></td>
+<td bgcolor="<%=tdbgcolor%>" align="center"><%=data(i,3)%></td>
 <td bgcolor="<%=tdbgcolor%>" align="center"><%
 		If data(i,6)=0 Then
 %><span class="no-quota">选择</span><%
 		Else
-%><a href="#" onclick="return chooseTutor(<%=turnNum%>,'<%=speciality_name%>',<%=data(i,2)%>,<%=data(i,4)%>,'<%=tutor_name%>')">选择</a><%
+%><a href="#" onclick="return chooseTutor(<%=turnNum%>,'<%=data(i,3)%>',<%=data(i,2)%>,<%=data(i,4)%>,'<%=tutor_name%>')">选择</a><%
 		End If %></a></td></tr><%
 	Next
 	showTable=1
@@ -128,15 +128,15 @@ show_tutor_quota_student = getSystemOption("show_tutor_quota_student", stu_type)
 </td></tr></form></table>
 <table width="1000" cellpadding="0" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="gainsboro" align="center" height="25">
-  <td width="150" align="center">专业名称</td>
-  <td align="center" width="120" colspan="2">导师姓名</td><%
+  <!--<td width="150" align="center">专业名称</td>-->
+  <td align="center" width="120">导师姓名</td><%
 	If show_tutor_quota_student Then %>
   <td width="90" align="center">指导名额</td>
   <td width="90" align="center">报名人数</td>
   <td width="90" align="center">已确认人数</td>
   <td width="90" align="center">剩余名额</td><%
 	End If %>
-  <td align="center">工程领域</td>
+  <td align="center">论文指导方向</td>
   <td width="50" align="center">选择</td>
 </tr><%
 	Dim appliedNum,arrData

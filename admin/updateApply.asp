@@ -18,16 +18,14 @@ FormGetToSafeRequest(tutor_id)
 FormGetToSafeRequest(spec_hash)
 
 If period_id="" Or stu_type="" Or tutor_id="" Or spec_hash="" Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4">信息不完整，请确认是否已选择导师和专业！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End()
+	showErrorPage "信息不完整，请确认是否已选择导师和专业！", "提示"
 End If
 
 Connect conn
 sql="SELECT RECRUIT_ID FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_HASH="&toSqlString(spec_hash)&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&stu_type&" AND VALID=1"
 Set rs=conn.Execute(sql)
 If rs.EOF Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4">参数错误！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End()
+	showErrorPage "找不到所选导师的招生信息！", "提示"
 End If
 recruit_id=rs(0).Value
 selcount=Request.Form("sel_turn").Count
@@ -48,8 +46,7 @@ For i=1 To selcount
 	sql=sql&"spSetApplyInfo "&stu_id&","&period_id&","&turn_num&","&tutor_id&","&recruit_id&","&new_apply_status&";"
 Next
 If bError Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4"><%=errdesc%></font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End()
+	showErrorPage errdesc, "提示"
 ElseIf Len(sql) Then
 	conn.Execute sql
 End If

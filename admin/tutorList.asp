@@ -88,7 +88,7 @@ Next
 </form>
 </table>
 <form id="delRs" method="post">
-<table width="95%" cellpadding="2" cellspacing="1" bgcolor="dimgray" style="color:black">
+<table width="95%" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="ghostwhite"><td>全选<input type="checkbox" onclick="checkAll()" id="chk" />
 <input type="button" value="开 放" onclick="submitForm(this.form,'setValid.asp?valid=1')" />
 <input type="button" value="不开放" onclick="submitForm(this.form,'setValid.asp?valid=0')" />
@@ -102,16 +102,16 @@ Next
 </table>
 <table width="95%" cellpadding="2" cellspacing="1" bgcolor="dimgray">
   <tr bgcolor="gainsboro" height="25">
-    <td width="100" align=center>姓名</td>
-    <td width="80" align=center>出生年月</td>
-    <td width="60" align=center>职称</td>
-    <td width="160" align=center>学术型招生专业名称</td>
-    <td width="200" align=center>专业学位类型</td>
-    <td width="180" align=center>工程领域名称</td>
-    <td width="50" align=center>主岗</td>
-    <td width="50" align=center>兼岗</td>
-    <td width="48" align=center>指导名额</td>
-    <td align=center>备注</td>
+    <td width="100" align="center">姓名</td>
+    <td width="80" align="center">出生年月</td>
+    <td width="60" align="center">职称</td>
+    <td width="160" align="center">专硕招生专业名称</td>
+    <td width="200" align="center">专业学位类型</td>
+    <td width="180" align="center">论文指导方向</td>
+    <td width="50" align="center">主岗</td>
+    <td width="50" align="center">兼岗</td>
+    <td width="48" align="center">默认指导名额</td>
+    <td align="center">备注</td>
   </tr><%
   For i=1 To rs.PageSize
   	If rs.EOF Then Exit For
@@ -119,15 +119,15 @@ Next
   <tr class=<% If rs("VALID") THEN %>"valid"<% ELSE %>"invalid"<% END IF %>>
     <td>
     <input type="checkbox" id="sel" name="sel" value="<%=rs("ID")%>"><a href="/index/teacher_resume.asp?id=<%=rs("TEACHER_ID")%>" target="_blank"><%=HtmlEncode(rs("TEACHER_NAME"))%></a></td>
-    <td align=center><%=HtmlEncode(rs("BIRTHDAY"))%></td>
-    <td align=center><%=HtmlEncode(rs("PRO_DUTYNAME"))%></td>
-    <td align=center><input type="text" id="spec" name="spec<%=rs("ID")%>" class="disabled" value="<%=HtmlEncode(rs("SPECIALITY_NAME"))%>" readonly /></td>
-    <td align=center><%=HtmlEncode(rs("RECRUIT_TYPE_NAME"))%></td>
-    <td align=center><%=HtmlEncode(rs("RESEARCH_WAYNAME"))%></td>
-    <td align=center><%=HtmlEncode(rs("PRIMARY_TYPE"))%></td>
-    <td align=center><%=HtmlEncode(rs("SECOND_TYPE"))%></td>
-    <td align=center><%=rs("DEFAULT_QUOTA")%></td>
-    <td align=center><%=HtmlEncode(rs("MEMO"))%></td>
+    <td align="center"><%=HtmlEncode(rs("BIRTHDAY"))%></td>
+    <td align="center"><%=HtmlEncode(rs("PRO_DUTYNAME"))%></td>
+    <td align="center"><input type="text" id="spec" name="spec<%=rs("ID")%>" class="disabled" value="<%=HtmlEncode(rs("SPECIALITY_NAME"))%>" readonly /></td>
+    <td align="center"><%=HtmlEncode(rs("RECRUIT_TYPE_NAME"))%></td>
+    <td align="center"><%=HtmlEncode(rs("RESEARCH_WAYNAME"))%></td>
+    <td align="center"><%=HtmlEncode(rs("PRIMARY_TYPE"))%></td>
+    <td align="center"><%=HtmlEncode(rs("SECOND_TYPE"))%></td>
+    <td align="center"><%=rs("DEFAULT_QUOTA")%></td>
+    <td align="center"><%=HtmlEncode(rs("MEMO"))%></td>
   </tr><%
   	rs.MoveNext()
   Next

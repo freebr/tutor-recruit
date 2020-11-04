@@ -1,10 +1,15 @@
-﻿function showTeacherResume(tid) {
-	window.open("/index/teacher_resume.asp?id="+tid,"_blank");
+﻿function showTeacherProfile(id) {
+	window.open("http://oa.cnsba.com/teacher_resume.asp?id="+id,'teacher'+id);
 	return false;
 }
 function chooseTutor(turn_num,spec_name,rec_id,tutor_id,tutor_name) {
-	window.tabmgr.tabs[window.index].opener.callback(arguments);
-	window.tabmgr.close(window);
+	if (window.tabmgr) {
+		window.tabmgr.tabs[window.index].opener.callback(arguments);
+		window.tabmgr.close(window);
+	} else {
+		window.opener.callback(arguments);
+		window.close();
+	}
 	return false;
 }
 function submitChoice() {
@@ -103,7 +108,12 @@ function swapCells(cell1,cell2) {
 }
 function selectTutor(link) {
 	var turn_num=$(link).parents('tr').index()+1;
-	window.tabmgr.goTo('/TutorRecruit/student/recruitList.asp?turn='+turn_num,'选择导师',true,window);
+	var url='/TutorRecruit/student/recruitList.asp?turn='+turn_num;
+	if (window.tabmgr) {
+		window.tabmgr.goTo(url,'选择导师',true,window);
+	} else {
+		window.open('/TutorRecruit/student/recruitList.asp?turn='+turn_num,'选择导师');
+	}
 	return false;
 }
 function clearSelection(link) {

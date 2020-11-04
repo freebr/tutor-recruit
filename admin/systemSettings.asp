@@ -81,7 +81,7 @@ If step="1" Then
 <form id="fmOpentime" id="fmOpentime" method="post" action="?step=2" onsubmit="return chkForm()">
 <input type="hidden" name="In_TEACHTYPE_ID" value="0">
 <input type="hidden" name="In_PERIOD_ID" value="<%=sem_info(3)%>">
-<table width="900" cellpadding="2" cellspacing="1" bgcolor="dimgray">
+<table width="1000" cellpadding="2" cellspacing="1" bgcolor="dimgray">
 <tr bgcolor="ghostwhite">
 <td align="left"><%
 	Select Case Request("ok")
@@ -109,7 +109,7 @@ If step="1" Then
 </select><br />
 <input type="submit" value="导出本批志愿双选名单" onclick="document.all.fmOpentime.action='exportConfirmedList.asp?fn=<%=sem_info(3)%>_<%=turn_num%>&turn=<%=turn_num%>'" />
 &nbsp;<input type="button" name="viewexportfiles" value="查看以往批次志愿双选名单" onclick="window.open('export/spec')" /></p>
-<p><table width="680" cellpadding="0" cellspacing="0" border="0">
+<p><table width="700" cellpadding="0" cellspacing="0" border="0">
 <tr bgcolor="ghostwhite"><td align="center" colspan="3">导师端上传通道开放时间和开放对象：</td></tr>
 <%
 	For i=1 To SYS_TUT_OPRTYPE_COUNT
@@ -130,8 +130,8 @@ If step="1" Then
 %>&emsp;<label for="tut_clientstatus<%=k%>"><input type="checkbox" name="tut_clientstatus<%=k%>" id="tut_clientstatus<%=k%>" <%=checkflag%>/><%=arrStuType(j)%></label><%
 		Next
 %></td></tr><%
-	Next %></table></p>
-<p><table width="680" cellpadding="0" cellspacing="0" border="0">
+	Next %></table>
+<table width="700" cellpadding="0" cellspacing="0" border="0">
 <tr bgcolor="ghostwhite"><td align="center" colspan="3">学生端上传通道开放时间和开放对象：</td></tr>
 <%
 	For i=1 To SYS_STU_OPRTYPE_COUNT
@@ -152,7 +152,7 @@ If step="1" Then
 %>&emsp;<label for="stu_clientstatus<%=k%>"><input type="checkbox" name="stu_clientstatus<%=k%>" id="stu_clientstatus<%=k%>" <%=checkflag%>/><%=arrStuType(j)%></label><%
 		Next
 %></td></tr><%
-	Next %></table></p></td></tr>
+	Next %></table></td></tr>
 <tr bgcolor="ghostwhite"><td colspan=4><p align="center"><input type="submit" value="更改设置"><%
 	If bLastSet Then
 %><br/><span>注：<%=sem_info(0)-1%>-<%=sem_info(0)%>年度<%=sem_info(2)%>学期的选导师系统开放时间：<br/>

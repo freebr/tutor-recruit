@@ -32,7 +32,7 @@ ArrayList(k,4)=""
 ArrayList(k,5)=""
 
 k=2
-ArrayList(k,0)="专业"
+ArrayList(k,0)="填报专业"
 ArrayList(k,1)="ViewRecruitInfo"
 ArrayList(k,2)="SPECIALITY_HASH"
 ArrayList(k,3)="SPECIALITY_NAME"

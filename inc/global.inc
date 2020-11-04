@@ -49,7 +49,7 @@ Const SYS_STATUS_DEBUG = 2
 				query_string='';
 			}
 			if (!dictScripts.Exists(alias)) {
-				Response.Write(Format('<{0} type="text/javascript">console.warn("useScript ): 脚本\"{1}\"未注册。";</{0}>',
+				Response.Write(Format('<{0} type="text/javascript">console.warn("useScript"): 脚本\"{1}\"未注册。";</{0}>',
 					'script', alias));
 			} else {
 				var value=dictScripts.Item(alias);
@@ -79,7 +79,7 @@ Const SYS_STATUS_DEBUG = 2
 				query_string='';
 			}
 			if (!dictStylesheets.Exists(alias)) {
-				Response.Write(Format('<{0} type="text/javascript">console.warn("useStyleSheet ): 样式表\"{0}\"未注册。";</{0}>',
+				Response.Write(Format('<{0} type="text/javascript">console.warn("useStyleSheet"): 样式表\"{0}\"未注册。";</{0}>',
 					'script', alias));
 			} else {
 				var value=dictStylesheets.Item(alias);
@@ -204,7 +204,12 @@ End Function
 
 Function currentClient()
 	Dim str:str=currentPage()
-	currentClient=LCase(Left(str,InStr(str,"/")-1))
+	Dim i:i=InStr(str,"/")
+	If i=0 Then
+		currentClient="none"
+	Else
+		currentClient=LCase(Left(str,InStr(str,"/")-1))
+	End If
 End Function
 
 Function getCurrentSemester()
@@ -336,6 +341,7 @@ Function showErrorPage(content, title)
 	showErrorPage=1
 End Function
 
+Session("Debug")=False
 Session("DebugInfo")=Empty
 Sub debug(info)
 	Session("DebugInfo")=Session("DebugInfo")&vbNewLine&info

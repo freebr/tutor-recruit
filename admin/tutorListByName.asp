@@ -23,7 +23,7 @@ End If
 PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
 Connect conn
-sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM ViewRecruitInfo WHERE 1=1"&finalFilter&_
+sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM ViewRecruitInfo WHERE 1=1 "&finalFilter&_
 		" GROUP BY TEACHER_ID,TEACHER_NAME,PERIOD_ID,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then
@@ -105,7 +105,7 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
 <tr bgcolor="gainsboro" align="center" height="25">
   <td width="13%" align="center">教师姓名</td>
   <td width="20%" align="center">专业</td>
-  <td width="25%" align="center">工程领域名称</td>
+  <td width="25%" align="center">论文指导方向</td>
   <td width="10%" align="center">报名学员数</td>
   <td width="10%" align="center">确认学员数</td>
   <td width="10%" align="center">总名额数</td>
@@ -116,47 +116,49 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
 		For i=1 To rs.PageSize
 			If rs.EOF Then Exit For
 			countRecruitInfo=rs("Count")
-			tid=rs("Teacher_Id")
-			sql="SELECT RECRUIT_ID,LIST_ID,SPECIALITY_NAME,RESEARCH_WAYNAME,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM ViewRecruitInfo WHERE TEACHER_ID="&_
-					tid&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
-			GetRecordSetNoLock conn,rs2,sql,result
-			j=0
-			Do While Not rs2.EOF
-				recruitID=rs2(0)
-				listID=rs2(1)
-				recruitQuota=rs2(4)
-				appliedNum=rs2(5)
-				confirmedNum=rs2(6)
-				If appliedNum=0 Then appliedNum=""
-				If confirmedNum=0 Then confirmedNum=""
+			tid=rs("TEACHER_ID")
+			If Not IsNull(tid) Then
+				sql="SELECT RECRUIT_ID,LIST_ID,SPECIALITY_NAME,RESEARCH_WAYNAME,RECRUIT_QUOTA,APPLIED_NUM,CONFIRMED_NUM,ISCONFIRMED FROM ViewRecruitInfo WHERE TEACHER_ID="&_
+						tid&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&teachtype_id&finalFilter
+				GetRecordSetNoLock conn,rs2,sql,result
+				j=0
+				Do While Not rs2.EOF
+					recruitID=rs2(0)
+					listID=rs2(1)
+					recruitQuota=rs2(4)
+					appliedNum=rs2(5)
+					confirmedNum=rs2(6)
+					If appliedNum=0 Then appliedNum=""
+					If confirmedNum=0 Then confirmedNum=""
 %><tr bgcolor="gainsboro" align="center" height="25"><%
-				If k Mod 2=0 Then
-					tdbgcolor="#eeeeee"
-				Else
-					tdbgcolor="#ffffff"
-				End If
-				If j=0 Then
-%><td valign="middle" rowspan="<%=countRecruitInfo%>"><a href="#" onclick="return showTeacherResume(<%=rs("TEACHER_ID")%>);"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
-				End If
+					If k Mod 2=0 Then
+						tdbgcolor="#eeeeee"
+					Else
+						tdbgcolor="#ffffff"
+					End If
+					If j=0 Then
+%><td valign="middle" rowspan="<%=countRecruitInfo%>"><a href="#" onclick="return showTeacherProfile(<%=rs("TEACHER_ID")%>);"><%=HtmlEncode(rs("Teacher_Name"))%></a></td><%
+					End If
 %><td bgcolor="<%=tdbgcolor%>"><%=HtmlEncode(rs2("SPECIALITY_NAME"))%></td>
 <td bgcolor="<%=tdbgcolor%>"><%=HtmlEncode(rs2("RESEARCH_WAYNAME"))%></td>
 <td bgcolor="<%=tdbgcolor%>"><%=appliedNum%></td>
 <td bgcolor="<%=tdbgcolor%>"><%=confirmedNum%></td>
 <td bgcolor="<%=tdbgcolor%>"><input type="checkbox" name="sel" value="<%=recruitID%>,<%=l%>" />&nbsp;
 <input type="text" name="recruitQuota" size="5" value="<%=recruitQuota%>" style="text-align:center" /></td><%
-				l=l+1
-				j=j+1
-				k=k+1
+					l=l+1
+					j=j+1
+					k=k+1
 %><td bgcolor="<%=tdbgcolor%>"><%
-				If Len(confirmedNum) Then
+					If Len(confirmedNum) Then
 %><a href="#" onclick="return showApplyList(<%=rs2("RECRUIT_ID")%>);">查看确认名单</a><%
-				End If
+					End If
 %></td></tr><%
-				rs2.MoveNext()
-			Loop
-			Set rs2=Nothing
-  		rs.MoveNext()
-   	Next
+					rs2.MoveNext()
+				Loop
+				Set rs2=Nothing
+			End If
+			rs.MoveNext()
+		Next
   %>
 </table>
 <input type="hidden" name="In_TEACHTYPE_ID2" value="<%=teachtype_id%>" />

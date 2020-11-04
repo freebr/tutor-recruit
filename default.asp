@@ -1,4 +1,9 @@
 ﻿<!--#include file="inc/global.inc"--><%
+
+If serverVar("REMOTE_ADDR")<>"::1" Then
+	showErrorPage "禁止访问。", "提示"
+End If
+
 If Request.QueryString()="logout" Then
 	If Len(Session("Name")) Then
 		msg="行政人员["&Session("Name")&"]登出。"

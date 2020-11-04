@@ -1,4 +1,5 @@
-﻿<!--#include file="common.asp"-->
+﻿<!--#include file="../inc/global.inc"-->
+<!--#include file="common.asp"-->
 <%If IsEmpty(Session("Id")) Then Response.Redirect("../err/timeout.asp")
 logDate=Request.Form("logdate")
 If Len(logDate)=0 Then

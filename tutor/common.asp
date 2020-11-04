@@ -64,8 +64,7 @@ Dim tutclient:Set tutclient=New ClientInfo
 tutclient.setOprTypeCount(SYS_TUT_OPRTYPE_COUNT)
 getClientInfo(tutclient)
 If tutclient.SystemStatus=SYS_STATUS_CLOSED And Session("Debug")=False Then
-%><body bgcolor="ghostwhite"><center><font color=red size="4">选导师系统未启用！</font><br /><input type="button" value="返 回" onclick="history.go(-1)" /></center></body><%
-	Response.End()
+	showErrorPage "选导师系统未启用！", "提示"
 End If
 
 Dim startdate:startdate=tutclient.getOpentime(SYS_OPR_CONFIRM,SYS_OPENTIME_START)

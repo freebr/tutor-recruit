@@ -99,9 +99,9 @@ If choiceSavedCount>0 Then ' 显示已填报信息 %>
 	End Select
 %></p></td></tr></thead>
 <tbody><tr bgcolor="gainsboro" height="25">
-  <td width="100">志愿名称</td>
-	<td width="100">条目代码</td>
-	<td width="300">专业</td>
+  	<td width="100">志愿名称</td>
+	<td width="300" style="display: none">条目代码</td>
+	<td width="300">论文指导方向</td>
 	<td width="300">选择导师</td>
 	<td>导师意见</td></tr><%
 	For i=1 To choiceSavedCount
@@ -115,14 +115,14 @@ If choiceSavedCount>0 Then ' 显示已填报信息 %>
 		End If
 %>
 	<tr class="<%=css_class%>" bgcolor="ghostwhite" height="40">
-	<td valign="middle"><%=arrTurnName(i)%></td><%
+	<td valign="middle"><%=arrTurnName(i)%></td>
+	<td style="display: none"><%=rs("RECRUIT_ID"&i)%></td><%
   	If recruit_id<>0 Then %>
-  <td valign="middle"><% Response.Write(recruit_id)%></td>
-	<td valign="middle"><% If rs("TUTOR_ID"&i)<>0 Then Response.Write(HtmlEncode(rs("SPECIALITY_NAME"&i)))%></td><%
+	<td valign="middle"><% If rs("TUTOR_ID"&i)<>0 Then Response.Write(rs("SPECIALITY_NAME"&i))%></td><%
 		Else %>
-	<td valign="middle" colspan="2"></td><%
+	<td valign="middle"></td><%
 		End If %>
-  <td valign="middle"><a href="#" onclick="return showTeacherResume(<%=rs("TUTOR_ID"&i)%>)"><%=HtmlEncode(rs("TUTOR_NAME"&i))%></a></td>
+  <td valign="middle"><a href="#" onclick="return showTeacherProfile(<%=rs("TUTOR_ID"&i)%>)"><%=HtmlEncode(rs("TUTOR_NAME"&i))%></a></td>
 	<td valign="middle"><%
 		Select Case apply_status
     Case 1
@@ -145,8 +145,8 @@ If apply_status<=1 Then	' 显示填报新信息
 <tr bgcolor="gainsboro" height="25"><td colspan="5"><p style="font-weight:bold">&emsp;填报新的选导师信息（第一、二志愿必填）</p></td></tr>
 <tr bgcolor="gainsboro" height="25">
 <td width="100">志愿名称</td>
-<td width="100">条目代码</td>
-<td width="300">专业</td>
+<td width="300" style="display: none">条目代码</td>
+<td width="300">论文指导方向</td>
 <td width="300">选择导师</td>
 <td>操作</td></tr></thead>
 <tbody><%
@@ -167,9 +167,9 @@ If apply_status<=1 Then	' 显示填报新信息
 	%>
 	<tr class="<%=cssClass%>" bgcolor="ghostwhite" height="25">
 	<td valign="middle"><%=arrTurnName(i)%></td>
-  <td width="40" valign="middle"><%=recruitID%></td>
-	<td valign="middle"></td>
-  <td valign="middle"></td>
+	<td valign="middle" style="display: none"></td>
+  	<td valign="middle"></td>
+  	<td valign="middle"></td>
 	<td valign="middle">
 	<p><a href="#" onclick="return selectTutor(this)">选择导师</a><%
 	If i<=choiceSavedCount Then %>&emsp;<a href="#" onclick="return copyChoiceFromSaved(this)">从上表提取</a><%

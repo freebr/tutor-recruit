@@ -23,7 +23,7 @@ End If
 PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
 Connect conn
-sql="SELECT SPECIALITY_NAME,COUNT(*) AS [COUNT] FROM ViewTutorInfo WHERE VALID=1 "&Request.Form("finalFilter")&" GROUP BY SPECIALITY_NAME"
+sql="SELECT SPECIALITY_NAME,COUNT(*) AS [COUNT] FROM ViewTutorInfo WHERE 1=1 "&Request.Form("finalFilter")&" GROUP BY SPECIALITY_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then
   rs.PageSize=CInt(Request.Form("pageSize"))
@@ -102,7 +102,7 @@ GetMenuListPubTerm "ViewStudentTypeInfo","TEACHTYPE_ID","TEACHTYPE_NAME",teachty
 <tr bgcolor="gainsboro" align="center" height="25">
   <td width="17%" align=center>专业名称</td>
   <td width="13%" align=center>教师姓名</td>
-  <td width="30%" align=center>工程领域名称</td>
+  <td width="30%" align=center>论文指导方向</td>
   <td width="10%" align=center>报名学员数</td>
   <td width="10%" align=center>确认学员数</td>
   <td width="10%" align=center>总名额数</td>
