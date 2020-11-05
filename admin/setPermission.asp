@@ -14,7 +14,7 @@ If IsNull(pm_type) Then
 	pm_type=0
 End If
 
-Connect conn
+ConnectDb conn
 For i=1 To Request.Form("sel").Count
 	If i>1 Then sql=sql&","
 	sql=sql&Request.Form("sel")(i)

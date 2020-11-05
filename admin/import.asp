@@ -87,7 +87,7 @@ Case 1	' 上传进程
 Case 2	' 数据读取，导入到数据库
 
 	Function updateData()
-		Connect conn
+		ConnectDb conn
 		Do While Not rs.EOF
 			sql="SELECT TEACHER_ID,RECRUIT_ID FROM ViewRecruitInfo WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"
 			'sql="SELECT Count(*) FROM ViewRecruitInfo WHERE TEACHTYPE_ID=9 AND PERIOD_ID=20142 AND TEACHER_NAME='"&rs(0)&"'"

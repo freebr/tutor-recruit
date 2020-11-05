@@ -1,7 +1,7 @@
 ﻿<%
 Function checkIfProfileFilledIn()
 	Dim conn,rs,sql,i,ret
-	Connect conn
+	ConnectDb conn
 	sql="SELECT BIRTHDAY,Native_City,Self_Tel,Before_Unit,EMAIL,DUTY,THESIS_TOPIC,PERSONAL_RESUME,EXPERIENCES,OCCU_PLAN FROM ViewStudentInfo WHERE STU_ID="&Session("Stuid")
 	Set rs=conn.Execute(sql)
 	ret=True
@@ -21,7 +21,7 @@ Function getSystemStatus()
 	arr=getCurrentSemester()
 	cur_year=arr(0)
 	cur_semester=arr(1)
-	Connect conn
+	ConnectDb conn
 	sql="SELECT STU_STARTDATE,STU_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	If rs.EOF Then
@@ -41,7 +41,7 @@ End Function
 
 Function getClientInfo(cli)
 	Dim conn,rs,sql,result,i
-	Connect conn
+	ConnectDb conn
 	sql="SELECT STU_CLIENT_STATUS,STU_STARTDATE,STU_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	If rs.EOF Then

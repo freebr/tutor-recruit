@@ -7,7 +7,7 @@ Else
 	valid=Int(valid)
 	If valid<0 Or valid>1 Then valid=0
 End If
-Connect conn
+ConnectDb conn
 For i=1 To Request.Form("sel").Count
 	sql=sql&"UPDATE TutorInfo SET VALID="&valid&" WHERE ID="&Request.Form("sel")(i)&";"
 Next

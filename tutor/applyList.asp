@@ -29,7 +29,7 @@ Dim bOpen, ret, spec_names, spec_hashes
 sem_info=getCurrentSemester()
 bOpen=tutclient.isOpenFor(Int(stu_type),SYS_OPR_CONFIRM)
 
-Connect conn
+ConnectDb conn
 sql="SELECT TURN_NUM FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 GetRecordSetNoLock conn,rs,sql,result
 show_turn_num=rs("TURN_NUM")

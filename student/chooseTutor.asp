@@ -27,7 +27,7 @@ End If
 
 Dim bApplySubmitted,bSendEmail
 Dim conn,rs,sql
-Connect conn
+ConnectDb conn
 sql="SELECT dbo.isApplySubmitted("&stu_id&")"
 Set rs=conn.Execute(sql)
 bApplySubmitted=rs(0).Value

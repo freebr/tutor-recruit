@@ -26,7 +26,7 @@ SelectLen=32
 SelectLenStr=""
 FieldId=""
 Field=""
-Connect conn
+ConnectDb conn
 
 '-----------------把SELECT 里的东东从数据库里倒到JAVASCRIPT的数组里--------------
 Response.write "<script language=""JavaScript"">"&vbcrlf
@@ -216,7 +216,7 @@ End Function
 
 ' 显示选导师活动选择框
 Function activityList(ctlname,stu_type_id,sel,showtip)
-	Dim conn:Connect conn
+	Dim conn:ConnectDb conn
 	Dim sql,param
 	If IsNull(stu_type_id) Then
 		sql="SELECT TOP 10 Id,Name FROM ViewActivities WHERE Valid=1 ORDER BY Id DESC"

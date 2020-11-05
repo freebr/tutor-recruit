@@ -47,7 +47,7 @@ Else
 	page_size=Request.Form("In_PAGE_SIZE")
 End If
 '------------------------------------------------------
-Connect conn
+ConnectDb conn
 sql="SELECT * FROM ViewNoApplyStudentInfo WHERE TEACHTYPE_ID="&stu_type&finalFilter&" ORDER BY CLASS_NAME,STU_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If page_size<>"" Then

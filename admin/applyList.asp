@@ -35,7 +35,7 @@ Response.Expires=-1%>
 	End If
 
 	'------------------------------------------------------
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM ViewApplyInfo WHERE 1=1 "&PubTerm&" ORDER BY APPLY_TIME DESC"
 	GetRecordSetNoLock conn,rs,sql,result
 	If page_size<>"" Then

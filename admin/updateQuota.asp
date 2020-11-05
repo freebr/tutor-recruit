@@ -9,7 +9,7 @@ Dim countInsert,countUpdate
 
 sql="CREATE TABLE #ret(CountInsert int,CountUpdate int,CountError int,IsError bit,ErrMsg nvarchar(MAX));"&_
 		"INSERT INTO #ret EXEC spUpdateRecruitQuota "&sem_info(0)&","&sem_info(1)&",NULL,'"&stuTypeUpdateQuota&"',0,0; SELECT * FROM #ret"
-Connect conn
+ConnectDb conn
 Set rs=conn.Execute(sql).NextRecordSet
 countInsert=rs("CountInsert")
 countUpdate=rs("CountUpdate")

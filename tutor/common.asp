@@ -1,7 +1,7 @@
 ﻿<%
 Function checkIfSystemOpen()
 	Dim conn,rs,sql,result,bOpen
-	Connect conn
+	ConnectDb conn
 	sql="SELECT TUT_STARTDATE,TUT_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	bOpen=True
@@ -21,7 +21,7 @@ End Function
 
 Function getClientInfo(cli)
 	Dim conn,rs,sql,result,i
-	Connect conn
+	ConnectDb conn
 	sql="SELECT TUT_CLIENT_STATUS,TUT_STARTDATE,TUT_ENDDATE FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester&" AND VALID=1"
 	GetRecordSetNoLock conn,rs,sql,result
 	If rs.EOF Then
@@ -41,7 +41,7 @@ End Function
 
 Function semesterList(ctlname,sel)	' 显示学期选择框
 	Dim conn,sql,rs,result
-	Connect conn
+	ConnectDb conn
 	sql="SELECT DISTINCT PERIOD_ID,PERIOD_NAME FROM ViewAvailableSemesterInfo"
 	GetRecordSet conn,rs,sql,result
 	%><select id="<%=ctlname%>" name="<%=ctlname%>"><option value="0">请选择</option><%

@@ -22,7 +22,7 @@ Else
 End If
 PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
-Connect conn
+ConnectDb conn
 sql="SELECT TEACHER_ID,TEACHER_NAME,COUNT(*) AS [COUNT] FROM ViewRecruitInfo WHERE 1=1 "&finalFilter&_
 		" GROUP BY TEACHER_ID,TEACHER_NAME,PERIOD_ID,TEACHTYPE_ID HAVING 1=1 "&PubTerm&" ORDER BY TEACHER_NAME"
 GetRecordSetNoLock conn,rs,sql,result

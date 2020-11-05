@@ -5,7 +5,7 @@ open=Request.QueryString("open")
 If Len(open)=0 Or Not IsNumeric(open) Then open="0"
 sem_info=getCurrentSemester()
 
-Connect conn
+ConnectDb conn
 wherestr=" WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 If open="0" Then
 	sql="SELECT * FROM SystemSettings"&wherestr

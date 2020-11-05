@@ -105,7 +105,7 @@ Case 2	' 数据读取，导入到数据库
 		numNewRec=0
 		numUpdTeacher=0
 		numNewTeacher=0
-		Connect conn
+		ConnectDb conn
 		
 		Do While Not rs.EOF
 			If IsNull(rs("姓名")) Then Exit Do
@@ -233,7 +233,7 @@ Case 2	' 数据读取，导入到数据库
 	
 	sql="CREATE TABLE #ret(CountInsert int,CountUpdate int,CountError int,IsError bit,ErrMsg nvarchar(MAX));"&_
 			"INSERT INTO #ret EXEC spUpdateRecruitQuota "&sem_info(0)&","&sem_info(1)&","&updateTime&",'"&stuTypes&"',"&removeAllRecInfo&","&appendQuota&"; SELECT * FROM #ret"
-	Connect conn
+	ConnectDb conn
 	Set rs=conn.Execute(sql).NextRecordSet
 	countInsert=rs("CountInsert")
 	countUpdate=rs("CountUpdate")

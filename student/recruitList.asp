@@ -41,7 +41,7 @@ Function showTable(data)
 	showTable=1
 End Function
 
-Connect conn
+ConnectDb conn
 stu_type=Session("StuType")
 turnNum=Request.QueryString("turn")
 page_size=Request.Form("pageSize")

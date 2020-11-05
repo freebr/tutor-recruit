@@ -33,7 +33,7 @@ Dim arrSelTurn:arrSelTurn=Split(id_turns,",")
 Dim dictStu:Set dictStu=Server.CreateObject("Scripting.Dictionary")
 Dim bSendEmail:bSendEmail=False
 
-Connect conn
+ConnectDb conn
 Select Case stat
 Case Empty
 	Dim oper:oper=Request.QueryString()

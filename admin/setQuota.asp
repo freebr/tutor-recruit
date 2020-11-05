@@ -29,7 +29,7 @@ If bError Then
 End If
 filterstr=filterstr&" AND PERIOD_ID="&toSqlString(period_id)
 
-Connect conn
+ConnectDb conn
 Dim selcount,arr,recruitID,teacherName,recruitQuota,confirmed_num
 Dim errdesc,bError
 selcount=Request.Form("sel").Count

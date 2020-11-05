@@ -150,7 +150,7 @@ arrFields(15) = "状态"
 arrFields(16) = "导师处理时间"
 
 Dim rs
-Connect conn
+ConnectDb conn
 
 If exportall=1 Then
 	ReDim obj(2)

@@ -11,7 +11,7 @@
 <body bgcolor="ghostwhite">
 <center>
 <%
-Connect conn
+ConnectDb conn
 stuType=Session("StuType")
 pageSize=Request.Form("pageSize")
 pageCur=Request.Form("pageNo")

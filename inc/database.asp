@@ -1,28 +1,29 @@
-﻿<!--#include file="adovbs.inc"--><%
-Sub Connect(conn)
-	Dim connstr
-	connstr=getConnectionString("TutorRecruitSys")
+﻿<!--#include file="adovbs.inc"-->
+<!--#include file="config.inc"--><%
+' 建立本系统数据库连接
+Function ConnectDb(conn)
 	Set conn=Server.CreateObject("ADODB.Connection")
 	conn.CommandTimeout=300
 	conn.CursorLocation=adUseClient
-	conn.Open connstr
-End Sub
-Sub ConnectOriginDb(conn)
-	Dim connstr
-	connstr=getConnectionString("SCUT_MD")
+	conn.Open getConnectionString(uriDatabaseServer, "TutorRecruitSys")
+	Set ConnectDb = conn
+End Function
+' 建立教务系统数据库连接
+Function ConnectJWDb(conn)
 	Set conn=Server.CreateObject("ADODB.Connection")
-  conn.CommandTimeout=300
-  conn.CursorLocation=adUseClient
-	conn.Open connstr
-End Sub
-Function getConnectionString(initDbName)
+	conn.CommandTimeout=300
+	conn.CursorLocation=adUseClient
+	conn.Open getConnectionString(uriJWDatabaseServer, "SCUT_MD")
+	Set ConnectJWDb = conn
+End Function
+Function getConnectionString(uriServer,initDbName)
 	Dim ret
-	ret="Provider=SQLNCLI10;Persist Security Info=True;User ID=TutorRecruitSys;Password=freebr@qq.com;Initial Catalog="&initDbName
-	ret=ret&";Data Source=116.57.68.162,14033;Pooling=true;Max Pool Size=512;Min Pool Size=50;Connection Lifetime=999;"
+	ret="Provider=SQLNCLI10;Persist Security Info=True;User ID=PaperReviewSystem;Password=HgggLwpy@87114057;Initial Catalog="&initDbName
+	ret=ret&Format(";Data Source={0};Pooling=true;Max Pool Size=512;Min Pool Size=50;Connection Lifetime=999;",uriServer)
 	getConnectionString=ret
 End Function
+' 构造命令参数对象
 Function CmdParam(name,ptype,size,value)
-	' 构造命令参数对象
 	Dim cmd:Set cmd=Server.CreateObject("ADODB.Command")
 	Set CmdParam=cmd.CreateParameter(name,ptype,adParamInput,size,value)
 	Set cmd=Nothing
@@ -31,7 +32,7 @@ End Function
 <script language="jscript" runat="server">
 	function ExecQuery(conn,sql) {
 		// 执行查询或存储过程
-		if (!conn) Connect(conn);
+		if (!conn) ConnectDb(conn);
 		var cmd=new ActiveXObject("ADODB.Command");
 		cmd.ActiveConnection=conn;
 		cmd.CommandText=sql;
@@ -48,7 +49,7 @@ End Function
 	}
 	function ExecNonQuery(conn,sql) {
 		// 执行不返回记录的存储过程
-		if (!conn) Connect(conn);
+		if (!conn) ConnectDb(conn);
 		var countAffected=0;
 		var cmd=new ActiveXObject("ADODB.Command");
 		cmd.ActiveConnection=conn;
@@ -66,7 +67,7 @@ Sub GetRecordSet(conn,rs,sqlStr,count)
 	PSafeRequest(sqlStr)
 	'===================================================
 	Set rs=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rs.activeConnection=conn
 	rs.source=sqlStr
 	rs.Open , ,AdOpenKeyset,AdLockOptimistic
@@ -79,7 +80,7 @@ Sub GetRecordSetNoLock(conn,rsNoLock,sqlStr,count)
 	'PSafeRequest(sqlStr)
 	'===================================================
 	Set rsNoLock=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsNoLock.activeConnection=conn
 	rsNoLock.source=sqlStr
 	rsNoLock.Open , ,AdOpenKeyset,AdLockReadOnly
@@ -89,7 +90,7 @@ End Sub
 '========================
 Sub GetMenu(table,fieldName,optionText,filter,fieldValue)
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	rsMenu.source="SELECT "&fieldName&","&optionText&" FROM "&table&" WHERE VALID=0 AND "&filter
 	'Response.write rsMenu.source
@@ -106,7 +107,7 @@ End Sub
 '======================== add by yao 2004-12-17
 Sub GetDistinctMenu(table,fieldName,fieldId,optionText,filter,fieldValue)
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	rsMenu.source="SELECT "&fieldName&","&fieldId&","&optionText&" FROM "&table&" WHERE VALID=0 AND "&filter
 	'Response.write rsMenu.source
@@ -126,7 +127,7 @@ Sub GetLable(Table,FieldId,FieldName,PubTerm)
 	If PubTerm<>"" Then
 		LableStr=LableStr&PubTerm
 	End If
-	Connect conn
+	ConnectDb conn
 	GetRecordSetNoLock conn,rsLable,LableStr,countLable
 	For Lable_i=1 To resultLable
 		Response.write rsLable(FieldName)
@@ -141,7 +142,7 @@ Sub GetMenuList(table,fieldName_1,fieldName_2,fieldValue)
 	'PSafeRequest(sqlStr)
 	'===================================================
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	rsMenu.source="SELECT * FROM "&table&" WHERE VALID=0"
 	 'response.write rsMenu.source
@@ -161,7 +162,7 @@ Sub GetMenuList_1(table,fieldName_1,fieldName_2,fieldValue,object,id)
 	'PSafeRequest(sqlStr)
 	'===================================================
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	rsMenu.source="SELECT * FROM "&table&" WHERE VALID=0 and "&id&"= "&object&""
 	rsMenu.Open , ,AdOpenKeyset
@@ -176,7 +177,7 @@ End Sub
 '=======================
 Sub GetMenuListPubTerm(table,FieldID,FieldName,fieldValue,TermStr)
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	If FieldID="" Then
 		rsMenu.source="SELECT "
@@ -208,7 +209,7 @@ End Sub
 
 Sub GetMenuListPubOrder(table,FieldID,FieldName,fieldValue,TermStr)
 	Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	rsMenu.activeConnection=conn
 	If FieldID="" Then
 		rsMenu.source="SELECT "
@@ -262,7 +263,7 @@ End Function
 
 Function xz(id)
  Set rsMenu=Server.CreateObject("ADODB.RECORDSET")
- If IsEmpty(conn) Then Connect conn
+ If IsEmpty(conn) Then ConnectDb conn
  rsMenu.activeConnection=conn
  rsMenu.source="select ADMIN_DUTYNAME from CODE_ADMIN_DUTY where ADMIN_DUTYID=" & id
  '================判断SQL注入漏洞如果出现SELECT、exec、0x两次(或一次就报错====================

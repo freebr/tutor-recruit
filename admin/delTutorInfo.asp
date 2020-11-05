@@ -6,7 +6,7 @@ If Len(ids) Then
 	tid_string="0"
 	exclude_ids="0"
 	exclude_tname_string=""
-	Connect conn
+	ConnectDb conn
 	sql="SELECT DISTINCT LIST_ID,TEACHER_NAME,COUNT(LIST_ID) FROM ViewApplyInfoByTurn WHERE LIST_ID IN ("&ids&") GROUP BY LIST_ID,TEACHER_NAME"
 	GetRecordSetNoLock conn,rs,sql,result
 	Do While Not rs.EOF

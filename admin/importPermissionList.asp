@@ -67,7 +67,7 @@ Case 2	' 数据读取，导入到数据库
 		Dim numNewRec
 		Dim stuno,s,i
 		numNewRec=0
-		Connect conn
+		ConnectDb conn
 		Do While Not rs.EOF
 			If IsNull(rs(0)) Or Len(Trim(rs(0)))=0 Then Exit Do
 			' 学号

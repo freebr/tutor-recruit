@@ -54,7 +54,7 @@ If selcount=0 Then
 	showErrorPage "您无法对已确认的学生进行操作！", "提示"
 End If
 
-Connect conn
+ConnectDb conn
 sql=Format("SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID={0} AND TEACHTYPE_ID={1} AND PERIOD_ID={2} AND SPECIALITY_HASH={3}",_
 	Session("tid"),stu_type,period_id,toSqlString(spec_hash))
 Set rs=conn.Execute(sql)

@@ -1,7 +1,7 @@
 ﻿<!--#include file="pub.asp"-->
 <%
 Response.Expires=-1
-Sub Connect(conn)
+Sub ConnectDb(conn)
 	Dim connstr
 	connstr=getConnectionString("TutorRecruitSys")
 	Set conn=Server.CreateObject("ADODB.Connection")
@@ -9,7 +9,7 @@ Sub Connect(conn)
   conn.CursorLocation=adUseClient
 	conn.Open connstr
 End Sub
-Sub ConnectOriginDb(conn)
+Sub ConnectJWDb(conn)
 	Dim connstr
 	connstr=getConnectionString("SCUT_MD")
 	Set conn=Server.CreateObject("ADODB.Connection")
@@ -33,7 +33,7 @@ Function ExecQuery(conn,sql,params,countAffected)
 	' 执行查询或存储过程
 	Dim cmd,rs
 	Set cmd=Server.CreateObject("ADODB.Command")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	cmd.ActiveConnection=conn
 	cmd.CommandText=sql
 	If IsArray(params) Then
@@ -54,7 +54,7 @@ End Function
 Function ExecNonQuery(conn,sql,params)
 	' 执行不返回记录的存储过程
 	Dim cmd:Set cmd=Server.CreateObject("ADODB.Command")
-	If IsEmpty(conn) Then Connect conn
+	If IsEmpty(conn) Then ConnectDb conn
 	cmd.ActiveConnection=conn
 	cmd.CommandText=sql
 	If IsArray(params) Then

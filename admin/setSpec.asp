@@ -1,7 +1,7 @@
 ﻿<!--#include file="../inc/global.inc"-->
 <!--#include file="common.asp"--><%
 If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
-Connect conn
+ConnectDb conn
 For i=1 To Request.Form("sel").Count
 	id=Request.Form("sel")(i)
 	specControlName="spec"&id

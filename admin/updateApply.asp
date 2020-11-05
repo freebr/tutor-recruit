@@ -21,7 +21,7 @@ If period_id="" Or stu_type="" Or tutor_id="" Or spec_hash="" Then
 	showErrorPage "信息不完整，请确认是否已选择导师和专业！", "提示"
 End If
 
-Connect conn
+ConnectDb conn
 sql="SELECT RECRUIT_ID FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_HASH="&toSqlString(spec_hash)&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&stu_type&" AND VALID=1"
 Set rs=conn.Execute(sql)
 If rs.EOF Then

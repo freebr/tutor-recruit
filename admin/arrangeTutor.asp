@@ -20,7 +20,7 @@ If period_id="" Or stu_type="" Or tutor_id="" Or spec_hash="" Then
 	Response.End()
 End If
 
-Connect conn
+ConnectDb conn
 sql="SELECT RECRUIT_ID,RECRUIT_QUOTA,CONFIRMED_NUM FROM ViewRecruitInfo WHERE TEACHER_ID="&tutor_id&" AND SPECIALITY_HASH="&toSqlString(spec_hash)&" AND PERIOD_ID="&period_id&" AND TEACHTYPE_ID="&stu_type
 Set rs=conn.Execute(sql)
 If rs.EOF Then

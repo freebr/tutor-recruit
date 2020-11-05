@@ -5,7 +5,7 @@ Function newEmailTemplate(template_name,mailsubject,mailcontent,fieldlist)
 	updateTime="'"&Now&"'"
 	sql="INSERT INTO EmailTemplate (TemplateName,MailSubject,MailContent,FieldList,UpdateTime,Valid) "&_
 			"VALUES ("&toSqlString(template_name)&","&toSqlString(mailsubject)&","&toSqlString(mailcontent)&","&toSqlString(fieldlist)&","&updateTime&",1)"
-	Connect conn
+	ConnectDb conn
 	conn.Execute sql
 	sql="SELECT ID FROM EmailTemplate WHERE UpdateTime="&updateTime&" ORDER BY ID DESC"
 	GetRecordSetNoLock conn,rs,sql,result
@@ -21,7 +21,7 @@ Function updateEmailTemplate(id,template_name,mailsubject,mailcontent,fieldlist)
 	Dim sql,rs,conn,result,updateTime
 	
 	sql="SELECT ID FROM EmailTemplate WHERE ID="&id
-	Connect conn
+	ConnectDb conn
 	GetRecordSetNoLock conn,rs,sql,result
 	If result=0 Then
 		id=newEmailTemplate(template_name,mailsubject,mailcontent,fieldlist)
@@ -43,7 +43,7 @@ Function deleteEmailTemplate(id)
 	If Not IsNumeric(id) Then Exit Function
 	Dim sql,conn
 	sql="DELETE FROM EmailTemplate WHERE ID="&id
-	Connect conn
+	ConnectDb conn
 	conn.Execute sql
 	CloseConn conn
 	deleteEmailTemplate=1
@@ -53,7 +53,7 @@ Function getEmailTemplateContent(id)
 	If IsNull(id) Or Len(id)=0 Or Not IsNumeric(id) Then Exit Function
 	Dim sql,rs,conn
 	sql="SELECT MailContent FROM EmailTemplate WHERE ID="&id
-	Connect conn
+	ConnectDb conn
 	GetRecordSetNoLock conn,rs,sql,result
 	If result>0 Then
 		getEmailTemplateContent=rs(0)
@@ -71,7 +71,7 @@ Function sendAnnouncementEmail(mail_id,mailrcpt,arr_fieldval)
 	'On Error Resume Next
 	' 查询邮件模板标题、内容、变量等信息
 	sql="SELECT * FROM EmailTemplate WHERE ID="&mail_id
-	Connect conn
+	ConnectDb conn
 	GetRecordSetNoLock conn,rs,sql,result
 	If result=0 Then Exit Function
 	mailsubject=rs("MailSubject")
@@ -157,7 +157,7 @@ Function sendSMS(mail_id,rcpt,arr_fieldval)
 	Dim ret
 	' 查询邮件模板内容、变量等信息
 	sql="SELECT * FROM EmailTemplate WHERE ID="&mail_id
-	Connect conn
+	ConnectDb conn
 	GetRecordSetNoLock conn,rs,sql,result
 	If result=0 Then Exit Function
 	mailcontent=rs("MailContent")
@@ -233,7 +233,7 @@ Function getTutorSystemMailIdByType(d)
 	sem_info=getCurrentSemester()
 	cur_year=sem_info(0)
 	cur_semester=sem_info(1)
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester
 	Set rs=conn.Execute(sql)
 	If Not rs.EOF Then
@@ -255,7 +255,7 @@ Function getThesisReviewSystemMailIdByType(d)
 	sem_info=getCurrentSemester()
 	cur_year=sem_info(0)
 	cur_semester=sem_info(1)
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM TEST_THESIS_REVIEW_SYSTEM WHERE USE_YEAR="&cur_year&" AND USE_SEMESTER="&cur_semester
 	Set rs=conn.Execute(sql)
 	If Not rs.EOF Then

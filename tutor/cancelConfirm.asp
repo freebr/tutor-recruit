@@ -21,7 +21,7 @@ ElseIf ids="" Then
 	Response.End()
 End If
 
-Connect conn
+ConnectDb conn
 
 sql="SELECT * FROM ViewRecruitInfo WHERE TEACHER_ID="&Session("TId")&" AND TEACHTYPE_ID="&stu_type&" AND PERIOD_ID="&period_id
 Set rs=conn.Execute(sql)

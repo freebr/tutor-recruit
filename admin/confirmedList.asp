@@ -15,7 +15,7 @@ Else
 	page_size=Request.Form("In_PAGE_SIZE")
 End If
 
-Connect conn
+ConnectDb conn
 sql="SELECT TEACHER_ID,TEACHER_NAME FROM ViewRecruitInfo WHERE RECRUIT_ID="&recruitID
 GetRecordSetNoLock conn,rs,sql,result
 If rs.EOF Then

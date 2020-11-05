@@ -6160,7 +6160,7 @@
 
     var marker = new TextMarker(doc, type), diff = cmp(from, to);
     if (options) copyObj(options, marker, false);
-    // Don't connect empty markers unless clearWhenEmpty is false
+    // Don't ConnectDb empty markers unless clearWhenEmpty is false
     if (diff > 0 || diff == 0 && marker.clearWhenEmpty !== false)
       return marker;
     if (marker.replacedWith) {
@@ -6477,7 +6477,7 @@
     return parts;
   }
 
-  // Connect or disconnect spans from a line.
+  // ConnectDb or disconnect spans from a line.
   function detachMarkedSpans(line) {
     var spans = line.markedSpans;
     if (!spans) return;

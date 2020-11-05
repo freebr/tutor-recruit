@@ -248,7 +248,7 @@ dictSystemOptions.Add "send_withdraw_email",		Array("导师退回填报时，向
 Function getSystemOption(name,stu_type_id)
 	If Not dictSystemOptions.Exists(name) Then Exit Function
 	Dim conn,rs,sql,count
-	Connect conn
+	ConnectDb conn
 	sql="EXEC spGetSystemOption ?,?,?"
 	Dim ret:Set ret=ExecQuery(conn,sql,_
 		CmdParam("Name",adVarWChar,50,name),_

@@ -57,7 +57,7 @@ Case 2	' 导出和下载页面
 		rarFilename="学生个人信息(共"&numRecord&"份)"
 	End If
 	rarFilename=rarFilename&".rar"
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM ViewStudentInfo WHERE STU_ID IN ("&ids&")"
 	GetRecordSet conn,rs,sql,result
 	If rs.EOF Then

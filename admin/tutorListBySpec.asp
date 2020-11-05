@@ -22,7 +22,7 @@ Else
 End If
 PubTerm=PubTerm&" AND PERIOD_ID="&toSqlString(period_id)
 
-Connect conn
+ConnectDb conn
 sql="SELECT SPECIALITY_NAME,COUNT(*) AS [COUNT] FROM ViewTutorInfo WHERE 1=1 "&Request.Form("finalFilter")&" GROUP BY SPECIALITY_NAME"
 GetRecordSetNoLock conn,rs,sql,result
 If Request.Form("pageSize")<>"" Then

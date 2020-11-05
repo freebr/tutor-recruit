@@ -7,7 +7,7 @@
 		Response.End
 	End If
 	stu_id=toSqlString(stu_id)
-	Connect conn
+	ConnectDb conn
   sql="SELECT *,dbo.getStudentTypeId(TEACHTYPE_ID,CLASS_NAME) AS STU_TYPE FROM ViewStudentInfo WHERE STU_ID="&stu_id
   GetRecordSetNoLock conn,rs,sql,result
   If result=0 Then

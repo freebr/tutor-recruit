@@ -22,7 +22,7 @@ arrMailSubject=Array("","学员选导师确认通知","导师确认填报通知"
 If step="1" Then
 	ReDim tut_clientstatus(SYS_TUT_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	ReDim stu_clientstatus(SYS_STU_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSetNoLock conn,rs,sql,result
 	If result=0 Then	' 本学期无系统设置
@@ -283,7 +283,7 @@ Else
 	fieldlist="$stuname,$stuclass,$stuspec,$stumail,$tutorname,$tutormail,$stat,$reason"
 	
 	bTurnChanged=False
-	Connect conn
+	ConnectDb conn
 	sql="SELECT * FROM SystemSettings WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 	GetRecordSet conn,rs,sql,result
 	'On Error Resume Next

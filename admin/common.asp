@@ -9,7 +9,7 @@ Function getTeacherIdByName(name)
 	name=Replace(name,"　",vbNullString)
 	name=Replace(name,"'","''")
 	name=Replace(name,"""","""""")
-	Connect conn
+	ConnectDb conn
 	sql="SELECT TEACHERID,TEACHERNAME FROM ViewTeacherInfo WHERE TEACHERNAME='"&name&"' AND VALID=0"
 	GetRecordSetNoLock conn,rsTeacher,sql,num
 	If rsTeacher.EOF Then
@@ -28,7 +28,7 @@ Function isStudentExists(stuno)
 	End If
 	Dim conn,rs,sql,num
 	stuno=Trim(stuno)
-	Connect conn
+	ConnectDb conn
 	sql="SELECT STU_NO FROM ViewStudentInfo WHERE STU_NO="&toSqlString(stuno)
 	GetRecordSetNoLock conn,rs,sql,num
 	isStudentExists=Not rs.EOF
@@ -42,7 +42,7 @@ Function getItemIdByName(name,field_id,field_name,table_name)
 		Exit Function
 	End If
 	Dim conn,rs,sql,num
-	Connect conn
+	ConnectDb conn
 	sql="SELECT "&field_id&" FROM "&table_name&" WHERE "&field_name&"="&toSqlString(name)
 	GetRecordSet conn,rs,sql,num
 	If rs.EOF Then
@@ -107,7 +107,7 @@ End Function
 
 Function semesterList(ctlname,sel)	' 显示学期选择框
 	Dim conn,sql,rs,result
-	Connect conn
+	ConnectDb conn
 	sql="SELECT DISTINCT PERIOD_ID,PERIOD_NAME FROM ViewAvailableSemesterInfo"
 	GetRecordSet conn,rs,sql,result
 	%><select id="<%=ctlname%>" name="<%=ctlname%>"><option value="0">请选择</option><%

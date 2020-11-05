@@ -2,7 +2,7 @@
 <!--#include file="common.asp"-->
 <%Response.Expires=-1
 If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
-Connect conn
+ConnectDb conn
 finalFilter=Request.Form("finalFilter")
 If Len(Request.Form("finalFilter")) Then finalFilter="AND "&finalFilter
 sql="SELECT * FROM ViewTutorInfo WHERE 1=1 "&finalFilter&" ORDER BY TEACHER_NAME"

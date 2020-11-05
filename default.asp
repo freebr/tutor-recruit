@@ -27,7 +27,7 @@ If Request.QueryString()="logout" Then
 Else
 	Dim usertype,conn,sql,rs,result
 	usertype=Request.QueryString("usertype")
-	Connect conn
+	ConnectDb conn
 	Select Case usertype
 	Case "admin"
 		sql="SELECT TEACHERID,TEACHERNO,TEACHERNAME,WRITEPRIVILEGETAGSTRING,READPRIVILEGETAGSTRING FROM ViewTeacherInfo WHERE TEACHERID=863 AND VALID=0"

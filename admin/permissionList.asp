@@ -33,7 +33,7 @@ Else
 	page_size=Request.Form("In_PAGE_SIZE")
 End If
 '------------------------------------------------------
-Connect conn
+ConnectDb conn
 sql="SELECT STU_ID,STU_NO,STU_NAME,SEX,CLASS_NAME,dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA6') AS ISPERMITTED FROM ViewStudentInfo WHERE Valid=0 "&finalFilter&_
 		" AND (dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA6')=1 OR dbo.hasPrivilege(WRITEPRIVILEGETAGSTRING,'SA7')=1 "&_
 		"OR dbo.hasPrivilege(READPRIVILEGETAGSTRING,'SA6')=1 OR dbo.hasPrivilege(READPRIVILEGETAGSTRING,'SA7')=1) ORDER BY ENTER_YEAR DESC,ISPERMITTED,CLASS_NAME,STU_NAME"
