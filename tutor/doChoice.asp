@@ -104,7 +104,7 @@ If send_email Then
 		spec_name=rs(2)
 		stu_email=rs(3)
 		fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,"",withdraw_reason)
-		bSuccess=sendAnnouncementEmail(mail_id(opr+2),stu_email,fieldval)
+		bSuccess=sendAnnouncementEmail(mail_id(opr+1),stu_email,fieldval)
 		logtxt=logtxt0&"通知邮件发至["&stu_name&":"&stu_email&"]"
 		If bSuccess Then
 			logtxt=logtxt&"成功。"

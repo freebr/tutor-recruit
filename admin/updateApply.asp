@@ -27,7 +27,7 @@ Set rs=conn.Execute(sql)
 If rs.EOF Then
 	showErrorPage "找不到所选导师的招生信息！", "提示"
 End If
-recruit_id=rs(0).Value
+recruit_id=rs(0)
 selcount=Request.Form("sel_turn").Count
 
 sql=""

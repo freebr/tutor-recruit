@@ -228,7 +228,7 @@ Function sendCustomSMS(rcpt,content)
 End Function
 
 Function getTutorSystemMailIdByType(d)
-	Dim sem_info,cur_year,cur_semester,mail_id(4),i
+	Dim sem_info,cur_year,cur_semester,mail_id(3),i
 	Dim conn,rs,sql
 	sem_info=getCurrentSemester()
 	cur_year=sem_info(0)

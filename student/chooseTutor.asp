@@ -30,7 +30,7 @@ Dim conn,rs,sql
 ConnectDb conn
 sql="SELECT dbo.isApplySubmitted("&stu_id&")"
 Set rs=conn.Execute(sql)
-bApplySubmitted=rs(0).Value
+bApplySubmitted=rs(0)
 CloseRs rs
 If bApplySubmitted Then
 %>{"error":true,"tip":"信息已确认，不能修改！"}<%
@@ -41,13 +41,9 @@ End If
 bSendEmail=False
 mail_id=getTutorSystemMailIdByType(Now)
 If isConfirm="1" Then	' 确认填报
-	sql="SELECT CLASS_NAME,TUTOR_SPECIALITY_NAME,EMAIL FROM ViewStudentInfo WHERE STU_ID="&stu_id
+	sql="SELECT 1 FROM ViewStudentInfo WHERE STU_ID="&stu_id
 	GetRecordSetNoLock conn,rs,sql,result
-	If result Then
-		class_name=rs(0).Value
-		spec_name=rs(1).Value
-		stu_email=rs(2).Value
-	Else
+	If result=0 Then
 %>{"error":true,"tip":"参数错误！"}<%
 		CloseConn conn
 		Response.End()
@@ -55,18 +51,8 @@ If isConfirm="1" Then	' 确认填报
 	CloseRs rs
 	sql="EXEC spStudentClientSetApplyStatus "&stu_id&",2"
 	conn.Execute sql
-	
-	fieldval=Array(Session("StuName"),class_name,spec_name,stu_email,tutor_name,tutor_email)
-	If bSendEmail Then
-		bSuccess=sendAnnouncementEmail(mail_id(1),tutor_email,fieldval)
-		logtxt="学生["&Session("StuName")&"]在选导师系统执行确认填报操作，通知邮件发至["&tutor_name&":"&tutor_email&"]"
-		If bSuccess Then
-			logtxt=logtxt&"成功。"
-		Else
-			logtxt=logtxt&"失败。"
-		End If
-		WriteLog logtxt
-	End If
+	logtxt="学生["&Session("StuName")&"]在选导师系统执行确认填报操作。"
+	WriteLog logtxt
 	tip="操作成功，请等待进一步通知！"&vbNewLine&"若导师确认您的申请，将第一时间以邮件方式向您通知！谢谢！"
 ElseIf isCancel="1" Then	' 取消填报
 	sql="EXEC spStudentClientSetApplyStatus "&stu_id&",0"

@@ -100,7 +100,7 @@ If Len(stat) Then
 				tutor_name=rs(4)
 				tutor_email=rs(5)
 				fieldval=Array(stu_name,class_name,spec_name,stu_email,tutor_name,tutor_email,stat_text)
-				bSuccess=sendAnnouncementEmail(mail_id(4),stu_email,fieldval)
+				bSuccess=sendAnnouncementEmail(mail_id(3),stu_email,fieldval)
 				logtxt=logtxt&"通知邮件发至["&stu_name&":"&stu_email&"]"
 				If bSuccess Then
 					logtxt=logtxt&"成功。"

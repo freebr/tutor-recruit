@@ -8,7 +8,7 @@ If IsEmpty(Session("Id")) Then Response.Redirect("../error.asp?timeout")
 step=Request.QueryString("step")
 If Len(step)=0 Or Not IsNumeric(step) Then step="1"	
 sem_info=getCurrentSemester()
-Dim arrMailId(4),arrMailSubject
+Dim arrMailId,arrMailSubject
 Dim arrStuOprFlag,arrStuOprName
 Dim arrTutOprFlag,arrTutOprName
 Dim tutor_startdate,tutor_enddate
@@ -18,7 +18,8 @@ arrTutOprFlag=Array("","CONFIRM")
 arrTutOprName=Array("","确认填报")
 arrStuOprFlag=Array("","CHOOSE")
 arrStuOprName=Array("","选择导师")
-arrMailSubject=Array("","学员选导师确认通知","导师确认填报通知","导师退回填报通知","学员选导师填报状态变更通知")
+arrMailSubject=Array("","导师确认填报通知","导师退回填报通知","学员选导师填报状态变更通知")
+ReDim arrMailId(UBound(arrMailSubject))
 If step="1" Then
 	ReDim tut_clientstatus(SYS_TUT_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
 	ReDim stu_clientstatus(SYS_STU_OPRTYPE_COUNT*SYS_STUTYPE_COUNT)
@@ -41,7 +42,7 @@ If step="1" Then
 		stu_clientstatus=Split(rs("STU_CLIENT_STATUS"),",")
 		tut_clientstatus=Split(rs("TUT_CLIENT_STATUS"),",")
 		turn_num=rs("TURN_NUM")
-		For i=1 To 4
+		For i=1 To UBound(arrMailSubject)
 			arrMailId(i)=rs("MAIL_"&i)
 		Next
 		isValid=rs("VALID")
@@ -174,7 +175,7 @@ End If %></p></td></tr>
 			option_text=items(j)(0)
 			rs.Find "Name='"&option_name&"'"	// 不支持Unicode前导符，不可用 toSqlString
 			If Not rs.EOF Then
-				If rs("Value").Value Then
+				If rs("Value") Then
 					html_checked="checked "
 				Else
 					html_checked=""
@@ -186,14 +187,14 @@ End If %></p></td></tr>
 	Next %>
 </div></td></tr>
 <tr bgcolor="ghostwhite"><td align="left"><%
-	For i=1 To 4
+	For i=1 To UBound(arrMailId)
 %><input name="mail" id="mail<%=i%>" type="radio" onclick="switchMailContent(<%=i%>)" /><label for="mail<%=i%>"><%=arrMailSubject(i)%></label><%
 	Next
 %><br />
 <span id="mailtip">字段符号:<br/>$stuname - 学生姓名,$stuclass - 学生班级,$stuspec - 所选专业,$stumail - 学生邮箱,$reason - 退回原因(仅限导师退回填报通知)<br/>$tutorname - 导师姓名,$tutormail - 导师邮箱,$stat - 更改后的状态(仅限学员选导师填报状态变更通知)</span></td></tr>
 <tr bgcolor="ghostwhite">
 <td align="left"><%
-	For i=1 To 4
+	For i=1 To UBound(arrMailId)
 %><div id="divmailcontent<%=i%>" style="display:none"><% SetEditorWithName "mailcontent"&i,getEmailTemplateContent(arrMailId(i)),170 %></div><%
 	Next %>
 </td></tr>
@@ -244,7 +245,8 @@ End If %></p></td></tr>
 </html><%
 	CloseConn conn
 Else
-	Dim mail_content(4),fieldlist
+	Dim mail_content,fieldlist
+	ReDim mail_content(UBound(arrMailSubject))
 	stu_startdate=Request.Form("stu_startdate")
 	stu_enddate=Request.Form("stu_enddate")
 	tut_startdate=Request.Form("tut_startdate")
@@ -276,7 +278,7 @@ Else
 	End If
 	turn_num=Int(turn_num)
 	
-	For i=1 To 4
+	For i=1 To UBound(arrMailId)
 		arrMailId(i)=0
 		mail_content(i)=Request.Form("mailcontent"&i)
 	Next	
@@ -302,7 +304,7 @@ Else
 	rs("STU_CLIENT_STATUS")=stu_clientstatus
 	rs("TUT_CLIENT_STATUS")=tut_clientstatus
 	rs("TURN_NUM")=turn_num
-	For i=1 To UBound(arrMailSubject)
+	For i=1 To UBound(arrMailId)
 		arrMailId(i)=rs("MAIL_"&i)
 		If result=0 Or IsNull(arrMailId(i)) Then arrMailId(i)=0
 	Next
@@ -334,11 +336,11 @@ Else
 	
 	If ok Then
 		sql="UPDATE SystemSettings SET "
-		For i=1 To 4
+		For i=1 To UBound(arrMailSubject)
 			template_name=sem_info(0)&"-"&(sem_info(0)+1)&"年度"&sem_info(2)&"学期"&arrMailSubject(i)
 			arrMailId(i)=updateEmailTemplate(arrMailId(i),template_name,arrMailSubject(i),mail_content(i),fieldlist)
 			sql=sql&"MAIL_"&i&"="&arrMailId(i)
-			If i<4 Then sql=sql&","
+			If i<UBound(arrMailSubject) Then sql=sql&","
 		Next
 		sql=sql&" WHERE USE_YEAR="&sem_info(0)&" AND USE_SEMESTER="&sem_info(1)
 		conn.Execute sql

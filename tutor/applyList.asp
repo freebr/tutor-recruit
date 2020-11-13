@@ -138,7 +138,7 @@ For i=0 To UBound(spec_hashes)
 		sql="EXEC dbo.spQueryApplyInfo "&period_id&","&stu_type&","&recruit_id&","&show_turn_num&","&toSqlString(finalFilter)&","&page_size&","&page_cur
 		Set rs = conn.Execute(sql)
 		Set rs = rs.NextRecordSet()
-		count_rec = rs(0).Value
+		count_rec = rs(0)
 		If page_size = -1 Then page_size = count_rec
 		count_page = count_rec/page_size
 		If Int(count_page)<>count_page Then count_page=Int(count_page)+1

@@ -27,7 +27,7 @@ GetRecordSetNoLock conn,rs,sql,result
 If rs.EOF Then
 	nTurn=0
 Else
-	nTurn=rs("TURN_NUM").Value
+	nTurn=rs("TURN_NUM")
 End If
 bRefill=False
 

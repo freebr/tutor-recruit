@@ -59,7 +59,7 @@ Set ret=ExecQuery(conn,sql,CmdParam("period_id",adInteger,4,cur_period_id),_
 	CmdParam("page_size",adInteger,4,page_size),_
 	CmdParam("page_cur",adInteger,4,page_cur))
 Set rs=ret("rs").NextRecordSet().NextRecordSet()
-count_rec = rs(0).Value
+count_rec = rs(0)
 If page_size = -1 Then
 	page_size = count_rec
 	count_page = 1

@@ -24,8 +24,8 @@ If rs.EOF Then
   CloseConn conn
 	Response.End()
 End If
-tutorId=rs(0).Value
-tutorName=rs(1).Value
+tutorId=rs(0)
+tutorName=rs(1)
 CloseRs rs
 
 sql="SELECT * FROM ViewApplyInfoByTurn WHERE RECRUIT_ID="&recruitID&" AND APPLY_STATUS=3 ORDER BY TUTOR_REPLY_TIME DESC"

@@ -32,11 +32,11 @@ Else
 	Case "admin"
 		sql="SELECT TEACHERID,TEACHERNO,TEACHERNAME,WRITEPRIVILEGETAGSTRING,READPRIVILEGETAGSTRING FROM ViewTeacherInfo WHERE TEACHERID=863 AND VALID=0"
 		GetRecordSet conn,rs,sql,result
-		Session("Id")=rs("TEACHERID").Value
-		Session("No")=rs("TEACHERNO").Value
-		Session("Name")=rs("TEACHERNAME").Value
-		Session("WritePrivileges")=rs("WRITEPRIVILEGETAGSTRING").Value
-		Session("ReadPrivileges")=rs("READPRIVILEGETAGSTRING").Value
+		Session("Id")=rs("TEACHERID")
+		Session("No")=rs("TEACHERNO")
+		Session("Name")=rs("TEACHERNAME")
+		Session("WritePrivileges")=rs("WRITEPRIVILEGETAGSTRING")
+		Session("ReadPrivileges")=rs("READPRIVILEGETAGSTRING")
 		url="admin"
 		CloseRs rs
 		CloseConn conn
@@ -46,13 +46,13 @@ Else
 		sql="SELECT * FROM ViewStudentInfo WHERE STU_NO="&toSqlString(stuno)&" AND VALID=0"
 	  GetRecordSet conn,rs,sql,result
 	  If result>0 Then
-		  Session("StuId")=rs("STU_ID").Value
-		  Session("StuNo")=rs("STU_NO").Value
-		  Session("StuName")=rs("STU_NAME").Value
-		  Session("StuType")=rs("TEACHTYPE_ID").Value
-		  Session("StuClass")=rs("CLASS_ID").Value
-		  Session("WritePrivileges")=rs("WRITEPRIVILEGETAGSTRING").Value
-		  Session("ReadPrivileges")=rs("READPRIVILEGETAGSTRING").Value
+		  Session("StuId")=rs("STU_ID")
+		  Session("StuNo")=rs("STU_NO")
+		  Session("StuName")=rs("STU_NAME")
+		  Session("StuType")=rs("TEACHTYPE_ID")
+		  Session("StuClass")=rs("CLASS_ID")
+		  Session("WritePrivileges")=rs("WRITEPRIVILEGETAGSTRING")
+		  Session("ReadPrivileges")=rs("READPRIVILEGETAGSTRING")
 			url="student"
 		End If
 	  CloseRs rs
@@ -63,11 +63,11 @@ Else
 		sql="SELECT TEACHERID,TEACHERNO,TEACHERNAME,WRITEPRIVILEGETAGSTRING,READPRIVILEGETAGSTRING FROM ViewTeacherInfo WHERE TEACHERNO='"&username&"' AND VALID=0"
 		GetRecordSet conn,rs,sql,result
 	  If result>0 Then
-	    Session("TId")=rs("TEACHERID").Value
-			Session("TNo")=rs("TEACHERNO").Value
-	    Session("TName")=rs("TEACHERNAME").Value
-	    Session("TWritePrivileges")=rs("WRITEPRIVILEGETAGSTRING").Value
-	    Session("TReadPrivileges")=rs("READPRIVILEGETAGSTRING").Value
+	    Session("TId")=rs("TEACHERID")
+			Session("TNo")=rs("TEACHERNO")
+	    Session("TName")=rs("TEACHERNAME")
+	    Session("TWritePrivileges")=rs("WRITEPRIVILEGETAGSTRING")
+	    Session("TReadPrivileges")=rs("READPRIVILEGETAGSTRING")
 			url="tutor"
 	  End If
    	CloseRs rs

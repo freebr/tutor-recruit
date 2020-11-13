@@ -230,7 +230,7 @@ Function activityList(ctlname,stu_type_id,sel,showtip)
 	%><select id="<%=ctlname%>" name="<%=ctlname%>"><%
 	If showtip Then %><option value="0">请选择</option><% End If
 	Do While Not rs.EOF
-		Dim activity_id:activity_id=rs("Id").Value
+		Dim activity_id:activity_id=rs("Id")
 %><option value="<%=activity_id%>"<% If sel=activity_id Then %> selected<% End If %>><%=rs("Name")%></option><%
 		rs.MoveNext()
 	Loop
