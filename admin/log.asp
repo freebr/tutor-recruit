@@ -6,7 +6,7 @@ If Len(logDate)=0 Then
 	logDate=FormatDateTime(Date,1)
 End If
 Set fso=Server.CreateObject("Scripting.FileSystemObject")
-logFile=Server.MapPath("/log/TutorRecruit/"&logDate&".log")
+logFile=Server.MapPath(resolvePath("/log",baseUrl(),logDate&".log"))
 If fso.FileExists(logFile) Then
 	Set stream=fso.OpenTextFile(logFile)
 Else

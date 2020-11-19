@@ -96,6 +96,17 @@ Const SYS_STATUS_DEBUG = 2
 			}
 		}
 	}
+	
+	// 返回规范化路径名
+	function resolvePath() {
+		var arr=[];
+		var delimeter;
+		for(var i=0;i<arguments.length;++i) {
+			arr.push(arguments[i]);
+		}
+		delimeter=arr[0].indexOf("/") != -1 ? "/" : "\\";
+		return arr.join(delimeter).replace(/[\/\\]{2,}/g,delimeter);
+	}
 </script><%
 
 ' 选导师系统客户端开放信息访问器类
@@ -284,7 +295,7 @@ dictStylesheets.Add "jeasyui",	"jeasyui/themes/icon|jeasyui/themes/bootstrap/eas
 ' 添加日志记录
 Function writeLog(content)
 	Dim logfile,fso,stream,msg
-	logfile=Server.MapPath("/log/TutorRecruit/"&toDateTime(Date,1)&".log")
+	logfile=Server.MapPath(resolvePath("/log",baseUrl(),toDateTime(Date,1)&".log"))
 	Set fso=Server.CreateObject("Scripting.FileSystemObject")
 	Set stream=fso.OpenTextFile(logfile,8,true)
 	msg="["&Time&"]"&content

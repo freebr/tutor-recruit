@@ -182,7 +182,7 @@ Case 2	' 导出和下载页面
 	fso.DeleteFolder tmpDir
 	Set wsh=Nothing
 	Set fso=Nothing
-	url="/TutorRecruit/admin/rar/"&rarFilename
+	url=resolvePath(baseUrl(),"admin/rar/"&rarFilename)
 	Server.ScriptTimeout = 90
 %><script type="text/javascript">
 	alert("文件已打包完毕，点击“确定”按钮开始下载。")

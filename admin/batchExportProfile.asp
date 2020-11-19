@@ -27,7 +27,7 @@ Case vbNullString	' 选择页面
 <p align="left"><span id="output" style="color:#000099;font-size:9pt"></span></p></center></body>
 <script type="text/javascript">
 $(document).ready(function(){
-	var progfile="http://www.cnsba.com/TutorRecruit/admin/rar/prog_<%=Session("id")%>_batchExportProfile_asp.txt";
+	var progfile="http://www.cnsba.com<%=baseUrl()%>admin/rar/prog_<%=Session("id")%>_batchExportProfile_asp.txt";
 	$('form').submit(function() {
 		$(':submit').val("正在处理，请稍候...")
 			.attr('disabled',true);
@@ -182,7 +182,7 @@ Case 2	' 导出和下载页面
 	fso.DeleteFolder tmpDir
 	Set wsh=Nothing
 	Set fso=Nothing
-	url="/TutorRecruit/admin/rar/"&rarFilename
+	url=resolvePath(baseUrl(),"admin/rar/"&rarFilename)
 %><script type="text/javascript">
 	alert("文件已打包完毕，点击“确定”按钮开始下载。")
 	window.location.href='<%=url%>';
