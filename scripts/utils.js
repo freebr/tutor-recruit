@@ -157,33 +157,12 @@ function NextFocus(Obj)
 	}
 }
 
-
-function showCanlendar(objName,col){
-	//取日期（完整格式）
- 	window.open('../showCanlendar.asp?objName='+objName+'&col='+col,'','width=200,height=240,location=no,scrollbars=no,resizable=no')
-}
-
 function showCalendar(objName,sel,fmt){
 	//取日期（完整格式）
-	url='../../pub/showCalendar.asp?objName='+objName+'&date_sel='+sel;
+	url='../inc/showCalendar.asp?objName='+objName+'&date_sel='+sel;
 	if(!!fmt) url+='&fmt='+fmt;
-  window.open(url,'','width=200,height=220,location=no,scrollbars=no,resizable=no')
+	window.open(url,'','width=200,height=220,location=no,scrollbars=no,resizable=no')
 }
-
-function showCleftCanlendar(Cleft,Year,month,col){
-		//Cleft 等于 “Cleft” 时取拆分日期 例：2004-11-01 取 year=2004 month=11 (只取年、月)
-		// 反之取完整格式 year = date 例：2004-11-01 取 year=2004-11-01		
-		if (Cleft=="Cleft")
-		{
-	        window.open('../showDate.asp?Cleft='+Cleft+'&Year='+Year+'&month='+month+'&col='+col,'','width=200,height=240,location=no,scrollbars=no,resizable=no')
-		}
-		else
-		{
-	        window.open('../showDate.asp?Cleft='+Cleft+'&objName='+Year+'&col='+col,'','width=200,height=240,location=no,scrollbars=no,resizable=no')
-		}
-	
-}
-
 
 function checkEmail( mails )				//判断 EMAIL的格式 是否正确	 与isEmailAddress（）同用			By Dajing
 {
